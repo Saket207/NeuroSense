@@ -38,6 +38,11 @@ class PatientProfilePayload(BaseModel):
     age: Optional[int] = None
     gender: Optional[str] = None
     phone: Optional[str] = None
+    blood_group: Optional[str] = None
+    city: Optional[str] = None
+    stage: Optional[str] = None
+    abha_number: Optional[str] = None
+    photo_url: Optional[str] = None
     caregiver_name: Optional[str] = None
     caregiver_phone: Optional[str] = None
     caregiver_email: Optional[str] = None

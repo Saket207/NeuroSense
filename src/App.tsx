@@ -4018,6 +4018,8 @@ function NeuroSenseApp({
 
   activeMember,
 
+  onUpdateActiveMember,
+
   onSwitchMember,
 
   onLogout,
@@ -4030,7 +4032,13 @@ function NeuroSenseApp({
 
   activeMember: HouseholdMember | null
 
-  onSwitchMember: () => void
+  onUpdateActiveMember?: (updated: {
+    photo?: string
+    name?: string
+    age?: number
+  }) => void
+
+  onSwitchMember: (member?: HouseholdMember) => void
 
   onLogout: () => void
 }) {
@@ -5855,6 +5863,9 @@ function NeuroSenseApp({
                   if (updated.age) {
                     setUserAge(Number(updated.age))
                     setEditAge(String(updated.age))
+                  }
+                  if (updated.photo) {
+                    onUpdateActiveMember?.({ photo: updated.photo })
                   }
                 }}
                 fontFamily={F.display}
@@ -10604,10 +10615,15 @@ export default function App() {
     }
   }
 
-  const handleSwitchMember = () => {
-    clearActiveMember()
-
-    setActiveMember(null)
+  const handleSwitchMember = (targetMember?: HouseholdMember) => {
+    if (targetMember) {
+      setActiveMember(targetMember)
+      setActiveMemberId(targetMember.id)
+      setAuthenticatedName(targetMember.displayName)
+    } else {
+      clearActiveMember()
+      setActiveMember(null)
+    }
   }
 
   const handleLogout = async () => {
@@ -10673,6 +10689,16 @@ export default function App() {
       patientId={patientId}
       patientProfile={authenticatedProfile}
       activeMember={activeMember}
+      onUpdateActiveMember={(updated) => {
+        if (activeMember) {
+          setActiveMember({
+            ...activeMember,
+            ...(updated.photo !== undefined ? { photo: updated.photo } : {}),
+            ...(updated.name ? { displayName: updated.name } : {}),
+            ...(updated.age ? { age: updated.age } : {}),
+          })
+        }
+      }}
       onSwitchMember={handleSwitchMember}
       onLogout={handleLogout}
     />

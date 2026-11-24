@@ -15,6 +15,26 @@ export default defineConfig(({ mode }) => {
     build: {
       sourcemap: emitSourcemaps ? 'inline' : false,
       minify: !emitSourcemaps,
+      rollupOptions: {
+        output: {
+          manualChunks(id) {
+            if (id.includes('node_modules')) {
+              if (id.includes('react') || id.includes('react-dom') || id.includes('scheduler')) {
+                return 'vendor-react'
+              }
+              if (id.includes('@supabase')) {
+                return 'vendor-supabase'
+              }
+              if (id.includes('lucide-react')) {
+                return 'vendor-icons'
+              }
+              if (id.includes('qrcode.react')) {
+                return 'vendor-qr'
+              }
+            }
+          },
+        },
+      },
     },
     plugins: [
       react(),

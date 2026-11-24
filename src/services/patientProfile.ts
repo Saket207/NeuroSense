@@ -4,29 +4,21 @@ import { getSupabaseAccessToken } from "./supabase"
 
 export interface PatientProfileRecord {
   id: string
-
   auth_user_id: string | null
-
   username: string | null
-
   full_name: string
-
   age: number | null
-
   gender: string | null
-
   phone: string | null
-
+  blood_group?: string | null
+  city?: string | null
+  stage?: string | null
   abha_id: string | null
-
+  photo_url?: string | null
   caregiver_name: string | null
-
   caregiver_phone: string | null
-
   caregiver_email: string | null
-
   created_at: string
-
   updated_at: string
 }
 
@@ -64,43 +56,36 @@ export async function getMyPatientProfile(): Promise<PatientProfileRecord | null
 
 export async function upsertMyPatientProfile(profile: {
   patientId?: string
-
   username?: string
-
   fullName?: string
-
   age?: number
-
   gender?: string
-
   phone?: string
-
+  bloodGroup?: string
+  city?: string
+  stage?: string
+  abhaNumber?: string
+  photoUrl?: string
   caregiverName?: string
-
   caregiverPhone?: string
-
   caregiverEmail?: string
 }): Promise<PatientProfileRecord> {
   const response = await authorizedRequest("/api/patient/me", {
     method: "PUT",
-
     body: JSON.stringify({
       patient_id: profile.patientId,
-
       username: profile.username,
-
       full_name: profile.fullName,
-
       age: profile.age,
-
       gender: profile.gender,
-
       phone: profile.phone,
-
+      blood_group: profile.bloodGroup,
+      city: profile.city,
+      stage: profile.stage,
+      abha_number: profile.abhaNumber,
+      photo_url: profile.photoUrl,
       caregiver_name: profile.caregiverName,
-
       caregiver_phone: profile.caregiverPhone,
-
       caregiver_email: profile.caregiverEmail,
     }),
   })

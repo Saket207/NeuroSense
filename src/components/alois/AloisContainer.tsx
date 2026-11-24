@@ -53,7 +53,7 @@ interface AloisContainerProps {
 
   onViewReport: () => void
 
-  onSwitchProfile: () => void
+  onSwitchProfile: (member?: any) => void
 
   onLogout: () => void
 

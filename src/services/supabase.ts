@@ -1,9 +1,9 @@
 import { createClient, SupabaseClient } from "@supabase/supabase-js"
 
-const DEFAULT_SUPABASE_URL = "https://plfguopprxbfrkgwxsgf.supabase.co"
+const DEFAULT_SUPABASE_URL = "https://ollcjpnitgddxqpsbaql.supabase.co"
 
 const DEFAULT_SUPABASE_ANON_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsZmd1b3BwcnhiZnJrZ3d4c2dmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODkyMDgwNDQsImV4cCI6MjEwNDc4NDA0NH0.WlgcXkThY7sLLxiO59LvejLGWVGRFGhRMPJ91-9MzTo"
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9sbGNqcG5pdGdkZHhxcHNiYXFsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTU0NTI5NzQsImV4cCI6MjExMTAyODk3NH0.u2Lste93F3-t4D3QUxt9P5s5DZQ-EU6Bb6QhG5MMqtE"
 
 const supabaseUrl =
   import.meta.env.VITE_SUPABASE_URL as string | undefined ||
@@ -14,7 +14,7 @@ const supabaseAnonKey =
   DEFAULT_SUPABASE_ANON_KEY
 
 export const DEFAULT_SUPABASE_SERVICE_ROLE_KEY =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBsZmd1b3BwcnhiZnJrZ3d4c2dmIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4OTIwODA0NCwiZXhwIjoyMTA0Nzg0MDQ0fQ.iw_zHks4qrXPnslsgkUzWDHBaYKXWXVZl1ZqOzl39AA"
+  (import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string | undefined) || ""
 
 const supabaseServiceKey =
   import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string | undefined ||
@@ -271,4 +271,233 @@ export async function lookupVerifiedSupabaseUser(
   }
 
   return { found: false }
+}
+
+export interface SupabaseUserProfile {
+  fullName?: string
+  phone?: string
+  age?: number | string
+  gender?: string
+  bloodGroup?: string
+  city?: string
+  location?: string
+  stage?: string
+  abhaNumber?: string
+  caregiverName?: string
+  caregiverPhone?: string
+  photoUrl?: string
+}
+
+/**
+ * Uploads an avatar image to Supabase Cloud Storage (bucket: neurosense-recordings)
+ * and attaches its permanent public URL to the Supabase User metadata.
+ */
+export async function uploadAvatarToSupabase(
+  patientName: string,
+  photoDataUrlOrFile: string | File | Blob,
+): Promise<string | null> {
+  try {
+    const cleanName = (patientName || "patient")
+      .toLowerCase()
+      .replace(/[^a-z0-9]/g, "_")
+    const filePath = `avatars/${cleanName}_${Date.now()}.jpg`
+
+    let blob: Blob
+    if (typeof photoDataUrlOrFile === "string") {
+      const parts = photoDataUrlOrFile.split(",")
+      const byteString = atob(parts[1] || parts[0])
+      const mimeMatch = parts[0].match(/:(.*?);/)
+      const mime = mimeMatch ? mimeMatch[1] : "image/jpeg"
+      const ab = new ArrayBuffer(byteString.length)
+      const ia = new Uint8Array(ab)
+      for (let i = 0; i < byteString.length; i++) {
+        ia[i] = byteString.charCodeAt(i)
+      }
+      blob = new Blob([ab], { type: mime })
+    } else {
+      blob = photoDataUrlOrFile
+    }
+
+    // Upload to Supabase Storage via REST with service key authorization
+    const uploadUrl = `${supabaseUrl}/storage/v1/object/neurosense-recordings/${filePath}`
+    const uploadRes = await fetch(uploadUrl, {
+      method: "POST",
+      headers: {
+        apikey: supabaseServiceKey,
+        Authorization: `Bearer ${supabaseServiceKey}`,
+        "Content-Type": blob.type || "image/jpeg",
+        "x-upsert": "true",
+      },
+      body: blob,
+    })
+
+    if (!uploadRes.ok) {
+      console.warn("Supabase storage upload error:", uploadRes.status)
+      return null
+    }
+
+    const publicUrl = `${supabaseUrl}/storage/v1/object/public/neurosense-recordings/${filePath}`
+
+    // Automatically update the user profile in Supabase Cloud
+    await syncUserProfileToSupabase({
+      fullName: patientName,
+      photoUrl: publicUrl,
+    })
+
+    return publicUrl
+  } catch (err) {
+    console.warn("Failed to upload avatar to Supabase Cloud:", err)
+    return null
+  }
+}
+
+/**
+ * Saves all user profile fields (Name, Phone, Age, Gender, Blood Group, City, Stage, ABHA, Caretaker, Photo)
+ * directly into Supabase Cloud Auth user metadata.
+ */
+export async function syncUserProfileToSupabase(
+  profile: SupabaseUserProfile,
+): Promise<boolean> {
+  try {
+    const digits = (profile.phone || "").replace(/\D/g, "")
+    const phoneKey = digits.slice(-10) || digits
+    const virtualEmail = phoneKey ? `${phoneKey}@neurosense.app` : null
+
+    let targetUserId: string | null = null
+
+    // 1. Check existing session first
+    const {
+      data: { session },
+    } = await supabase.auth.getSession()
+    if (session?.user?.id) {
+      targetUserId = session.user.id
+    }
+
+    // 2. If no active session, search via Supabase Admin API
+    if (!targetUserId) {
+      const listRes = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
+        headers: {
+          apikey: supabaseServiceKey,
+          Authorization: `Bearer ${supabaseServiceKey}`,
+        },
+      })
+
+      if (listRes.ok) {
+        const usersData = await listRes.json()
+        const users = usersData.users || []
+        const found = users.find(
+          (u: { email?: string user_metadata?: Record<string, any> }) => {
+            const m = u.user_metadata || {}
+            return (
+              (virtualEmail && u.email === virtualEmail) ||
+              (profile.fullName &&
+                String(m.full_name || "").toLowerCase() ===
+                  profile.fullName.toLowerCase()) ||
+              (phoneKey && m.clean_phone === phoneKey)
+            )
+          },
+        )
+        if (found) targetUserId = found.id
+      }
+    }
+
+    if (!targetUserId) return false
+
+    // Build metadata payload
+    const metadataUpdate: Record<string, any> = {}
+    if (profile.fullName) metadataUpdate.full_name = profile.fullName
+    if (profile.phone) metadataUpdate.phone = profile.phone
+    if (profile.age !== undefined)
+      metadataUpdate.age = Number(profile.age) || profile.age
+    if (profile.gender) metadataUpdate.gender = profile.gender
+    if (profile.bloodGroup) metadataUpdate.blood_group = profile.bloodGroup
+    if (profile.city) {
+      metadataUpdate.city = profile.city
+      metadataUpdate.location = profile.city
+    }
+    if (profile.stage) metadataUpdate.stage = profile.stage
+    if (profile.abhaNumber) metadataUpdate.abha_number = profile.abhaNumber
+    if (profile.caregiverName)
+      metadataUpdate.caregiver_name = profile.caregiverName
+    if (profile.caregiverPhone)
+      metadataUpdate.caregiver_phone = profile.caregiverPhone
+    if (profile.photoUrl) {
+      metadataUpdate.photo_url = profile.photoUrl
+      metadataUpdate.avatar_url = profile.photoUrl
+    }
+
+    const updateRes = await fetch(
+      `${supabaseUrl}/auth/v1/admin/users/${targetUserId}`,
+      {
+        method: "PUT",
+        headers: {
+          apikey: supabaseServiceKey,
+          Authorization: `Bearer ${supabaseServiceKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          user_metadata: metadataUpdate,
+        }),
+      },
+    )
+
+    return updateRes.ok
+  } catch (err) {
+    console.warn("Failed to sync profile to Supabase:", err)
+    return false
+  }
+}
+
+/**
+ * Loads cloud-stored profile from Supabase (including blood group, city, stage, photo_url)
+ */
+export async function loadUserProfileFromSupabase(
+  identifier: string,
+): Promise<SupabaseUserProfile | null> {
+  try {
+    const raw = identifier.trim()
+    const digits = raw.replace(/\D/g, "")
+    const phoneKey = digits.slice(-10) || digits
+
+    const listRes = await fetch(`${supabaseUrl}/auth/v1/admin/users`, {
+      headers: {
+        apikey: supabaseServiceKey,
+        Authorization: `Bearer ${supabaseServiceKey}`,
+      },
+    })
+    if (!listRes.ok) return null
+
+    const usersData = await listRes.json()
+    const users = usersData.users || []
+    const match = users.find(
+      (u: { email?: string user_metadata?: Record<string, any> }) => {
+        const m = u.user_metadata || {}
+        return (
+          (phoneKey && m.clean_phone === phoneKey) ||
+          (raw &&
+            String(m.full_name || "").toLowerCase() === raw.toLowerCase()) ||
+          (u.email && u.email.toLowerCase() === raw.toLowerCase())
+        )
+      },
+    )
+    if (!match) return null
+
+    const meta = match.user_metadata || {}
+    return {
+      fullName: meta.full_name || meta.username,
+      phone: meta.phone,
+      age: meta.age,
+      gender: meta.gender,
+      bloodGroup: meta.blood_group,
+      city: meta.city || meta.location,
+      location: meta.location || meta.city,
+      stage: meta.stage,
+      abhaNumber: meta.abha_number,
+      caregiverName: meta.caregiver_name,
+      caregiverPhone: meta.caregiver_phone,
+      photoUrl: meta.photo_url || meta.avatar_url,
+    }
+  } catch {
+    return null
+  }
 }

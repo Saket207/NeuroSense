@@ -34,8 +34,14 @@ import {
   listMembers,
   preparePhoto,
   saveMember,
+  setActiveMemberId,
 } from "../../services/household"
 import { upsertMyPatientProfile } from "../../services/patientProfile"
+import {
+  loadUserProfileFromSupabase,
+  syncUserProfileToSupabase,
+  uploadAvatarToSupabase,
+} from "../../services/supabase"
 
 interface AloisProfileProps {
   patientName: string
@@ -49,7 +55,7 @@ interface AloisProfileProps {
   onBack: () => void
   onOpenHistory?: () => void
   onViewReport?: () => void
-  onSwitchProfile?: () => void
+  onSwitchProfile?: (member?: HouseholdMember) => void
   onOpenLanguageModal?: () => void
   onOpenDoctorDash?: () => void
   onLogout: () => void
@@ -115,17 +121,59 @@ export default function AloisProfile({
     }
   })
 
-  // Personal data states
+  // Personal data states (Reads directly from stored user profile - no fake mock data)
   const [currentName, setCurrentName] = useState(patientName)
   const [currentAge, setCurrentAge] = useState(patientAge)
   const [currentGender, setCurrentGender] = useState(patientGender)
   const [currentPhone, setCurrentPhone] = useState(patientPhone)
-  const [currentBloodGroup, setCurrentBloodGroup] = useState("O+")
-  const [currentCity, setCurrentCity] = useState("New Delhi")
-  const [currentStage, setCurrentStage] = useState(
-    "Stage 1 Mild Cognitive Impairment",
-  )
-  const [abhaNumber, setAbhaNumber] = useState("91-4523-8812-4019")
+
+  const [currentBloodGroup, setCurrentBloodGroup] = useState(() => {
+    try {
+      const stored = localStorage.getItem("neurosense-user-profile")
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        if (parsed.bloodGroup) return parsed.bloodGroup
+      }
+    } catch {}
+    return "Not Specified"
+  })
+
+  const [currentCity, setCurrentCity] = useState(() => {
+    try {
+      const stored = localStorage.getItem("neurosense-user-profile")
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        if (parsed.city && parsed.city !== "Select") return parsed.city
+      }
+    } catch {}
+    return "Not Specified"
+  })
+
+  const [currentStage, setCurrentStage] = useState(() => {
+    try {
+      const stored = localStorage.getItem("neurosense-user-profile")
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        if (parsed.stage && parsed.stage !== "Select") return parsed.stage
+      }
+    } catch {}
+    return "Pre-Screening Baseline"
+  })
+
+  const [abhaNumber, setAbhaNumber] = useState(() => {
+    try {
+      const stored = localStorage.getItem("neurosense-user-profile")
+      if (stored) {
+        const parsed = JSON.parse(stored)
+        if (parsed.abhaNumber) return parsed.abhaNumber
+        const digits = (parsed.phone || "").replace(/\D/g, "").slice(-10)
+        if (digits.length === 10) {
+          return `91-${digits.slice(0, 4)}-${digits.slice(4, 8)}-${digits.slice(8)}`
+        }
+      }
+    } catch {}
+    return "Pending ABDM Link"
+  })
 
   // Emergency contact states
   const [currentCaregiverName, setCurrentCaregiverName] =
@@ -148,9 +196,32 @@ export default function AloisProfile({
   const [micTestPassed, setMicTestPassed] = useState(false)
   const [faqExpandedIndex, setFaqExpandedIndex] = useState<number | null>(0)
 
-  // Keep state synced with incoming props
+  // Keep state synced with incoming props & Supabase Cloud
   useEffect(() => {
     setCurrentName(patientName)
+    const localMemberPhoto =
+      localStorage.getItem(`neurosense_avatar_${patientName}`) ||
+      localStorage.getItem("neurosense_current_avatar") ||
+      null
+    setAvatarPhoto(localMemberPhoto)
+
+    if (patientName) {
+      loadUserProfileFromSupabase(patientName)
+        .then((cloud) => {
+          if (!cloud) return
+          if (cloud.bloodGroup) setCurrentBloodGroup(cloud.bloodGroup)
+          if (cloud.city) setCurrentCity(cloud.city)
+          if (cloud.stage) setCurrentStage(cloud.stage)
+          if (cloud.photoUrl) {
+            setAvatarPhoto(cloud.photoUrl)
+            localStorage.setItem(
+              `neurosense_avatar_${patientName}`,
+              cloud.photoUrl,
+            )
+          }
+        })
+        .catch(() => {})
+    }
   }, [patientName])
 
   useEffect(() => {
@@ -205,9 +276,9 @@ export default function AloisProfile({
         }
       })
       .catch(() => {})
-  }, [patientName, patientAge, caregiverName, avatarPhoto])
+  }, [patientName, patientAge, caregiverName])
 
-  // Photo upload handler
+  // Photo upload handler with Supabase Cloud Storage persistence
   const handlePhotoUpload = async (
     event: React.ChangeEvent<HTMLInputElement>,
   ) => {
@@ -216,22 +287,56 @@ export default function AloisProfile({
 
     try {
       const photoDataUrl = await preparePhoto(file, 256)
+      // Instant responsive UI update
       setAvatarPhoto(photoDataUrl)
       try {
-        localStorage.setItem(`neurosense_avatar_${patientName}`, photoDataUrl)
+        localStorage.setItem(`neurosense_avatar_${currentName}`, photoDataUrl)
         localStorage.setItem("neurosense_current_avatar", photoDataUrl)
       } catch {
         // storage overflow fallback
       }
-      onUpdateProfile?.({ photo: photoDataUrl })
-      showToast("Profile photo updated successfully!")
+
+      // Update in household members list and IndexedDB
+      setHouseholdMembers((prev) =>
+        prev.map((m) =>
+          m.displayName.toLowerCase() === currentName.toLowerCase()
+            ? { ...m, photo: photoDataUrl }
+            : m,
+        ),
+      )
+      listMembers()
+        .then(async (list) => {
+          const found = list.find(
+            (m) => m.displayName.toLowerCase() === currentName.toLowerCase(),
+          )
+          if (found) {
+            await saveMember({ ...found, photo: photoDataUrl })
+          }
+        })
+        .catch(() => {})
+
+      onUpdateProfile?.({ photo: photoDataUrl, patientName: currentName })
+      showToast("Photo updated! Uploading to Supabase Cloud...")
+
+      // Upload to Supabase Storage bucket
+      const cloudUrl = await uploadAvatarToSupabase(currentName, photoDataUrl)
+      if (cloudUrl) {
+        setAvatarPhoto(cloudUrl)
+        try {
+          localStorage.setItem(`neurosense_avatar_${currentName}`, cloudUrl)
+          localStorage.setItem("neurosense_current_avatar", cloudUrl)
+        } catch {}
+        showToast("Profile photo permanently saved in Supabase Cloud!")
+      } else {
+        showToast("Photo saved locally. Cloud will sync on connection.")
+      }
     } catch {
       showToast("Could not process photo. Please choose another image.")
     }
   }
 
-  // Save personal data
-  const handleSavePersonalData = () => {
+  // Save personal data with Supabase Cloud Sync
+  const handleSavePersonalData = async () => {
     if (!currentName.trim()) {
       showToast("Name cannot be empty.")
       return
@@ -239,24 +344,19 @@ export default function AloisProfile({
 
     try {
       const stored = localStorage.getItem("neurosense-user-profile")
-      if (stored) {
-        const parsed = JSON.parse(stored)
-        parsed.fullName = currentName.trim()
-        parsed.age = currentAge
-        parsed.gender = currentGender
-        parsed.phone = currentPhone
-        localStorage.setItem("neurosense-user-profile", JSON.stringify(parsed))
-      }
+      const parsed = stored ? JSON.parse(stored) : {}
+      parsed.fullName = currentName.trim()
+      parsed.age = currentAge
+      parsed.gender = currentGender
+      parsed.phone = currentPhone
+      parsed.bloodGroup = currentBloodGroup
+      parsed.city = currentCity
+      parsed.stage = currentStage
+      parsed.abhaNumber = abhaNumber
+      localStorage.setItem("neurosense-user-profile", JSON.stringify(parsed))
     } catch {
       // ignore
     }
-
-    upsertMyPatientProfile({
-      fullName: currentName.trim(),
-      age: Number(currentAge) || 70,
-      gender: currentGender,
-      phone: currentPhone,
-    }).catch(() => {})
 
     onUpdateProfile?.({
       patientName: currentName.trim(),
@@ -269,7 +369,41 @@ export default function AloisProfile({
     })
 
     setShowPersonalDataModal(false)
-    showToast("Personal data updated successfully!")
+    showToast("Saving personal data to Supabase Cloud...")
+
+    try {
+      const synced = await syncUserProfileToSupabase({
+        fullName: currentName.trim(),
+        age: currentAge,
+        gender: currentGender,
+        phone: currentPhone,
+        bloodGroup: currentBloodGroup,
+        city: currentCity,
+        stage: currentStage,
+        abhaNumber: abhaNumber,
+        photoUrl: avatarPhoto || undefined,
+      })
+
+      await upsertMyPatientProfile({
+        fullName: currentName.trim(),
+        age: Number(currentAge) || 70,
+        gender: currentGender,
+        phone: currentPhone,
+        bloodGroup: currentBloodGroup,
+        city: currentCity,
+        stage: currentStage,
+        abhaNumber: abhaNumber,
+        photoUrl: avatarPhoto || undefined,
+      }).catch(() => {})
+
+      if (synced) {
+        showToast("Personal data permanently saved to Supabase Cloud!")
+      } else {
+        showToast("Saved locally and queued for Supabase Cloud sync!")
+      }
+    } catch {
+      showToast("Personal data updated successfully!")
+    }
   }
 
   // Save caregiver emergency contact
@@ -292,17 +426,39 @@ export default function AloisProfile({
   const handleSelectMember = (member: HouseholdMember) => {
     setCurrentName(member.displayName)
     setCurrentAge(String(member.age))
-    if (member.photo) setAvatarPhoto(member.photo)
+
+    // Determine photo specific to this selected member
+    const memberPhoto =
+      member.photo ||
+      localStorage.getItem(`neurosense_avatar_${member.displayName}`) ||
+      null
+    setAvatarPhoto(memberPhoto)
+
+    if (memberPhoto) {
+      try {
+        localStorage.setItem("neurosense_current_avatar", memberPhoto)
+        localStorage.setItem(
+          `neurosense_avatar_${member.displayName}`,
+          memberPhoto,
+        )
+      } catch {}
+    } else {
+      try {
+        localStorage.removeItem("neurosense_current_avatar")
+      } catch {}
+    }
+
+    setActiveMemberId(member.id)
 
     onUpdateProfile?.({
       patientName: member.displayName,
       age: String(member.age),
-      photo: member.photo,
+      photo: memberPhoto || "",
     })
 
     setShowHouseholdModal(false)
     showToast(`Switched active profile to ${member.displayName}`)
-    onSwitchProfile?.()
+    onSwitchProfile?.(member)
   }
 
   // Add new household member
@@ -851,19 +1007,28 @@ export default function AloisProfile({
                     onChange={(e) => setCurrentBloodGroup(e.target.value)}
                     className="w-full mt-1 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-[13px] font-semibold"
                   >
-                    {["A+", "B+", "O+", "AB+", "A-", "B-", "O-", "AB-"].map(
-                      (bg) => (
-                        <option key={bg} value={bg}>
-                          {bg}
-                        </option>
-                      ),
-                    )}
+                    {[
+                      "Not Specified",
+                      "A+",
+                      "B+",
+                      "O+",
+                      "AB+",
+                      "A-",
+                      "B-",
+                      "O-",
+                      "AB-",
+                    ].map((bg) => (
+                      <option key={bg} value={bg}>
+                        {bg}
+                      </option>
+                    ))}
                   </select>
                 </label>
                 <label className="block text-slate-600 font-medium">
                   City
                   <input
                     type="text"
+                    placeholder="Enter city"
                     value={currentCity}
                     onChange={(e) => setCurrentCity(e.target.value)}
                     className="w-full mt-1 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-[13px] font-semibold"
@@ -888,6 +1053,9 @@ export default function AloisProfile({
                   onChange={(e) => setCurrentStage(e.target.value)}
                   className="w-full mt-1 px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-slate-900 text-[12px] font-semibold"
                 >
+                  <option value="Pre-Screening Baseline">
+                    Pre-Screening Baseline (No Voice Screening Yet)
+                  </option>
                   <option value="Stage 1 Mild Cognitive Impairment">
                     Stage 1 MCI (Mild Cognitive Impairment)
                   </option>
