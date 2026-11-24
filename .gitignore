@@ -1,0 +1,57 @@
+node_modules/
+dist/
+build/
+.cache/
+.env*
+backend/.env
+backend/.env.*
+!.env.example
+.vite/
+vite.config.*.timestamp-*
+*.tsbuildinfo
+*-debug.log*
+logs/
+*.log
+.claude-replay.*
+.tmp-*
+
+# Android build outputs
+.gradle/
+android/app/build/
+android/.gradle/
+# Flutter & Dart outputs
+mobile/.dart_tool/
+mobile/.flutter-plugins
+mobile/.flutter-plugins-dependencies
+mobile/build/
+mobile/android/.gradle/
+mobile/android/app/build/
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.venv/
+venv/
+env/
+
+# Editor
+.vscode/
+
+# This project installs with pnpm, and Vercel builds from pnpm-lock.yaml.
+# A second lockfile is what breaks deploys: `npm install` updates only this file,
+# pnpm-lock.yaml silently goes stale, and the next build fails frozen-lockfile.
+package-lock.json
+yarn.lock
+.vercel/
+
+
+# Training corpus and Kaggle working copy. The six *_asr.csv files are a
+# clinical speech dataset with its own data-use terms, and the folder also
+# carries model artifacts already tracked under backend/models/. Keep it on
+# disk, out of the repository.
+NeuroSense(Kaggle)/
+# Legacy raw data
+data_raw/
+data/
+*_asr.csv

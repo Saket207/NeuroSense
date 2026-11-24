@@ -1,0 +1,2199 @@
+[
+  {
+    "id": 1,
+    "name": "Normal 10–20 second speech",
+    "filename": "case1_normal_speech_12s.webm",
+    "http_status": 200,
+    "asr_success": true,
+    "detected_language": "en",
+    "transcript": "If this day and now I'm just checking our app, so as I'm getting the wise option is working properly or not so I have to record for me 10-12 seconds and check.",
+    "audio_duration": 12.66,
+    "word_count": 34,
+    "live_feature_count": 0,
+    "imputed_feature_count": 0,
+    "screening_response": {
+      "predicted_class": 1,
+      "probability": 0.930382,
+      "probability_percent": 93.04,
+      "technical_confidence_percent": 86.08,
+      "status": "Elevated screening signal",
+      "interpretation": "Screening result only — not a diagnosis."
+    },
+    "shap_response": {
+      "available": true,
+      "top_positive": [
+        "CTP_unique_IU_densitys (+0.001)",
+        "CTP_noun_ratio (+0.001)"
+      ],
+      "top_negative": [
+        "CTP_keyword_to_non_keyword_ratio (-0.001)",
+        "CTP_Voiced Rate(1/s) (-0.000)"
+      ],
+      "disclaimer": "Biomarker attributions explain the mathematical behavior of the trained quantum-hybrid machine-learning model. They do not establish clinical causality, diagnosis, or medical significance."
+    },
+    "frontend_behavior": "resultElevated ('Evaluation Recommended')",
+    "errors": null,
+    "full_payload": {
+      "success": true,
+      "transcript": "If this day and now I'm just checking our app, so as I'm getting the wise option is working properly or not so I have to record for me 10-12 seconds and check.",
+      "detected_language": "en",
+      "word_count": 34,
+      "audio": {
+        "duration_seconds": 12.66,
+        "speech_timeline_duration": 12.28,
+        "sample_rate": 48000,
+        "rms_energy": 0.058669,
+        "peak_amplitude": 0.807278,
+        "silence_percentage": 39.94
+      },
+      "live_features": {
+        "CTP_F0 SD(st)": 5.55420534,
+        "CTP_DPI(ms)": 401.9978172,
+        "CTP_RST(-/s)": 2.76873,
+        "CTP_EST": 1.486414195,
+        "CTP_Voiced Rate(1/s)": 2.76873,
+        "CTP_Hesitation Ratio": 0.0,
+        "CTP_Energy Mean(Pa^2·s)": 0.0034420515609999997,
+        "CTP_verb_num": 6.0,
+        "CTP_noun_ratio": 0.147059,
+        "CTP_Pronouns_ratio": 0.147059,
+        "CTP_noun to verb": 0.833333,
+        "CTP_Word Rate(-/s)": 2.76873,
+        "CTP_Noun No Phrase Rate": 0.163636364,
+        "CTP_Verb phrase type proportion": 2.617021277,
+        "CTP_Prep phrase type proportion": 0.816666667,
+        "CTP_Prep average phrase type length 1": 3.4226190479999996,
+        "CTP_num_unique_IU": 14.0,
+        "CTP_num_unique_keywords": 14.0,
+        "CTP_unique_IU_densitys": 0.4117647058823529,
+        "CTP_total_IU_density": 0.4411764705882353,
+        "CTP_keyword_to_non_keyword_ratio": 0.7,
+        "CTP_unique_IU_efficiency": 0.411765
+      },
+      "production_features": {
+        "CTP_F0 SD(st)": {
+          "value": 5.554205,
+          "is_live_extracted": false,
+          "attribution": 6e-06
+        },
+        "CTP_DPI(ms)": {
+          "value": 401.997817,
+          "is_live_extracted": true,
+          "attribution": -0.00012
+        },
+        "CTP_RST(-/s)": {
+          "value": 2.76873,
+          "is_live_extracted": true,
+          "attribution": -2.5e-05
+        },
+        "CTP_EST": {
+          "value": 1.486414,
+          "is_live_extracted": false,
+          "attribution": 0.000105
+        },
+        "CTP_Voiced Rate(1/s)": {
+          "value": 2.76873,
+          "is_live_extracted": true,
+          "attribution": -0.000443
+        },
+        "CTP_Hesitation Ratio": {
+          "value": 0.0,
+          "is_live_extracted": true,
+          "attribution": 0.000129
+        },
+        "CTP_Energy Mean(Pa^2·s)": {
+          "value": 0.003442,
+          "is_live_extracted": true,
+          "attribution": 1.3e-05
+        },
+        "CTP_verb_num": {
+          "value": 6.0,
+          "is_live_extracted": true,
+          "attribution": -4.6e-05
+        },
+        "CTP_noun_ratio": {
+          "value": 0.147059,
+          "is_live_extracted": true,
+          "attribution": 0.000746
+        },
+        "CTP_Pronouns_ratio": {
+          "value": 0.147059,
+          "is_live_extracted": true,
+          "attribution": 0.000696
+        },
+        "CTP_noun to verb": {
+          "value": 0.833333,
+          "is_live_extracted": true,
+          "attribution": -0.000288
+        },
+        "CTP_Word Rate(-/s)": {
+          "value": 2.76873,
+          "is_live_extracted": true,
+          "attribution": -8.4e-05
+        },
+        "CTP_Noun No Phrase Rate": {
+          "value": 0.163636,
+          "is_live_extracted": false,
+          "attribution": 0.0
+        },
+        "CTP_Verb phrase type proportion": {
+          "value": 2.617021,
+          "is_live_extracted": false,
+          "attribution": 4e-06
+        },
+        "CTP_Prep phrase type proportion": {
+          "value": 0.816667,
+          "is_live_extracted": false,
+          "attribution": -2.3e-05
+        },
+        "CTP_Prep average phrase type length 1": {
+          "value": 3.422619,
+          "is_live_extracted": false,
+          "attribution": -7e-06
+        },
+        "CTP_num_unique_IU": {
+          "value": 14.0,
+          "is_live_extracted": true,
+          "attribution": -0.000362
+        },
+        "CTP_num_unique_keywords": {
+          "value": 14.0,
+          "is_live_extracted": true,
+          "attribution": -0.000202
+        },
+        "CTP_unique_IU_densitys": {
+          "value": 0.411765,
+          "is_live_extracted": true,
+          "attribution": 0.001008
+        },
+        "CTP_total_IU_density": {
+          "value": 0.441176,
+          "is_live_extracted": true,
+          "attribution": -0.00018
+        },
+        "CTP_keyword_to_non_keyword_ratio": {
+          "value": 0.7,
+          "is_live_extracted": true,
+          "attribution": -0.000643
+        },
+        "CTP_unique_IU_efficiency": {
+          "value": 0.411765,
+          "is_live_extracted": true,
+          "attribution": 1.5e-05
+        }
+      },
+      "screening": {
+        "model_name": "NeuroSense Quantum-Classical Hybrid (PyTorch + 8-Qubit VQC)",
+        "predicted_class": 1,
+        "probability": 0.930382,
+        "probability_percent": 93.04,
+        "technical_confidence_percent": 86.08,
+        "uncertainty_std": 0.2408,
+        "predictive_entropy": 0.2526,
+        "risk_tier": "Elevated Risk",
+        "status": "Elevated screening signal",
+        "interpretation": "Screening result only — not a diagnosis.",
+        "quantum_specs": {
+          "qubits": 8,
+          "entangling_layers": 3,
+          "mc_dropout_passes": 30,
+          "benchmark_auc": 0.9429606156631961,
+          "benchmark_accuracy": 0.8829787234042553
+        }
+      },
+      "explanation": {
+        "base_value": 0.5,
+        "shap_margin_sum": 0.000299,
+        "reconstructed_probability": 0.999648,
+        "reconstruction_error": 0.0,
+        "shap_contributions": {
+          "CTP_F0 SD(st)": 6e-06,
+          "CTP_DPI(ms)": -0.00012,
+          "CTP_RST(-/s)": -2.5e-05,
+          "CTP_EST": 0.000105,
+          "CTP_Voiced Rate(1/s)": -0.000443,
+          "CTP_Hesitation Ratio": 0.000129,
+          "CTP_Energy Mean(Pa^2·s)": 1.3e-05,
+          "CTP_verb_num": -4.6e-05,
+          "CTP_noun_ratio": 0.000746,
+          "CTP_Pronouns_ratio": 0.000696,
+          "CTP_noun to verb": -0.000288,
+          "CTP_Word Rate(-/s)": -8.4e-05,
+          "CTP_Noun No Phrase Rate": 0.0,
+          "CTP_Verb phrase type proportion": 4e-06,
+          "CTP_Prep phrase type proportion": -2.3e-05,
+          "CTP_Prep average phrase type length 1": -7e-06,
+          "CTP_num_unique_IU": -0.000362,
+          "CTP_num_unique_keywords": -0.000202,
+          "CTP_unique_IU_densitys": 0.001008,
+          "CTP_total_IU_density": -0.00018,
+          "CTP_keyword_to_non_keyword_ratio": -0.000643,
+          "CTP_unique_IU_efficiency": 1.5e-05
+        },
+        "top_positive_contributions": [
+          {
+            "feature": "CTP_unique_IU_densitys",
+            "value": 0.4118,
+            "contribution": 0.001008,
+            "shap_value": 0.001008,
+            "description": "Information unit density relative to total spoken word count"
+          },
+          {
+            "feature": "CTP_noun_ratio",
+            "value": 0.1471,
+            "contribution": 0.000746,
+            "shap_value": 0.000746,
+            "description": "Proportion of spoken words classified as nouns and entities"
+          },
+          {
+            "feature": "CTP_Pronouns_ratio",
+            "value": 0.1471,
+            "contribution": 0.000696,
+            "shap_value": 0.000696,
+            "description": "Proportion of spoken words classified as pronouns"
+          },
+          {
+            "feature": "CTP_Hesitation Ratio",
+            "value": 0.0,
+            "contribution": 0.000129,
+            "shap_value": 0.000129,
+            "description": "Proportion of recording duration occupied by acoustic hesitation and pauses"
+          },
+          {
+            "feature": "CTP_EST",
+            "value": 1.4864,
+            "contribution": 0.000105,
+            "shap_value": 0.000105,
+            "description": "Estimated speech timing and acoustic pacing marker"
+          }
+        ],
+        "top_negative_contributions": [
+          {
+            "feature": "CTP_keyword_to_non_keyword_ratio",
+            "value": 0.7,
+            "contribution": -0.000643,
+            "shap_value": -0.000643,
+            "description": "Ratio of informative content keywords to function filler words"
+          },
+          {
+            "feature": "CTP_Voiced Rate(1/s)",
+            "value": 2.7687,
+            "contribution": -0.000443,
+            "shap_value": -0.000443,
+            "description": "Voiced speech frame generation rate per second"
+          },
+          {
+            "feature": "CTP_num_unique_IU",
+            "value": 14.0,
+            "contribution": -0.000362,
+            "shap_value": -0.000362,
+            "description": "Total number of distinct cognitive Information Units communicated"
+          },
+          {
+            "feature": "CTP_noun to verb",
+            "value": 0.8333,
+            "contribution": -0.000288,
+            "shap_value": -0.000288,
+            "description": "Ratio of noun entities to action verbs in spoken sentences"
+          },
+          {
+            "feature": "CTP_num_unique_keywords",
+            "value": 14.0,
+            "contribution": -0.000202,
+            "shap_value": -0.000202,
+            "description": "Count of unique core vocabulary content keywords"
+          }
+        ],
+        "human_readable_explanation": "Biomarkers showing divergence toward elevated risk include 'CTP_unique_IU_densitys' (Information unit density relative to total spoken word count), 'CTP_noun_ratio' (Proportion of spoken words classified as nouns and entities). Protective markers stabilizing the score include 'CTP_keyword_to_non_keyword_ratio' (Ratio of informative content keywords to function filler words), 'CTP_Voiced Rate(1/s)' (Voiced speech frame generation rate per second).",
+        "disclaimer": "Biomarker attributions explain the mathematical behavior of the trained quantum-hybrid machine-learning model. They do not establish clinical causality, diagnosis, or medical significance."
+      },
+      "filename": "neurosense_20260908_205112_c6cf57cc.webm"
+    }
+  },
+  {
+    "id": 2,
+    "name": "Very short speech (~1–2s)",
+    "filename": "case2_short_1s.wav",
+    "http_status": 200,
+    "asr_success": true,
+    "detected_language": "en",
+    "transcript": "Yes, ready.",
+    "audio_duration": 2.054,
+    "word_count": 2,
+    "live_feature_count": 0,
+    "imputed_feature_count": 0,
+    "screening_response": {
+      "predicted_class": 1,
+      "probability": 0.956777,
+      "probability_percent": 95.68,
+      "technical_confidence_percent": 91.36,
+      "status": "Elevated screening signal",
+      "interpretation": "Screening result only — not a diagnosis."
+    },
+    "shap_response": {
+      "available": true,
+      "top_positive": [
+        "CTP_noun_ratio (+0.016)",
+        "CTP_Hesitation Ratio (+0.009)"
+      ],
+      "top_negative": [
+        "CTP_Pronouns_ratio (-0.009)",
+        "CTP_unique_IU_efficiency (-0.007)"
+      ],
+      "disclaimer": "Biomarker attributions explain the mathematical behavior of the trained quantum-hybrid machine-learning model. They do not establish clinical causality, diagnosis, or medical significance."
+    },
+    "frontend_behavior": "resultElevated ('Evaluation Recommended')",
+    "errors": null,
+    "full_payload": {
+      "success": true,
+      "transcript": "Yes, ready.",
+      "detected_language": "en",
+      "word_count": 2,
+      "audio": {
+        "duration_seconds": 2.054,
+        "speech_timeline_duration": 1.14,
+        "sample_rate": 22050,
+        "rms_energy": 0.057818,
+        "peak_amplitude": 0.776391,
+        "silence_percentage": 77.06
+      },
+      "live_features": {
+        "CTP_F0 SD(st)": 5.55420534,
+        "CTP_DPI(ms)": 520.0,
+        "CTP_RST(-/s)": 1.754386,
+        "CTP_EST": 1.486414195,
+        "CTP_Voiced Rate(1/s)": 1.754386,
+        "CTP_Hesitation Ratio": 0.253165,
+        "CTP_Energy Mean(Pa^2·s)": 0.003342921124,
+        "CTP_verb_num": 0.0,
+        "CTP_noun_ratio": 0.0,
+        "CTP_Pronouns_ratio": 0.0,
+        "CTP_noun to verb": 0.0,
+        "CTP_Word Rate(-/s)": 1.754386,
+        "CTP_Noun No Phrase Rate": 0.163636364,
+        "CTP_Verb phrase type proportion": 2.617021277,
+        "CTP_Prep phrase type proportion": 0.816666667,
+        "CTP_Prep average phrase type length 1": 3.4226190479999996,
+        "CTP_num_unique_IU": 1.0,
+        "CTP_num_unique_keywords": 1.0,
+        "CTP_unique_IU_densitys": 0.5,
+        "CTP_total_IU_density": 0.5,
+        "CTP_keyword_to_non_keyword_ratio": 1.0,
+        "CTP_unique_IU_efficiency": 0.5
+      },
+      "production_features": {
+        "CTP_F0 SD(st)": {
+          "value": 5.554205,
+          "is_live_extracted": false,
+          "attribution": -4.4e-05
+        },
+        "CTP_DPI(ms)": {
+          "value": 520.0,
+          "is_live_extracted": true,
+          "attribution": 0.00063
+        },
+        "CTP_RST(-/s)": {
+          "value": 1.754386,
+          "is_live_extracted": true,
+          "attribution": 0.000599
+        },
+        "CTP_EST": {
+          "value": 1.486414,
+          "is_live_extracted": false,
+          "attribution": 0.001599
+        },
+        "CTP_Voiced Rate(1/s)": {
+          "value": 1.754386,
+          "is_live_extracted": true,
+          "attribution": -0.001077
+        },
+        "CTP_Hesitation Ratio": {
+          "value": 0.253165,
+          "is_live_extracted": true,
+          "attribution": 0.008845
+        },
+        "CTP_Energy Mean(Pa^2·s)": {
+          "value": 0.003343,
+          "is_live_extracted": true,
+          "attribution": -5.2e-05
+        },
+        "CTP_verb_num": {
+          "value": 0.0,
+          "is_live_extracted": true,
+          "attribution": -0.000865
+        },
+        "CTP_noun_ratio": {
+          "value": 0.0,
+          "is_live_extracted": true,
+          "attribution": 0.016263
+        },
+        "CTP_Pronouns_ratio": {
+          "value": 0.0,
+          "is_live_extracted": true,
+          "attribution": -0.00924
+        },
+        "CTP_noun to verb": {
+          "value": 0.0,
+          "is_live_extracted": true,
+          "attribution": -0.006062
+        },
+        "CTP_Word Rate(-/s)": {
+          "value": 1.754386,
+          "is_live_extracted": true,
+          "attribution": -0.000538
+        },
+        "CTP_Noun No Phrase Rate": {
+          "value": 0.163636,
+          "is_live_extracted": false,
+          "attribution": 1.7e-05
+        },
+        "CTP_Verb phrase type proportion": {
+          "value": 2.617021,
+          "is_live_extracted": false,
+          "attribution": 3.1e-05
+        },
+        "CTP_Prep phrase type proportion": {
+          "value": 0.816667,
+          "is_live_extracted": false,
+          "attribution": 6.7e-05
+        },
+        "CTP_Prep average phrase type length 1": {
+          "value": 3.422619,
+          "is_live_extracted": false,
+          "attribution": 0.000233
+        },
+        "CTP_num_unique_IU": {
+          "value": 1.0,
+          "is_live_extracted": true,
+          "attribution": -0.000926
+        },
+        "CTP_num_unique_keywords": {
+          "value": 1.0,
+          "is_live_extracted": true,
+          "attribution": -0.000519
+        },
+        "CTP_unique_IU_densitys": {
+          "value": 0.5,
+          "is_live_extracted": true,
+          "attribution": -0.000118
+        },
+        "CTP_total_IU_density": {
+          "value": 0.5,
+          "is_live_extracted": true,
+          "attribution": 0.00183
+        },
+        "CTP_keyword_to_non_keyword_ratio": {
+          "value": 1.0,
+          "is_live_extracted": true,
+          "attribution": -0.000612
+        },
+        "CTP_unique_IU_efficiency": {
+          "value": 0.5,
+          "is_live_extracted": true,
+          "attribution": -0.00658
+        }
+      },
+      "screening": {
+        "model_name": "NeuroSense Quantum-Classical Hybrid (PyTorch + 8-Qubit VQC)",
+        "predicted_class": 1,
+        "probability": 0.956777,
+        "probability_percent": 95.68,
+        "technical_confidence_percent": 91.36,
+        "uncertainty_std": 0.0716,
+        "predictive_entropy": 0.1781,
+        "risk_tier": "Elevated Risk",
+        "status": "Elevated screening signal",
+        "interpretation": "Screening result only — not a diagnosis.",
+        "quantum_specs": {
+          "qubits": 8,
+          "entangling_layers": 3,
+          "mc_dropout_passes": 30,
+          "benchmark_auc": 0.9429606156631961,
+          "benchmark_accuracy": 0.8829787234042553
+        }
+      },
+      "explanation": {
+        "base_value": 0.5,
+        "shap_margin_sum": 0.003481,
+        "reconstructed_probability": 0.995528,
+        "reconstruction_error": 0.0,
+        "shap_contributions": {
+          "CTP_F0 SD(st)": -4.4e-05,
+          "CTP_DPI(ms)": 0.00063,
+          "CTP_RST(-/s)": 0.000599,
+          "CTP_EST": 0.001599,
+          "CTP_Voiced Rate(1/s)": -0.001077,
+          "CTP_Hesitation Ratio": 0.008845,
+          "CTP_Energy Mean(Pa^2·s)": -5.2e-05,
+          "CTP_verb_num": -0.000865,
+          "CTP_noun_ratio": 0.016263,
+          "CTP_Pronouns_ratio": -0.00924,
+          "CTP_noun to verb": -0.006062,
+          "CTP_Word Rate(-/s)": -0.000538,
+          "CTP_Noun No Phrase Rate": 1.7e-05,
+          "CTP_Verb phrase type proportion": 3.1e-05,
+          "CTP_Prep phrase type proportion": 6.7e-05,
+          "CTP_Prep average phrase type length 1": 0.000233,
+          "CTP_num_unique_IU": -0.000926,
+          "CTP_num_unique_keywords": -0.000519,
+          "CTP_unique_IU_densitys": -0.000118,
+          "CTP_total_IU_density": 0.00183,
+          "CTP_keyword_to_non_keyword_ratio": -0.000612,
+          "CTP_unique_IU_efficiency": -0.00658
+        },
+        "top_positive_contributions": [
+          {
+            "feature": "CTP_noun_ratio",
+            "value": 0.0,
+            "contribution": 0.016263,
+            "shap_value": 0.016263,
+            "description": "Proportion of spoken words classified as nouns and entities"
+          },
+          {
+            "feature": "CTP_Hesitation Ratio",
+            "value": 0.2532,
+            "contribution": 0.008845,
+            "shap_value": 0.008845,
+            "description": "Proportion of recording duration occupied by acoustic hesitation and pauses"
+          },
+          {
+            "feature": "CTP_total_IU_density",
+            "value": 0.5,
+            "contribution": 0.00183,
+            "shap_value": 0.00183,
+            "description": "Total cognitive information content density across utterances"
+          },
+          {
+            "feature": "CTP_EST",
+            "value": 1.4864,
+            "contribution": 0.001599,
+            "shap_value": 0.001599,
+            "description": "Estimated speech timing and acoustic pacing marker"
+          },
+          {
+            "feature": "CTP_DPI(ms)",
+            "value": 520.0,
+            "contribution": 0.00063,
+            "shap_value": 0.00063,
+            "description": "Duration of pause and silence phonation intervals in milliseconds"
+          }
+        ],
+        "top_negative_contributions": [
+          {
+            "feature": "CTP_Pronouns_ratio",
+            "value": 0.0,
+            "contribution": -0.00924,
+            "shap_value": -0.00924,
+            "description": "Proportion of spoken words classified as pronouns"
+          },
+          {
+            "feature": "CTP_unique_IU_efficiency",
+            "value": 0.5,
+            "contribution": -0.00658,
+            "shap_value": -0.00658,
+            "description": "Lexical efficiency in delivering unique informational units"
+          },
+          {
+            "feature": "CTP_noun to verb",
+            "value": 0.0,
+            "contribution": -0.006062,
+            "shap_value": -0.006062,
+            "description": "Ratio of noun entities to action verbs in spoken sentences"
+          },
+          {
+            "feature": "CTP_Voiced Rate(1/s)",
+            "value": 1.7544,
+            "contribution": -0.001077,
+            "shap_value": -0.001077,
+            "description": "Voiced speech frame generation rate per second"
+          },
+          {
+            "feature": "CTP_num_unique_IU",
+            "value": 1.0,
+            "contribution": -0.000926,
+            "shap_value": -0.000926,
+            "description": "Total number of distinct cognitive Information Units communicated"
+          }
+        ],
+        "human_readable_explanation": "Biomarkers showing divergence toward elevated risk include 'CTP_noun_ratio' (Proportion of spoken words classified as nouns and entities), 'CTP_Hesitation Ratio' (Proportion of recording duration occupied by acoustic hesitation and pauses). Protective markers stabilizing the score include 'CTP_Pronouns_ratio' (Proportion of spoken words classified as pronouns), 'CTP_unique_IU_efficiency' (Lexical efficiency in delivering unique informational units).",
+        "disclaimer": "Biomarker attributions explain the mathematical behavior of the trained quantum-hybrid machine-learning model. They do not establish clinical causality, diagnosis, or medical significance."
+      },
+      "filename": "neurosense_20260908_205114_9c4f8410.wav"
+    }
+  },
+  {
+    "id": 3,
+    "name": "Silence (no speech)",
+    "filename": "case3_silence_6s.wav",
+    "http_status": 422,
+    "asr_success": false,
+    "detected_language": "N/A",
+    "transcript": "",
+    "audio_duration": 0.0,
+    "word_count": 0,
+    "live_feature_count": 0,
+    "imputed_feature_count": 0,
+    "screening_response": null,
+    "shap_response": null,
+    "frontend_behavior": "Error toast displayed: 'Unable to analyze audio recording. Please ensure the recording is clear and contains audible speech.'",
+    "errors": "Unable to analyze audio recording. Please ensure the recording is clear and contains audible speech.",
+    "full_payload": {
+      "detail": "Unable to analyze audio recording. Please ensure the recording is clear and contains audible speech."
+    }
+  },
+  {
+    "id": 4,
+    "name": "Poor / low-volume speech",
+    "filename": "case4_low_volume_speech_8s.wav",
+    "http_status": 200,
+    "asr_success": true,
+    "detected_language": "en",
+    "transcript": "I am speaking very quietly in a distant room and the microphone can barely detect my voice.",
+    "audio_duration": 5.753,
+    "word_count": 17,
+    "live_feature_count": 0,
+    "imputed_feature_count": 0,
+    "screening_response": {
+      "predicted_class": 1,
+      "probability": 0.780103,
+      "probability_percent": 78.01,
+      "technical_confidence_percent": 56.02,
+      "status": "Elevated screening signal",
+      "interpretation": "Screening result only — not a diagnosis."
+    },
+    "shap_response": {
+      "available": true,
+      "top_positive": [
+        "CTP_Hesitation Ratio (+0.007)",
+        "CTP_Pronouns_ratio (+0.003)"
+      ],
+      "top_negative": [
+        "CTP_Voiced Rate(1/s) (-0.004)",
+        "CTP_unique_IU_efficiency (-0.002)"
+      ],
+      "disclaimer": "Biomarker attributions explain the mathematical behavior of the trained quantum-hybrid machine-learning model. They do not establish clinical causality, diagnosis, or medical significance."
+    },
+    "frontend_behavior": "resultElevated ('Evaluation Recommended')",
+    "errors": null,
+    "full_payload": {
+      "success": true,
+      "transcript": "I am speaking very quietly in a distant room and the microphone can barely detect my voice.",
+      "detected_language": "en",
+      "word_count": 17,
+      "audio": {
+        "duration_seconds": 5.753,
+        "speech_timeline_duration": 5.0,
+        "sample_rate": 22050,
+        "rms_energy": 0.00356,
+        "peak_amplitude": 0.033601,
+        "silence_percentage": 96.8
+      },
+      "live_features": {
+        "CTP_F0 SD(st)": 5.55420534,
+        "CTP_DPI(ms)": 401.9978172,
+        "CTP_RST(-/s)": 3.4,
+        "CTP_EST": 1.486414195,
+        "CTP_Voiced Rate(1/s)": 3.4,
+        "CTP_Hesitation Ratio": 0.0,
+        "CTP_Energy Mean(Pa^2·s)": 1.2673599999999998e-05,
+        "CTP_verb_num": 4.0,
+        "CTP_noun_ratio": 0.176471,
+        "CTP_Pronouns_ratio": 0.117647,
+        "CTP_noun to verb": 0.75,
+        "CTP_Word Rate(-/s)": 3.4,
+        "CTP_Noun No Phrase Rate": 0.163636364,
+        "CTP_Verb phrase type proportion": 2.617021277,
+        "CTP_Prep phrase type proportion": 0.816666667,
+        "CTP_Prep average phrase type length 1": 3.4226190479999996,
+        "CTP_num_unique_IU": 9.0,
+        "CTP_num_unique_keywords": 9.0,
+        "CTP_unique_IU_densitys": 0.5294117647058824,
+        "CTP_total_IU_density": 0.5294117647058824,
+        "CTP_keyword_to_non_keyword_ratio": 1.125,
+        "CTP_unique_IU_efficiency": 0.529412
+      },
+      "production_features": {
+        "CTP_F0 SD(st)": {
+          "value": 5.554205,
+          "is_live_extracted": false,
+          "attribution": 1e-06
+        },
+        "CTP_DPI(ms)": {
+          "value": 401.997817,
+          "is_live_extracted": true,
+          "attribution": -0.000387
+        },
+        "CTP_RST(-/s)": {
+          "value": 3.4,
+          "is_live_extracted": true,
+          "attribution": -0.000109
+        },
+        "CTP_EST": {
+          "value": 1.486414,
+          "is_live_extracted": false,
+          "attribution": 0.000845
+        },
+        "CTP_Voiced Rate(1/s)": {
+          "value": 3.4,
+          "is_live_extracted": true,
+          "attribution": -0.00385
+        },
+        "CTP_Hesitation Ratio": {
+          "value": 0.0,
+          "is_live_extracted": true,
+          "attribution": 0.006772
+        },
+        "CTP_Energy Mean(Pa^2·s)": {
+          "value": 1.3e-05,
+          "is_live_extracted": true,
+          "attribution": -5.7e-05
+        },
+        "CTP_verb_num": {
+          "value": 4.0,
+          "is_live_extracted": true,
+          "attribution": -8e-05
+        },
+        "CTP_noun_ratio": {
+          "value": 0.176471,
+          "is_live_extracted": true,
+          "attribution": 0.002339
+        },
+        "CTP_Pronouns_ratio": {
+          "value": 0.117647,
+          "is_live_extracted": true,
+          "attribution": 0.002673
+        },
+        "CTP_noun to verb": {
+          "value": 0.75,
+          "is_live_extracted": true,
+          "attribution": -0.001047
+        },
+        "CTP_Word Rate(-/s)": {
+          "value": 3.4,
+          "is_live_extracted": true,
+          "attribution": -0.002309
+        },
+        "CTP_Noun No Phrase Rate": {
+          "value": 0.163636,
+          "is_live_extracted": false,
+          "attribution": 6e-06
+        },
+        "CTP_Verb phrase type proportion": {
+          "value": 2.617021,
+          "is_live_extracted": false,
+          "attribution": 1.4e-05
+        },
+        "CTP_Prep phrase type proportion": {
+          "value": 0.816667,
+          "is_live_extracted": false,
+          "attribution": -0.0
+        },
+        "CTP_Prep average phrase type length 1": {
+          "value": 3.422619,
+          "is_live_extracted": false,
+          "attribution": 9.1e-05
+        },
+        "CTP_num_unique_IU": {
+          "value": 9.0,
+          "is_live_extracted": true,
+          "attribution": 0.000747
+        },
+        "CTP_num_unique_keywords": {
+          "value": 9.0,
+          "is_live_extracted": true,
+          "attribution": 9e-05
+        },
+        "CTP_unique_IU_densitys": {
+          "value": 0.529412,
+          "is_live_extracted": true,
+          "attribution": 0.000905
+        },
+        "CTP_total_IU_density": {
+          "value": 0.529412,
+          "is_live_extracted": true,
+          "attribution": -0.000713
+        },
+        "CTP_keyword_to_non_keyword_ratio": {
+          "value": 1.125,
+          "is_live_extracted": true,
+          "attribution": -0.001596
+        },
+        "CTP_unique_IU_efficiency": {
+          "value": 0.529412,
+          "is_live_extracted": true,
+          "attribution": -0.002408
+        }
+      },
+      "screening": {
+        "model_name": "NeuroSense Quantum-Classical Hybrid (PyTorch + 8-Qubit VQC)",
+        "predicted_class": 1,
+        "probability": 0.780103,
+        "probability_percent": 78.01,
+        "technical_confidence_percent": 56.02,
+        "uncertainty_std": 0.2974,
+        "predictive_entropy": 0.5268,
+        "risk_tier": "Elevated Risk",
+        "status": "Elevated screening signal",
+        "interpretation": "Screening result only — not a diagnosis.",
+        "quantum_specs": {
+          "qubits": 8,
+          "entangling_layers": 3,
+          "mc_dropout_passes": 30,
+          "benchmark_auc": 0.9429606156631961,
+          "benchmark_accuracy": 0.8829787234042553
+        }
+      },
+      "explanation": {
+        "base_value": 0.5,
+        "shap_margin_sum": 0.001926,
+        "reconstructed_probability": 0.997673,
+        "reconstruction_error": 0.0,
+        "shap_contributions": {
+          "CTP_F0 SD(st)": 1e-06,
+          "CTP_DPI(ms)": -0.000387,
+          "CTP_RST(-/s)": -0.000109,
+          "CTP_EST": 0.000845,
+          "CTP_Voiced Rate(1/s)": -0.00385,
+          "CTP_Hesitation Ratio": 0.006772,
+          "CTP_Energy Mean(Pa^2·s)": -5.7e-05,
+          "CTP_verb_num": -8e-05,
+          "CTP_noun_ratio": 0.002339,
+          "CTP_Pronouns_ratio": 0.002673,
+          "CTP_noun to verb": -0.001047,
+          "CTP_Word Rate(-/s)": -0.002309,
+          "CTP_Noun No Phrase Rate": 6e-06,
+          "CTP_Verb phrase type proportion": 1.4e-05,
+          "CTP_Prep phrase type proportion": -0.0,
+          "CTP_Prep average phrase type length 1": 9.1e-05,
+          "CTP_num_unique_IU": 0.000747,
+          "CTP_num_unique_keywords": 9e-05,
+          "CTP_unique_IU_densitys": 0.000905,
+          "CTP_total_IU_density": -0.000713,
+          "CTP_keyword_to_non_keyword_ratio": -0.001596,
+          "CTP_unique_IU_efficiency": -0.002408
+        },
+        "top_positive_contributions": [
+          {
+            "feature": "CTP_Hesitation Ratio",
+            "value": 0.0,
+            "contribution": 0.006772,
+            "shap_value": 0.006772,
+            "description": "Proportion of recording duration occupied by acoustic hesitation and pauses"
+          },
+          {
+            "feature": "CTP_Pronouns_ratio",
+            "value": 0.1176,
+            "contribution": 0.002673,
+            "shap_value": 0.002673,
+            "description": "Proportion of spoken words classified as pronouns"
+          },
+          {
+            "feature": "CTP_noun_ratio",
+            "value": 0.1765,
+            "contribution": 0.002339,
+            "shap_value": 0.002339,
+            "description": "Proportion of spoken words classified as nouns and entities"
+          },
+          {
+            "feature": "CTP_unique_IU_densitys",
+            "value": 0.5294,
+            "contribution": 0.000905,
+            "shap_value": 0.000905,
+            "description": "Information unit density relative to total spoken word count"
+          },
+          {
+            "feature": "CTP_EST",
+            "value": 1.4864,
+            "contribution": 0.000845,
+            "shap_value": 0.000845,
+            "description": "Estimated speech timing and acoustic pacing marker"
+          }
+        ],
+        "top_negative_contributions": [
+          {
+            "feature": "CTP_Voiced Rate(1/s)",
+            "value": 3.4,
+            "contribution": -0.00385,
+            "shap_value": -0.00385,
+            "description": "Voiced speech frame generation rate per second"
+          },
+          {
+            "feature": "CTP_unique_IU_efficiency",
+            "value": 0.5294,
+            "contribution": -0.002408,
+            "shap_value": -0.002408,
+            "description": "Lexical efficiency in delivering unique informational units"
+          },
+          {
+            "feature": "CTP_Word Rate(-/s)",
+            "value": 3.4,
+            "contribution": -0.002309,
+            "shap_value": -0.002309,
+            "description": "Speech production rate (words spoken per second)"
+          },
+          {
+            "feature": "CTP_keyword_to_non_keyword_ratio",
+            "value": 1.125,
+            "contribution": -0.001596,
+            "shap_value": -0.001596,
+            "description": "Ratio of informative content keywords to function filler words"
+          },
+          {
+            "feature": "CTP_noun to verb",
+            "value": 0.75,
+            "contribution": -0.001047,
+            "shap_value": -0.001047,
+            "description": "Ratio of noun entities to action verbs in spoken sentences"
+          }
+        ],
+        "human_readable_explanation": "Biomarkers showing divergence toward elevated risk include 'CTP_Hesitation Ratio' (Proportion of recording duration occupied by acoustic hesitation and pauses), 'CTP_Pronouns_ratio' (Proportion of spoken words classified as pronouns). Protective markers stabilizing the score include 'CTP_Voiced Rate(1/s)' (Voiced speech frame generation rate per second), 'CTP_unique_IU_efficiency' (Lexical efficiency in delivering unique informational units).",
+        "disclaimer": "Biomarker attributions explain the mathematical behavior of the trained quantum-hybrid machine-learning model. They do not establish clinical causality, diagnosis, or medical significance."
+      },
+      "filename": "neurosense_20260908_205115_e38d7243.wav"
+    }
+  },
+  {
+    "id": 5,
+    "name": "30–60 second speech",
+    "filename": "case5_long_speech_35s.wav",
+    "http_status": 200,
+    "asr_success": true,
+    "detected_language": "en",
+    "transcript": "Yesterday morning I went for a walk in the park near my house. The sun was shining brightly, and there were many people jogging and walking their dogs. I stopped by the small pond to watch the ducks swimming across the calm water. Afterwards, I visited the local bakery to buy fresh bread and warm coffee for breakfast. It was a peaceful and refreshing start to the day.",
+    "audio_duration": 26.003,
+    "word_count": 68,
+    "live_feature_count": 0,
+    "imputed_feature_count": 0,
+    "screening_response": {
+      "predicted_class": 1,
+      "probability": 0.552155,
+      "probability_percent": 55.22,
+      "technical_confidence_percent": 10.43,
+      "status": "Elevated screening signal",
+      "interpretation": "Screening result only — not a diagnosis."
+    },
+    "shap_response": {
+      "available": true,
+      "top_positive": [
+        "CTP_keyword_to_non_keyword_ratio (+0.820)",
+        "CTP_total_IU_density (+0.504)"
+      ],
+      "top_negative": [
+        "CTP_num_unique_IU (-1.219)",
+        "CTP_unique_IU_efficiency (-0.428)"
+      ],
+      "disclaimer": "Biomarker attributions explain the mathematical behavior of the trained quantum-hybrid machine-learning model. They do not establish clinical causality, diagnosis, or medical significance."
+    },
+    "frontend_behavior": "resultElevated ('Evaluation Recommended')",
+    "errors": null,
+    "full_payload": {
+      "success": true,
+      "transcript": "Yesterday morning I went for a walk in the park near my house. The sun was shining brightly, and there were many people jogging and walking their dogs. I stopped by the small pond to watch the ducks swimming across the calm water. Afterwards, I visited the local bakery to buy fresh bread and warm coffee for breakfast. It was a peaceful and refreshing start to the day.",
+      "detected_language": "en",
+      "word_count": 68,
+      "audio": {
+        "duration_seconds": 26.003,
+        "speech_timeline_duration": 25.2,
+        "sample_rate": 22050,
+        "rms_energy": 0.102089,
+        "peak_amplitude": 0.99527,
+        "silence_percentage": 47.15
+      },
+      "live_features": {
+        "CTP_F0 SD(st)": 5.55420534,
+        "CTP_DPI(ms)": 926.6666666666662,
+        "CTP_RST(-/s)": 2.698413,
+        "CTP_EST": 1.486414195,
+        "CTP_Voiced Rate(1/s)": 2.698413,
+        "CTP_Hesitation Ratio": 0.213821,
+        "CTP_Energy Mean(Pa^2·s)": 0.010422163921,
+        "CTP_verb_num": 12.0,
+        "CTP_noun_ratio": 0.25,
+        "CTP_Pronouns_ratio": 0.102941,
+        "CTP_noun to verb": 1.416667,
+        "CTP_Word Rate(-/s)": 2.698413,
+        "CTP_Noun No Phrase Rate": 0.163636364,
+        "CTP_Verb phrase type proportion": 2.617021277,
+        "CTP_Prep phrase type proportion": 0.816666667,
+        "CTP_Prep average phrase type length 1": 3.4226190479999996,
+        "CTP_num_unique_IU": 36.0,
+        "CTP_num_unique_keywords": 36.0,
+        "CTP_unique_IU_densitys": 0.5294117647058824,
+        "CTP_total_IU_density": 0.5441176470588235,
+        "CTP_keyword_to_non_keyword_ratio": 1.125,
+        "CTP_unique_IU_efficiency": 0.529412
+      },
+      "production_features": {
+        "CTP_F0 SD(st)": {
+          "value": 5.554205,
+          "is_live_extracted": false,
+          "attribution": -0.008916
+        },
+        "CTP_DPI(ms)": {
+          "value": 926.666667,
+          "is_live_extracted": true,
+          "attribution": 0.066045
+        },
+        "CTP_RST(-/s)": {
+          "value": 2.698413,
+          "is_live_extracted": true,
+          "attribution": 0.018951
+        },
+        "CTP_EST": {
+          "value": 1.486414,
+          "is_live_extracted": false,
+          "attribution": 0.021809
+        },
+        "CTP_Voiced Rate(1/s)": {
+          "value": 2.698413,
+          "is_live_extracted": true,
+          "attribution": -0.169489
+        },
+        "CTP_Hesitation Ratio": {
+          "value": 0.213821,
+          "is_live_extracted": true,
+          "attribution": 0.473967
+        },
+        "CTP_Energy Mean(Pa^2·s)": {
+          "value": 0.010422,
+          "is_live_extracted": true,
+          "attribution": 0.004127
+        },
+        "CTP_verb_num": {
+          "value": 12.0,
+          "is_live_extracted": true,
+          "attribution": 0.045691
+        },
+        "CTP_noun_ratio": {
+          "value": 0.25,
+          "is_live_extracted": true,
+          "attribution": 0.014624
+        },
+        "CTP_Pronouns_ratio": {
+          "value": 0.102941,
+          "is_live_extracted": true,
+          "attribution": 0.18777
+        },
+        "CTP_noun to verb": {
+          "value": 1.416667,
+          "is_live_extracted": true,
+          "attribution": 0.028517
+        },
+        "CTP_Word Rate(-/s)": {
+          "value": 2.698413,
+          "is_live_extracted": true,
+          "attribution": 0.223434
+        },
+        "CTP_Noun No Phrase Rate": {
+          "value": 0.163636,
+          "is_live_extracted": false,
+          "attribution": 0.001022
+        },
+        "CTP_Verb phrase type proportion": {
+          "value": 2.617021,
+          "is_live_extracted": false,
+          "attribution": -0.001323
+        },
+        "CTP_Prep phrase type proportion": {
+          "value": 0.816667,
+          "is_live_extracted": false,
+          "attribution": 0.008531
+        },
+        "CTP_Prep average phrase type length 1": {
+          "value": 3.422619,
+          "is_live_extracted": false,
+          "attribution": -0.015619
+        },
+        "CTP_num_unique_IU": {
+          "value": 36.0,
+          "is_live_extracted": true,
+          "attribution": -1.218867
+        },
+        "CTP_num_unique_keywords": {
+          "value": 36.0,
+          "is_live_extracted": true,
+          "attribution": -0.325107
+        },
+        "CTP_unique_IU_densitys": {
+          "value": 0.529412,
+          "is_live_extracted": true,
+          "attribution": -0.201441
+        },
+        "CTP_total_IU_density": {
+          "value": 0.544118,
+          "is_live_extracted": true,
+          "attribution": 0.503952
+        },
+        "CTP_keyword_to_non_keyword_ratio": {
+          "value": 1.125,
+          "is_live_extracted": true,
+          "attribution": 0.820188
+        },
+        "CTP_unique_IU_efficiency": {
+          "value": 0.529412,
+          "is_live_extracted": true,
+          "attribution": -0.428089
+        }
+      },
+      "screening": {
+        "model_name": "NeuroSense Quantum-Classical Hybrid (PyTorch + 8-Qubit VQC)",
+        "predicted_class": 1,
+        "probability": 0.552155,
+        "probability_percent": 55.22,
+        "technical_confidence_percent": 10.43,
+        "uncertainty_std": 0.3834,
+        "predictive_entropy": 0.6877,
+        "risk_tier": "Moderate / Monitor",
+        "status": "Elevated screening signal",
+        "interpretation": "Screening result only — not a diagnosis.",
+        "quantum_specs": {
+          "qubits": 8,
+          "entangling_layers": 3,
+          "mc_dropout_passes": 30,
+          "benchmark_auc": 0.9429606156631961,
+          "benchmark_accuracy": 0.8829787234042553
+        }
+      },
+      "explanation": {
+        "base_value": 0.5,
+        "shap_margin_sum": 0.049778,
+        "reconstructed_probability": 0.73258,
+        "reconstruction_error": 0.0,
+        "shap_contributions": {
+          "CTP_F0 SD(st)": -0.008916,
+          "CTP_DPI(ms)": 0.066045,
+          "CTP_RST(-/s)": 0.018951,
+          "CTP_EST": 0.021809,
+          "CTP_Voiced Rate(1/s)": -0.169489,
+          "CTP_Hesitation Ratio": 0.473967,
+          "CTP_Energy Mean(Pa^2·s)": 0.004127,
+          "CTP_verb_num": 0.045691,
+          "CTP_noun_ratio": 0.014624,
+          "CTP_Pronouns_ratio": 0.18777,
+          "CTP_noun to verb": 0.028517,
+          "CTP_Word Rate(-/s)": 0.223434,
+          "CTP_Noun No Phrase Rate": 0.001022,
+          "CTP_Verb phrase type proportion": -0.001323,
+          "CTP_Prep phrase type proportion": 0.008531,
+          "CTP_Prep average phrase type length 1": -0.015619,
+          "CTP_num_unique_IU": -1.218867,
+          "CTP_num_unique_keywords": -0.325107,
+          "CTP_unique_IU_densitys": -0.201441,
+          "CTP_total_IU_density": 0.503952,
+          "CTP_keyword_to_non_keyword_ratio": 0.820188,
+          "CTP_unique_IU_efficiency": -0.428089
+        },
+        "top_positive_contributions": [
+          {
+            "feature": "CTP_keyword_to_non_keyword_ratio",
+            "value": 1.125,
+            "contribution": 0.820188,
+            "shap_value": 0.820188,
+            "description": "Ratio of informative content keywords to function filler words"
+          },
+          {
+            "feature": "CTP_total_IU_density",
+            "value": 0.5441,
+            "contribution": 0.503952,
+            "shap_value": 0.503952,
+            "description": "Total cognitive information content density across utterances"
+          },
+          {
+            "feature": "CTP_Hesitation Ratio",
+            "value": 0.2138,
+            "contribution": 0.473967,
+            "shap_value": 0.473967,
+            "description": "Proportion of recording duration occupied by acoustic hesitation and pauses"
+          },
+          {
+            "feature": "CTP_Word Rate(-/s)",
+            "value": 2.6984,
+            "contribution": 0.223434,
+            "shap_value": 0.223434,
+            "description": "Speech production rate (words spoken per second)"
+          },
+          {
+            "feature": "CTP_Pronouns_ratio",
+            "value": 0.1029,
+            "contribution": 0.18777,
+            "shap_value": 0.18777,
+            "description": "Proportion of spoken words classified as pronouns"
+          }
+        ],
+        "top_negative_contributions": [
+          {
+            "feature": "CTP_num_unique_IU",
+            "value": 36.0,
+            "contribution": -1.218867,
+            "shap_value": -1.218867,
+            "description": "Total number of distinct cognitive Information Units communicated"
+          },
+          {
+            "feature": "CTP_unique_IU_efficiency",
+            "value": 0.5294,
+            "contribution": -0.428089,
+            "shap_value": -0.428089,
+            "description": "Lexical efficiency in delivering unique informational units"
+          },
+          {
+            "feature": "CTP_num_unique_keywords",
+            "value": 36.0,
+            "contribution": -0.325107,
+            "shap_value": -0.325107,
+            "description": "Count of unique core vocabulary content keywords"
+          },
+          {
+            "feature": "CTP_unique_IU_densitys",
+            "value": 0.5294,
+            "contribution": -0.201441,
+            "shap_value": -0.201441,
+            "description": "Information unit density relative to total spoken word count"
+          },
+          {
+            "feature": "CTP_Voiced Rate(1/s)",
+            "value": 2.6984,
+            "contribution": -0.169489,
+            "shap_value": -0.169489,
+            "description": "Voiced speech frame generation rate per second"
+          }
+        ],
+        "human_readable_explanation": "Biomarkers showing divergence toward elevated risk include 'CTP_keyword_to_non_keyword_ratio' (Ratio of informative content keywords to function filler words), 'CTP_total_IU_density' (Total cognitive information content density across utterances). Protective markers stabilizing the score include 'CTP_num_unique_IU' (Total number of distinct cognitive Information Units communicated), 'CTP_unique_IU_efficiency' (Lexical efficiency in delivering unique informational units).",
+        "disclaimer": "Biomarker attributions explain the mathematical behavior of the trained quantum-hybrid machine-learning model. They do not establish clinical causality, diagnosis, or medical significance."
+      },
+      "filename": "neurosense_20260908_205116_337d5a0f.wav"
+    }
+  },
+  {
+    "id": 6,
+    "name": "Second speaker (female voice)",
+    "filename": "case6_second_speaker_zira_15s.wav",
+    "http_status": 200,
+    "asr_success": true,
+    "detected_language": "en",
+    "transcript": "In the kitchen, the young boy is standing on a wobbly stool trying to reach the cookie jar. His sister is standing beside him asking for a cookie. Meanwhile, water from the sink is overflowing onto the kitchen floor.",
+    "audio_duration": 14.072,
+    "word_count": 39,
+    "live_feature_count": 0,
+    "imputed_feature_count": 0,
+    "screening_response": {
+      "predicted_class": 1,
+      "probability": 0.653326,
+      "probability_percent": 65.33,
+      "technical_confidence_percent": 30.67,
+      "status": "Elevated screening signal",
+      "interpretation": "Screening result only — not a diagnosis."
+    },
+    "shap_response": {
+      "available": true,
+      "top_positive": [
+        "CTP_Hesitation Ratio (+0.166)",
+        "CTP_total_IU_density (+0.133)"
+      ],
+      "top_negative": [
+        "CTP_Voiced Rate(1/s) (-0.133)",
+        "CTP_unique_IU_efficiency (-0.124)"
+      ],
+      "disclaimer": "Biomarker attributions explain the mathematical behavior of the trained quantum-hybrid machine-learning model. They do not establish clinical causality, diagnosis, or medical significance."
+    },
+    "frontend_behavior": "resultElevated ('Evaluation Recommended')",
+    "errors": null,
+    "full_payload": {
+      "success": true,
+      "transcript": "In the kitchen, the young boy is standing on a wobbly stool trying to reach the cookie jar. His sister is standing beside him asking for a cookie. Meanwhile, water from the sink is overflowing onto the kitchen floor.",
+      "detected_language": "en",
+      "word_count": 39,
+      "audio": {
+        "duration_seconds": 14.072,
+        "speech_timeline_duration": 13.3,
+        "sample_rate": 22050,
+        "rms_energy": 0.094802,
+        "peak_amplitude": 0.780511,
+        "silence_percentage": 40.47
+      },
+      "live_features": {
+        "CTP_F0 SD(st)": 5.55420534,
+        "CTP_DPI(ms)": 664.9999999999997,
+        "CTP_RST(-/s)": 2.932331,
+        "CTP_EST": 1.486414195,
+        "CTP_Voiced Rate(1/s)": 2.932331,
+        "CTP_Hesitation Ratio": 0.189028,
+        "CTP_Energy Mean(Pa^2·s)": 0.008987419204,
+        "CTP_verb_num": 9.0,
+        "CTP_noun_ratio": 0.282051,
+        "CTP_Pronouns_ratio": 0.051282,
+        "CTP_noun to verb": 1.222222,
+        "CTP_Word Rate(-/s)": 2.932331,
+        "CTP_Noun No Phrase Rate": 0.163636364,
+        "CTP_Verb phrase type proportion": 2.617021277,
+        "CTP_Prep phrase type proportion": 0.816666667,
+        "CTP_Prep average phrase type length 1": 3.4226190479999996,
+        "CTP_num_unique_IU": 17.0,
+        "CTP_num_unique_keywords": 17.0,
+        "CTP_unique_IU_densitys": 0.4358974358974359,
+        "CTP_total_IU_density": 0.5128205128205128,
+        "CTP_keyword_to_non_keyword_ratio": 0.7727272727272727,
+        "CTP_unique_IU_efficiency": 0.435897
+      },
+      "production_features": {
+        "CTP_F0 SD(st)": {
+          "value": 5.554205,
+          "is_live_extracted": false,
+          "attribution": -0.002436
+        },
+        "CTP_DPI(ms)": {
+          "value": 665.0,
+          "is_live_extracted": true,
+          "attribution": 0.028601
+        },
+        "CTP_RST(-/s)": {
+          "value": 2.932331,
+          "is_live_extracted": true,
+          "attribution": -0.00027
+        },
+        "CTP_EST": {
+          "value": 1.486414,
+          "is_live_extracted": false,
+          "attribution": 0.025955
+        },
+        "CTP_Voiced Rate(1/s)": {
+          "value": 2.932331,
+          "is_live_extracted": true,
+          "attribution": -0.133114
+        },
+        "CTP_Hesitation Ratio": {
+          "value": 0.189028,
+          "is_live_extracted": true,
+          "attribution": 0.165775
+        },
+        "CTP_Energy Mean(Pa^2·s)": {
+          "value": 0.008987,
+          "is_live_extracted": true,
+          "attribution": 0.001146
+        },
+        "CTP_verb_num": {
+          "value": 9.0,
+          "is_live_extracted": true,
+          "attribution": 0.008781
+        },
+        "CTP_noun_ratio": {
+          "value": 0.282051,
+          "is_live_extracted": true,
+          "attribution": -0.024804
+        },
+        "CTP_Pronouns_ratio": {
+          "value": 0.051282,
+          "is_live_extracted": true,
+          "attribution": -0.035259
+        },
+        "CTP_noun to verb": {
+          "value": 1.222222,
+          "is_live_extracted": true,
+          "attribution": 0.0
+        },
+        "CTP_Word Rate(-/s)": {
+          "value": 2.932331,
+          "is_live_extracted": true,
+          "attribution": 0.025838
+        },
+        "CTP_Noun No Phrase Rate": {
+          "value": 0.163636,
+          "is_live_extracted": false,
+          "attribution": 0.000319
+        },
+        "CTP_Verb phrase type proportion": {
+          "value": 2.617021,
+          "is_live_extracted": false,
+          "attribution": 0.000304
+        },
+        "CTP_Prep phrase type proportion": {
+          "value": 0.816667,
+          "is_live_extracted": false,
+          "attribution": 0.000669
+        },
+        "CTP_Prep average phrase type length 1": {
+          "value": 3.422619,
+          "is_live_extracted": false,
+          "attribution": 0.000597
+        },
+        "CTP_num_unique_IU": {
+          "value": 17.0,
+          "is_live_extracted": true,
+          "attribution": -0.051954
+        },
+        "CTP_num_unique_keywords": {
+          "value": 17.0,
+          "is_live_extracted": true,
+          "attribution": -0.026378
+        },
+        "CTP_unique_IU_densitys": {
+          "value": 0.435897,
+          "is_live_extracted": true,
+          "attribution": 0.002198
+        },
+        "CTP_total_IU_density": {
+          "value": 0.512821,
+          "is_live_extracted": true,
+          "attribution": 0.132918
+        },
+        "CTP_keyword_to_non_keyword_ratio": {
+          "value": 0.772727,
+          "is_live_extracted": true,
+          "attribution": 0.115162
+        },
+        "CTP_unique_IU_efficiency": {
+          "value": 0.435897,
+          "is_live_extracted": true,
+          "attribution": -0.124023
+        }
+      },
+      "screening": {
+        "model_name": "NeuroSense Quantum-Classical Hybrid (PyTorch + 8-Qubit VQC)",
+        "predicted_class": 1,
+        "probability": 0.653326,
+        "probability_percent": 65.33,
+        "technical_confidence_percent": 30.67,
+        "uncertainty_std": 0.413,
+        "predictive_entropy": 0.6454,
+        "risk_tier": "Elevated Risk",
+        "status": "Elevated screening signal",
+        "interpretation": "Screening result only — not a diagnosis.",
+        "quantum_specs": {
+          "qubits": 8,
+          "entangling_layers": 3,
+          "mc_dropout_passes": 30,
+          "benchmark_auc": 0.9429606156631961,
+          "benchmark_accuracy": 0.8829787234042553
+        }
+      },
+      "explanation": {
+        "base_value": 0.5,
+        "shap_margin_sum": 0.110024,
+        "reconstructed_probability": 0.899903,
+        "reconstruction_error": 0.0,
+        "shap_contributions": {
+          "CTP_F0 SD(st)": -0.002436,
+          "CTP_DPI(ms)": 0.028601,
+          "CTP_RST(-/s)": -0.00027,
+          "CTP_EST": 0.025955,
+          "CTP_Voiced Rate(1/s)": -0.133114,
+          "CTP_Hesitation Ratio": 0.165775,
+          "CTP_Energy Mean(Pa^2·s)": 0.001146,
+          "CTP_verb_num": 0.008781,
+          "CTP_noun_ratio": -0.024804,
+          "CTP_Pronouns_ratio": -0.035259,
+          "CTP_noun to verb": 0.0,
+          "CTP_Word Rate(-/s)": 0.025838,
+          "CTP_Noun No Phrase Rate": 0.000319,
+          "CTP_Verb phrase type proportion": 0.000304,
+          "CTP_Prep phrase type proportion": 0.000669,
+          "CTP_Prep average phrase type length 1": 0.000597,
+          "CTP_num_unique_IU": -0.051954,
+          "CTP_num_unique_keywords": -0.026378,
+          "CTP_unique_IU_densitys": 0.002198,
+          "CTP_total_IU_density": 0.132918,
+          "CTP_keyword_to_non_keyword_ratio": 0.115162,
+          "CTP_unique_IU_efficiency": -0.124023
+        },
+        "top_positive_contributions": [
+          {
+            "feature": "CTP_Hesitation Ratio",
+            "value": 0.189,
+            "contribution": 0.165775,
+            "shap_value": 0.165775,
+            "description": "Proportion of recording duration occupied by acoustic hesitation and pauses"
+          },
+          {
+            "feature": "CTP_total_IU_density",
+            "value": 0.5128,
+            "contribution": 0.132918,
+            "shap_value": 0.132918,
+            "description": "Total cognitive information content density across utterances"
+          },
+          {
+            "feature": "CTP_keyword_to_non_keyword_ratio",
+            "value": 0.7727,
+            "contribution": 0.115162,
+            "shap_value": 0.115162,
+            "description": "Ratio of informative content keywords to function filler words"
+          },
+          {
+            "feature": "CTP_DPI(ms)",
+            "value": 665.0,
+            "contribution": 0.028601,
+            "shap_value": 0.028601,
+            "description": "Duration of pause and silence phonation intervals in milliseconds"
+          },
+          {
+            "feature": "CTP_EST",
+            "value": 1.4864,
+            "contribution": 0.025955,
+            "shap_value": 0.025955,
+            "description": "Estimated speech timing and acoustic pacing marker"
+          }
+        ],
+        "top_negative_contributions": [
+          {
+            "feature": "CTP_Voiced Rate(1/s)",
+            "value": 2.9323,
+            "contribution": -0.133114,
+            "shap_value": -0.133114,
+            "description": "Voiced speech frame generation rate per second"
+          },
+          {
+            "feature": "CTP_unique_IU_efficiency",
+            "value": 0.4359,
+            "contribution": -0.124023,
+            "shap_value": -0.124023,
+            "description": "Lexical efficiency in delivering unique informational units"
+          },
+          {
+            "feature": "CTP_num_unique_IU",
+            "value": 17.0,
+            "contribution": -0.051954,
+            "shap_value": -0.051954,
+            "description": "Total number of distinct cognitive Information Units communicated"
+          },
+          {
+            "feature": "CTP_Pronouns_ratio",
+            "value": 0.0513,
+            "contribution": -0.035259,
+            "shap_value": -0.035259,
+            "description": "Proportion of spoken words classified as pronouns"
+          },
+          {
+            "feature": "CTP_num_unique_keywords",
+            "value": 17.0,
+            "contribution": -0.026378,
+            "shap_value": -0.026378,
+            "description": "Count of unique core vocabulary content keywords"
+          }
+        ],
+        "human_readable_explanation": "Biomarkers showing divergence toward elevated risk include 'CTP_Hesitation Ratio' (Proportion of recording duration occupied by acoustic hesitation and pauses), 'CTP_total_IU_density' (Total cognitive information content density across utterances). Protective markers stabilizing the score include 'CTP_Voiced Rate(1/s)' (Voiced speech frame generation rate per second), 'CTP_unique_IU_efficiency' (Lexical efficiency in delivering unique informational units).",
+        "disclaimer": "Biomarker attributions explain the mathematical behavior of the trained quantum-hybrid machine-learning model. They do not establish clinical causality, diagnosis, or medical significance."
+      },
+      "filename": "neurosense_20260908_205118_29913691.wav"
+    }
+  },
+  {
+    "id": 7,
+    "name": "Hindi speech",
+    "filename": "case7_hindi_speech_12s.mp3",
+    "http_status": 200,
+    "asr_success": true,
+    "detected_language": "hi",
+    "transcript": "Namaste! Today, Subhaha me bagi che me gung ne gayaath ha! Vaha bahot saare Sundar full kele te and thani hava chal Rahi te! Mujhe bhaot a chaal aga!",
+    "audio_duration": 11.544,
+    "word_count": 29,
+    "live_feature_count": 0,
+    "imputed_feature_count": 0,
+    "screening_response": {
+      "predicted_class": 1,
+      "probability": 0.631219,
+      "probability_percent": 63.12,
+      "technical_confidence_percent": 26.24,
+      "status": "Elevated screening signal",
+      "interpretation": "Screening result only — not a diagnosis."
+    },
+    "shap_response": {
+      "available": true,
+      "top_positive": [
+        "CTP_keyword_to_non_keyword_ratio (+0.525)",
+        "CTP_total_IU_density (+0.262)"
+      ],
+      "top_negative": [
+        "CTP_noun_ratio (-0.383)",
+        "CTP_unique_IU_efficiency (-0.191)"
+      ],
+      "disclaimer": "Biomarker attributions explain the mathematical behavior of the trained quantum-hybrid machine-learning model. They do not establish clinical causality, diagnosis, or medical significance."
+    },
+    "frontend_behavior": "resultElevated ('Evaluation Recommended')",
+    "errors": null,
+    "full_payload": {
+      "success": true,
+      "transcript": "Namaste! Today, Subhaha me bagi che me gung ne gayaath ha! Vaha bahot saare Sundar full kele te and thani hava chal Rahi te! Mujhe bhaot a chaal aga!",
+      "detected_language": "hi",
+      "word_count": 29,
+      "audio": {
+        "duration_seconds": 11.544,
+        "speech_timeline_duration": 11.28,
+        "sample_rate": 24000,
+        "rms_energy": 0.108008,
+        "peak_amplitude": 0.589018,
+        "silence_percentage": 34.52
+      },
+      "live_features": {
+        "CTP_F0 SD(st)": 5.55420534,
+        "CTP_DPI(ms)": 305.0000000000003,
+        "CTP_RST(-/s)": 2.570922,
+        "CTP_EST": 1.486414195,
+        "CTP_Voiced Rate(1/s)": 2.570922,
+        "CTP_Hesitation Ratio": 0.105683,
+        "CTP_Energy Mean(Pa^2·s)": 0.011665728064000002,
+        "CTP_verb_num": 0.0,
+        "CTP_noun_ratio": 0.793103,
+        "CTP_Pronouns_ratio": 0.068966,
+        "CTP_noun to verb": 0.0,
+        "CTP_Word Rate(-/s)": 2.570922,
+        "CTP_Noun No Phrase Rate": 0.163636364,
+        "CTP_Verb phrase type proportion": 2.617021277,
+        "CTP_Prep phrase type proportion": 0.816666667,
+        "CTP_Prep average phrase type length 1": 3.4226190479999996,
+        "CTP_num_unique_IU": 23.0,
+        "CTP_num_unique_keywords": 23.0,
+        "CTP_unique_IU_densitys": 0.7931034482758621,
+        "CTP_total_IU_density": 0.8275862068965517,
+        "CTP_keyword_to_non_keyword_ratio": 3.8333333333333335,
+        "CTP_unique_IU_efficiency": 0.793103
+      },
+      "production_features": {
+        "CTP_F0 SD(st)": {
+          "value": 5.554205,
+          "is_live_extracted": false,
+          "attribution": -0.002447
+        },
+        "CTP_DPI(ms)": {
+          "value": 305.0,
+          "is_live_extracted": true,
+          "attribution": -0.01367
+        },
+        "CTP_RST(-/s)": {
+          "value": 2.570922,
+          "is_live_extracted": true,
+          "attribution": 0.00332
+        },
+        "CTP_EST": {
+          "value": 1.486414,
+          "is_live_extracted": false,
+          "attribution": 0.009763
+        },
+        "CTP_Voiced Rate(1/s)": {
+          "value": 2.570922,
+          "is_live_extracted": true,
+          "attribution": -0.05322
+        },
+        "CTP_Hesitation Ratio": {
+          "value": 0.105683,
+          "is_live_extracted": true,
+          "attribution": 0.081767
+        },
+        "CTP_Energy Mean(Pa^2·s)": {
+          "value": 0.011666,
+          "is_live_extracted": true,
+          "attribution": 0.00103
+        },
+        "CTP_verb_num": {
+          "value": 0.0,
+          "is_live_extracted": true,
+          "attribution": -0.004506
+        },
+        "CTP_noun_ratio": {
+          "value": 0.793103,
+          "is_live_extracted": true,
+          "attribution": -0.382913
+        },
+        "CTP_Pronouns_ratio": {
+          "value": 0.068966,
+          "is_live_extracted": true,
+          "attribution": 0.010642
+        },
+        "CTP_noun to verb": {
+          "value": 0.0,
+          "is_live_extracted": true,
+          "attribution": -0.098965
+        },
+        "CTP_Word Rate(-/s)": {
+          "value": 2.570922,
+          "is_live_extracted": true,
+          "attribution": 0.042848
+        },
+        "CTP_Noun No Phrase Rate": {
+          "value": 0.163636,
+          "is_live_extracted": false,
+          "attribution": 0.000229
+        },
+        "CTP_Verb phrase type proportion": {
+          "value": 2.617021,
+          "is_live_extracted": false,
+          "attribution": 0.00024
+        },
+        "CTP_Prep phrase type proportion": {
+          "value": 0.816667,
+          "is_live_extracted": false,
+          "attribution": 0.001438
+        },
+        "CTP_Prep average phrase type length 1": {
+          "value": 3.422619,
+          "is_live_extracted": false,
+          "attribution": 0.00074
+        },
+        "CTP_num_unique_IU": {
+          "value": 23.0,
+          "is_live_extracted": true,
+          "attribution": -0.105343
+        },
+        "CTP_num_unique_keywords": {
+          "value": 23.0,
+          "is_live_extracted": true,
+          "attribution": -0.04059
+        },
+        "CTP_unique_IU_densitys": {
+          "value": 0.793103,
+          "is_live_extracted": true,
+          "attribution": -0.030858
+        },
+        "CTP_total_IU_density": {
+          "value": 0.827586,
+          "is_live_extracted": true,
+          "attribution": 0.261623
+        },
+        "CTP_keyword_to_non_keyword_ratio": {
+          "value": 3.833333,
+          "is_live_extracted": true,
+          "attribution": 0.525391
+        },
+        "CTP_unique_IU_efficiency": {
+          "value": 0.793103,
+          "is_live_extracted": true,
+          "attribution": -0.191468
+        }
+      },
+      "screening": {
+        "model_name": "NeuroSense Quantum-Classical Hybrid (PyTorch + 8-Qubit VQC)",
+        "predicted_class": 1,
+        "probability": 0.631219,
+        "probability_percent": 63.12,
+        "technical_confidence_percent": 26.24,
+        "uncertainty_std": 0.3154,
+        "predictive_entropy": 0.6583,
+        "risk_tier": "Elevated Risk",
+        "status": "Elevated screening signal",
+        "interpretation": "Screening result only — not a diagnosis.",
+        "quantum_specs": {
+          "qubits": 8,
+          "entangling_layers": 3,
+          "mc_dropout_passes": 30,
+          "benchmark_auc": 0.9429606156631961,
+          "benchmark_accuracy": 0.8829787234042553
+        }
+      },
+      "explanation": {
+        "base_value": 0.5,
+        "shap_margin_sum": 0.015051,
+        "reconstructed_probability": 0.781438,
+        "reconstruction_error": 0.0,
+        "shap_contributions": {
+          "CTP_F0 SD(st)": -0.002447,
+          "CTP_DPI(ms)": -0.01367,
+          "CTP_RST(-/s)": 0.00332,
+          "CTP_EST": 0.009763,
+          "CTP_Voiced Rate(1/s)": -0.05322,
+          "CTP_Hesitation Ratio": 0.081767,
+          "CTP_Energy Mean(Pa^2·s)": 0.00103,
+          "CTP_verb_num": -0.004506,
+          "CTP_noun_ratio": -0.382913,
+          "CTP_Pronouns_ratio": 0.010642,
+          "CTP_noun to verb": -0.098965,
+          "CTP_Word Rate(-/s)": 0.042848,
+          "CTP_Noun No Phrase Rate": 0.000229,
+          "CTP_Verb phrase type proportion": 0.00024,
+          "CTP_Prep phrase type proportion": 0.001438,
+          "CTP_Prep average phrase type length 1": 0.00074,
+          "CTP_num_unique_IU": -0.105343,
+          "CTP_num_unique_keywords": -0.04059,
+          "CTP_unique_IU_densitys": -0.030858,
+          "CTP_total_IU_density": 0.261623,
+          "CTP_keyword_to_non_keyword_ratio": 0.525391,
+          "CTP_unique_IU_efficiency": -0.191468
+        },
+        "top_positive_contributions": [
+          {
+            "feature": "CTP_keyword_to_non_keyword_ratio",
+            "value": 3.8333,
+            "contribution": 0.525391,
+            "shap_value": 0.525391,
+            "description": "Ratio of informative content keywords to function filler words"
+          },
+          {
+            "feature": "CTP_total_IU_density",
+            "value": 0.8276,
+            "contribution": 0.261623,
+            "shap_value": 0.261623,
+            "description": "Total cognitive information content density across utterances"
+          },
+          {
+            "feature": "CTP_Hesitation Ratio",
+            "value": 0.1057,
+            "contribution": 0.081767,
+            "shap_value": 0.081767,
+            "description": "Proportion of recording duration occupied by acoustic hesitation and pauses"
+          },
+          {
+            "feature": "CTP_Word Rate(-/s)",
+            "value": 2.5709,
+            "contribution": 0.042848,
+            "shap_value": 0.042848,
+            "description": "Speech production rate (words spoken per second)"
+          },
+          {
+            "feature": "CTP_Pronouns_ratio",
+            "value": 0.069,
+            "contribution": 0.010642,
+            "shap_value": 0.010642,
+            "description": "Proportion of spoken words classified as pronouns"
+          }
+        ],
+        "top_negative_contributions": [
+          {
+            "feature": "CTP_noun_ratio",
+            "value": 0.7931,
+            "contribution": -0.382913,
+            "shap_value": -0.382913,
+            "description": "Proportion of spoken words classified as nouns and entities"
+          },
+          {
+            "feature": "CTP_unique_IU_efficiency",
+            "value": 0.7931,
+            "contribution": -0.191468,
+            "shap_value": -0.191468,
+            "description": "Lexical efficiency in delivering unique informational units"
+          },
+          {
+            "feature": "CTP_num_unique_IU",
+            "value": 23.0,
+            "contribution": -0.105343,
+            "shap_value": -0.105343,
+            "description": "Total number of distinct cognitive Information Units communicated"
+          },
+          {
+            "feature": "CTP_noun to verb",
+            "value": 0.0,
+            "contribution": -0.098965,
+            "shap_value": -0.098965,
+            "description": "Ratio of noun entities to action verbs in spoken sentences"
+          },
+          {
+            "feature": "CTP_Voiced Rate(1/s)",
+            "value": 2.5709,
+            "contribution": -0.05322,
+            "shap_value": -0.05322,
+            "description": "Voiced speech frame generation rate per second"
+          }
+        ],
+        "human_readable_explanation": "Biomarkers showing divergence toward elevated risk include 'CTP_keyword_to_non_keyword_ratio' (Ratio of informative content keywords to function filler words), 'CTP_total_IU_density' (Total cognitive information content density across utterances). Protective markers stabilizing the score include 'CTP_noun_ratio' (Proportion of spoken words classified as nouns and entities), 'CTP_unique_IU_efficiency' (Lexical efficiency in delivering unique informational units).",
+        "disclaimer": "Biomarker attributions explain the mathematical behavior of the trained quantum-hybrid machine-learning model. They do not establish clinical causality, diagnosis, or medical significance."
+      },
+      "filename": "neurosense_20260908_205119_c53fcdf9.mp3"
+    }
+  },
+  {
+    "id": 8,
+    "name": "Bengali speech",
+    "filename": "case8_bengali_speech_12s.mp3",
+    "http_status": 200,
+    "asr_success": true,
+    "detected_language": "bn",
+    "transcript": "Namushkar, ad shakale amipar ke hatte ghe chilam Shekane anik shundor full footageilo ebang vidu batash boy chilu Amar mon kub halu hohe galu",
+    "audio_duration": 13.32,
+    "word_count": 24,
+    "live_feature_count": 0,
+    "imputed_feature_count": 0,
+    "screening_response": {
+      "predicted_class": 1,
+      "probability": 0.731125,
+      "probability_percent": 73.11,
+      "technical_confidence_percent": 46.23,
+      "status": "Elevated screening signal",
+      "interpretation": "Screening result only — not a diagnosis."
+    },
+    "shap_response": {
+      "available": true,
+      "top_positive": [
+        "CTP_keyword_to_non_keyword_ratio (+0.000)",
+        "CTP_Hesitation Ratio (+0.000)"
+      ],
+      "top_negative": [
+        "CTP_noun_ratio (-0.000)",
+        "CTP_unique_IU_efficiency (-0.000)"
+      ],
+      "disclaimer": "Biomarker attributions explain the mathematical behavior of the trained quantum-hybrid machine-learning model. They do not establish clinical causality, diagnosis, or medical significance."
+    },
+    "frontend_behavior": "resultElevated ('Evaluation Recommended')",
+    "errors": null,
+    "full_payload": {
+      "success": true,
+      "transcript": "Namushkar, ad shakale amipar ke hatte ghe chilam Shekane anik shundor full footageilo ebang vidu batash boy chilu Amar mon kub halu hohe galu",
+      "detected_language": "bn",
+      "word_count": 24,
+      "audio": {
+        "duration_seconds": 13.32,
+        "speech_timeline_duration": 12.86,
+        "sample_rate": 24000,
+        "rms_energy": 0.104616,
+        "peak_amplitude": 0.612767,
+        "silence_percentage": 31.86
+      },
+      "live_features": {
+        "CTP_F0 SD(st)": 5.55420534,
+        "CTP_DPI(ms)": 320.00000000000006,
+        "CTP_RST(-/s)": 1.866252,
+        "CTP_EST": 1.486414195,
+        "CTP_Voiced Rate(1/s)": 1.866252,
+        "CTP_Hesitation Ratio": 0.024024,
+        "CTP_Energy Mean(Pa^2·s)": 0.010944507456,
+        "CTP_verb_num": 0.0,
+        "CTP_noun_ratio": 0.916667,
+        "CTP_Pronouns_ratio": 0.0,
+        "CTP_noun to verb": 0.0,
+        "CTP_Word Rate(-/s)": 1.866252,
+        "CTP_Noun No Phrase Rate": 0.163636364,
+        "CTP_Verb phrase type proportion": 2.617021277,
+        "CTP_Prep phrase type proportion": 0.816666667,
+        "CTP_Prep average phrase type length 1": 3.4226190479999996,
+        "CTP_num_unique_IU": 24.0,
+        "CTP_num_unique_keywords": 24.0,
+        "CTP_unique_IU_densitys": 1.0,
+        "CTP_total_IU_density": 1.0,
+        "CTP_keyword_to_non_keyword_ratio": 24.0,
+        "CTP_unique_IU_efficiency": 1.0
+      },
+      "production_features": {
+        "CTP_F0 SD(st)": {
+          "value": 5.554205,
+          "is_live_extracted": false,
+          "attribution": 0.0
+        },
+        "CTP_DPI(ms)": {
+          "value": 320.0,
+          "is_live_extracted": true,
+          "attribution": -1e-06
+        },
+        "CTP_RST(-/s)": {
+          "value": 1.866252,
+          "is_live_extracted": true,
+          "attribution": 3e-06
+        },
+        "CTP_EST": {
+          "value": 1.486414,
+          "is_live_extracted": false,
+          "attribution": 3e-06
+        },
+        "CTP_Voiced Rate(1/s)": {
+          "value": 1.866252,
+          "is_live_extracted": true,
+          "attribution": -4e-06
+        },
+        "CTP_Hesitation Ratio": {
+          "value": 0.024024,
+          "is_live_extracted": true,
+          "attribution": 1.5e-05
+        },
+        "CTP_Energy Mean(Pa^2·s)": {
+          "value": 0.010945,
+          "is_live_extracted": true,
+          "attribution": 0.0
+        },
+        "CTP_verb_num": {
+          "value": 0.0,
+          "is_live_extracted": true,
+          "attribution": 4e-06
+        },
+        "CTP_noun_ratio": {
+          "value": 0.916667,
+          "is_live_extracted": true,
+          "attribution": -5.2e-05
+        },
+        "CTP_Pronouns_ratio": {
+          "value": 0.0,
+          "is_live_extracted": true,
+          "attribution": -9e-06
+        },
+        "CTP_noun to verb": {
+          "value": 0.0,
+          "is_live_extracted": true,
+          "attribution": -1e-05
+        },
+        "CTP_Word Rate(-/s)": {
+          "value": 1.866252,
+          "is_live_extracted": true,
+          "attribution": -1e-06
+        },
+        "CTP_Noun No Phrase Rate": {
+          "value": 0.163636,
+          "is_live_extracted": false,
+          "attribution": 0.0
+        },
+        "CTP_Verb phrase type proportion": {
+          "value": 2.617021,
+          "is_live_extracted": false,
+          "attribution": 0.0
+        },
+        "CTP_Prep phrase type proportion": {
+          "value": 0.816667,
+          "is_live_extracted": false,
+          "attribution": -0.0
+        },
+        "CTP_Prep average phrase type length 1": {
+          "value": 3.422619,
+          "is_live_extracted": false,
+          "attribution": 1e-06
+        },
+        "CTP_num_unique_IU": {
+          "value": 24.0,
+          "is_live_extracted": true,
+          "attribution": 1.4e-05
+        },
+        "CTP_num_unique_keywords": {
+          "value": 24.0,
+          "is_live_extracted": true,
+          "attribution": -4e-06
+        },
+        "CTP_unique_IU_densitys": {
+          "value": 1.0,
+          "is_live_extracted": true,
+          "attribution": -1.5e-05
+        },
+        "CTP_total_IU_density": {
+          "value": 1.0,
+          "is_live_extracted": true,
+          "attribution": -9e-06
+        },
+        "CTP_keyword_to_non_keyword_ratio": {
+          "value": 24.0,
+          "is_live_extracted": true,
+          "attribution": 0.00014
+        },
+        "CTP_unique_IU_efficiency": {
+          "value": 1.0,
+          "is_live_extracted": true,
+          "attribution": -3.9e-05
+        }
+      },
+      "screening": {
+        "model_name": "NeuroSense Quantum-Classical Hybrid (PyTorch + 8-Qubit VQC)",
+        "predicted_class": 1,
+        "probability": 0.731125,
+        "probability_percent": 73.11,
+        "technical_confidence_percent": 46.23,
+        "uncertainty_std": 0.3978,
+        "predictive_entropy": 0.5821,
+        "risk_tier": "Elevated Risk",
+        "status": "Elevated screening signal",
+        "interpretation": "Screening result only — not a diagnosis.",
+        "quantum_specs": {
+          "qubits": 8,
+          "entangling_layers": 3,
+          "mc_dropout_passes": 30,
+          "benchmark_auc": 0.9429606156631961,
+          "benchmark_accuracy": 0.8829787234042553
+        }
+      },
+      "explanation": {
+        "base_value": 0.5,
+        "shap_margin_sum": 3.5e-05,
+        "reconstructed_probability": 0.999699,
+        "reconstruction_error": 0.0,
+        "shap_contributions": {
+          "CTP_F0 SD(st)": 0.0,
+          "CTP_DPI(ms)": -1e-06,
+          "CTP_RST(-/s)": 3e-06,
+          "CTP_EST": 3e-06,
+          "CTP_Voiced Rate(1/s)": -4e-06,
+          "CTP_Hesitation Ratio": 1.5e-05,
+          "CTP_Energy Mean(Pa^2·s)": 0.0,
+          "CTP_verb_num": 4e-06,
+          "CTP_noun_ratio": -5.2e-05,
+          "CTP_Pronouns_ratio": -9e-06,
+          "CTP_noun to verb": -1e-05,
+          "CTP_Word Rate(-/s)": -1e-06,
+          "CTP_Noun No Phrase Rate": 0.0,
+          "CTP_Verb phrase type proportion": 0.0,
+          "CTP_Prep phrase type proportion": -0.0,
+          "CTP_Prep average phrase type length 1": 1e-06,
+          "CTP_num_unique_IU": 1.4e-05,
+          "CTP_num_unique_keywords": -4e-06,
+          "CTP_unique_IU_densitys": -1.5e-05,
+          "CTP_total_IU_density": -9e-06,
+          "CTP_keyword_to_non_keyword_ratio": 0.00014,
+          "CTP_unique_IU_efficiency": -3.9e-05
+        },
+        "top_positive_contributions": [
+          {
+            "feature": "CTP_keyword_to_non_keyword_ratio",
+            "value": 24.0,
+            "contribution": 0.00014,
+            "shap_value": 0.00014,
+            "description": "Ratio of informative content keywords to function filler words"
+          },
+          {
+            "feature": "CTP_Hesitation Ratio",
+            "value": 0.024,
+            "contribution": 1.5e-05,
+            "shap_value": 1.5e-05,
+            "description": "Proportion of recording duration occupied by acoustic hesitation and pauses"
+          },
+          {
+            "feature": "CTP_num_unique_IU",
+            "value": 24.0,
+            "contribution": 1.4e-05,
+            "shap_value": 1.4e-05,
+            "description": "Total number of distinct cognitive Information Units communicated"
+          },
+          {
+            "feature": "CTP_verb_num",
+            "value": 0.0,
+            "contribution": 4e-06,
+            "shap_value": 4e-06,
+            "description": "Total count of lexical and auxiliary action verbs spoken"
+          },
+          {
+            "feature": "CTP_RST(-/s)",
+            "value": 1.8663,
+            "contribution": 3e-06,
+            "shap_value": 3e-06,
+            "description": "Response and speech timing rate per second"
+          }
+        ],
+        "top_negative_contributions": [
+          {
+            "feature": "CTP_noun_ratio",
+            "value": 0.9167,
+            "contribution": -5.2e-05,
+            "shap_value": -5.2e-05,
+            "description": "Proportion of spoken words classified as nouns and entities"
+          },
+          {
+            "feature": "CTP_unique_IU_efficiency",
+            "value": 1.0,
+            "contribution": -3.9e-05,
+            "shap_value": -3.9e-05,
+            "description": "Lexical efficiency in delivering unique informational units"
+          },
+          {
+            "feature": "CTP_unique_IU_densitys",
+            "value": 1.0,
+            "contribution": -1.5e-05,
+            "shap_value": -1.5e-05,
+            "description": "Information unit density relative to total spoken word count"
+          },
+          {
+            "feature": "CTP_noun to verb",
+            "value": 0.0,
+            "contribution": -1e-05,
+            "shap_value": -1e-05,
+            "description": "Ratio of noun entities to action verbs in spoken sentences"
+          },
+          {
+            "feature": "CTP_Pronouns_ratio",
+            "value": 0.0,
+            "contribution": -9e-06,
+            "shap_value": -9e-06,
+            "description": "Proportion of spoken words classified as pronouns"
+          }
+        ],
+        "human_readable_explanation": "Biomarkers showing divergence toward elevated risk include 'CTP_keyword_to_non_keyword_ratio' (Ratio of informative content keywords to function filler words), 'CTP_Hesitation Ratio' (Proportion of recording duration occupied by acoustic hesitation and pauses). Protective markers stabilizing the score include 'CTP_noun_ratio' (Proportion of spoken words classified as nouns and entities), 'CTP_unique_IU_efficiency' (Lexical efficiency in delivering unique informational units).",
+        "disclaimer": "Biomarker attributions explain the mathematical behavior of the trained quantum-hybrid machine-learning model. They do not establish clinical causality, diagnosis, or medical significance."
+      },
+      "filename": "neurosense_20260908_205121_d42d1424.mp3"
+    }
+  }
+]

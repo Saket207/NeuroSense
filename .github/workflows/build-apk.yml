@@ -1,0 +1,123 @@
+name: Build NeuroSense Android APK & Release
+
+# The APK is NOT built on every push to main. A merge does not need an Android
+# build to be useful, and paying 3-5 minutes of runner time plus a Vercel
+# deployment slot for every merge is what exhausted both quotas.
+#
+# Build one when you actually want one:
+#   - push a tag:      git tag v1.0 && git push origin v1.0
+#   - or on demand:    Actions -> Build & Release Android APK -> Run workflow
+#
+# A manual run from main still publishes under the `latest` release, so the
+# in-app download link keeps working without tagging.
+on:
+  push:
+    tags:
+      - 'v*'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+# One in-flight APK build per ref. A newer push supersedes an older one, so the
+# older build is cancelled rather than left to finish an artifact nobody wants.
+# This repository is private, which means every runner minute is billed against
+# the account's quota, and a run of six pushes to main would otherwise pay for
+# six builds to learn one answer.
+#
+# Tags are excluded from cancellation: a tag build publishes a release, so
+# losing it to a later push would drop the artifact that tag exists to produce.
+concurrency:
+  group: apk-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+jobs:
+  build-apk:
+    name: Build & Release Android APK
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository with Git LFS
+        uses: actions/checkout@v4
+        with:
+          lfs: true
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.34.5
+
+      - name: Setup Node.js (v22 LTS)
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: 'pnpm'
+
+      - name: Setup Java JDK 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: 21
+
+      - name: Setup Gradle 8.14.3
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: 8.14.3
+          validate-wrappers: false
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build Web Assets (Vite)
+        run: pnpm run build
+
+      - name: Sync Capacitor Android
+        run: |
+          pnpm exec cap sync android
+
+      - name: Regenerate Gradle Wrapper & Build APK
+        working-directory: ./android
+        run: |
+          gradle wrapper --gradle-version 8.14.3 --distribution-type all
+          chmod +x ./gradlew
+          ./gradlew assembleDebug --stacktrace
+
+      - name: Prepare NeuroSense.apk artifact
+        run: |
+          mkdir -p release-output
+          # Locate built debug apk and copy as NeuroSense.apk
+          find android/app/build/outputs/apk/ -name "*.apk" -exec cp {} release-output/NeuroSense.apk \;
+          ls -la release-output/
+
+      - name: Upload APK Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: NeuroSense-Android-APK
+          path: release-output/NeuroSense.apk
+
+      - name: Publish to GitHub Releases
+        if: startsWith(github.ref, 'refs/tags/') || github.ref == 'refs/heads/main'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name == 'main' && 'latest' || github.ref_name }}
+          name: "NeuroSense Mobile Release ${{ github.ref_name }}"
+          body: |
+            ## NeuroSense — AI-Powered Seizure Detection & Neurological Monitoring
+
+            ### 📱 Android APK Direct Download
+            Direct APK download for Android phones:
+            - **Download NeuroSense.apk**
+
+            ### 🚀 Highlights
+            - AI-powered seizure detection and neurological biomarker monitoring.
+            - Hybrid screening: 8-qubit PennyLane VQC over 22 neurological & acoustic biomarkers, with Monte Carlo Dropout uncertainty.
+            - Full offline capability with local IndexedDB queuing and auto-sync.
+            - Doctor clinical dashboard, longitudinal neurological trend charts, and downloadable medical report.
+          files: release-output/NeuroSense.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

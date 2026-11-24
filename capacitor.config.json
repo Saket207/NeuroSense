@@ -1,0 +1,12 @@
+{
+  "appId": "org.neurosense.app",
+  "appName": "NeuroSense",
+  "webDir": "dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "androidScheme": "https"
+  },
+  "android": {
+    "allowMixedContent": true
+  }
+}

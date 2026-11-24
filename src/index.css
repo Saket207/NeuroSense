@@ -1,0 +1,337 @@
+@import 'tailwindcss';
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  background-color: #031e26;
+  font-family:
+    'Noto Sans',
+    'Noto Sans Devanagari',
+    'Noto Sans Bengali',
+    'Noto Sans Gujarati',
+    'Noto Sans Kannada',
+    'Noto Sans Malayalam',
+    'Noto Sans Tamil',
+    'Noto Sans Telugu',
+    system-ui,
+    sans-serif;
+  color: #0c1c24;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ─── Modern Sleek Custom Scrollbars ────────────────────────────────────────── */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(2, 115, 138, 0.22);
+  border-radius: 9999px;
+  transition: background-color 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(2, 115, 138, 0.55);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ─── Animations ───────────────────────────────────────────────────────────── */
+@keyframes pulse-ring {
+  0% { transform: scale(1); opacity: 0.6; }
+  100% { transform: scale(2.2); opacity: 0; }
+}
+
+@keyframes pulse-ring-2 {
+  0% { transform: scale(1); opacity: 0.4; }
+  100% { transform: scale(1.7); opacity: 0; }
+}
+
+@keyframes bar-wave {
+  0%, 100% { transform: scaleY(0.2); }
+  50% { transform: scaleY(1); }
+}
+
+@keyframes fade-in-up {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { rotate: 360deg; }
+}
+
+@keyframes splash-logo {
+  0% { opacity: 0; transform: scale(0.88); }
+  100% { opacity: 1; transform: scale(1); }
+}
+
+@keyframes waveform-idle {
+  0%, 100% { transform: scaleY(0.3); }
+  50% { transform: scaleY(0.7); }
+}
+
+@keyframes soft-float {
+  0%, 100% { transform: translateY(0px); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes quantum-orbit-cw {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes quantum-orbit-ccw {
+  from { transform: rotate(360deg); }
+  to { transform: rotate(0deg); }
+}
+
+@keyframes soundwave-equalizer {
+  0%, 100% {
+    height: 18%;
+    opacity: 0.5;
+  }
+  25% {
+    height: 72%;
+    opacity: 0.85;
+  }
+  50% {
+    height: 98%;
+    opacity: 1;
+  }
+  75% {
+    height: 45%;
+    opacity: 0.7;
+  }
+}
+
+@keyframes soundwave-equalizer-alt {
+  0%, 100% {
+    height: 85%;
+    opacity: 0.95;
+  }
+  30% {
+    height: 25%;
+    opacity: 0.55;
+  }
+  65% {
+    height: 95%;
+    opacity: 1;
+  }
+  85% {
+    height: 45%;
+    opacity: 0.7;
+  }
+}
+
+@keyframes shimmer-sweep {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(350%);
+  }
+}
+
+@keyframes quantum-pulse-glow {
+  0%, 100% {
+    transform: scale(0.97);
+    box-shadow: 0 0 25px rgba(2, 115, 138, 0.3), 0 0 55px rgba(56, 189, 248, 0.2);
+  }
+  50% {
+    transform: scale(1.03);
+    box-shadow: 0 0 45px rgba(2, 115, 138, 0.55), 0 0 85px rgba(56, 189, 248, 0.35);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fade-in-up 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-fade-in {
+  animation: fade-in 0.25s ease-out both;
+}
+
+.animate-splash {
+  animation: splash-logo 0.7s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.animate-float {
+  animation: soft-float 4s ease-in-out infinite;
+}
+
+.animate-quantum-orbit-cw {
+  animation: quantum-orbit-cw 24s linear infinite;
+  transform-origin: center;
+}
+
+.animate-quantum-orbit-ccw {
+  animation: quantum-orbit-ccw 16s linear infinite;
+  transform-origin: center;
+}
+
+.animate-quantum-glow {
+  animation: quantum-pulse-glow 3s ease-in-out infinite;
+}
+
+.animate-shimmer-sweep {
+  animation: shimmer-sweep 2.2s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.bar-wave {
+  animation: bar-wave 1s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
+.bar-idle {
+  animation: waveform-idle 2s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
+.pulse-ring-1 {
+  animation: pulse-ring 1.8s ease-out infinite;
+}
+
+.pulse-ring-2 {
+  animation: pulse-ring-2 1.8s ease-out 0.4s infinite;
+}
+
+.spinner {
+  animation: spin 1s linear infinite;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button,
+input,
+textarea,
+select,
+[class*="flex"] {
+  min-width: 0;
+}
+
+button,
+p,
+h1,
+h2,
+h3,
+span,
+label {
+  overflow-wrap: break-word;
+}
+
+:root {
+  /* Official Logo Palette Tokens */
+  --nv-primary: #02738a;
+  --nv-primary-dark: #015364;
+  --nv-primary-deep: #013a46;
+  --nv-primary-light: #e4f4f7;
+  --nv-warm-glow: #fdfaf2;
+  --nv-sky-glow: #e8f5f8;
+  --nv-bg: #f3f9fb;
+  --nv-surface: #ffffff;
+  --nv-text: #0c1e27;
+  --nv-muted: #5e7380;
+  --nv-border: #d7eaef;
+  --nv-success: #15803d;
+  --nv-warning: #c2410c;
+  --nv-amber: #b45309;
+  --nv-error: #dc2626;
+  --nv-font-display: 'Outfit', system-ui, sans-serif;
+  --nv-font-body:
+    'Noto Sans',
+    'Noto Sans Devanagari',
+    'Noto Sans Bengali',
+    'Noto Sans Gujarati',
+    'Noto Sans Kannada',
+    'Noto Sans Malayalam',
+    'Noto Sans Tamil',
+    'Noto Sans Telugu',
+    system-ui,
+    sans-serif;
+}
+
+/* Use one complete script family for each non-English selection so inline
+   display styles cannot make Indic headings and buttons fall back to Outfit. */
+.nv-app-shell > div[lang="hi"] :where(button, h1, h2, h3, h4, p, span, label, input, textarea, select),
+.nv-app-shell > div[lang="mr"] :where(button, h1, h2, h3, h4, p, span, label, input, textarea, select) {
+  font-family: 'Noto Sans Devanagari', 'Noto Sans', sans-serif !important;
+}
+
+.nv-app-shell > div[lang="bn"] :where(button, h1, h2, h3, h4, p, span, label, input, textarea, select) {
+  font-family: 'Noto Sans Bengali', 'Noto Sans', sans-serif !important;
+}
+
+.nv-app-shell > div[lang="ta"] :where(button, h1, h2, h3, h4, p, span, label, input, textarea, select) {
+  font-family: 'Noto Sans Tamil', 'Noto Sans', sans-serif !important;
+}
+
+.nv-app-shell > div[lang="te"] :where(button, h1, h2, h3, h4, p, span, label, input, textarea, select) {
+  font-family: 'Noto Sans Telugu', 'Noto Sans', sans-serif !important;
+}
+
+.nv-app-shell > div[lang="gu"] :where(button, h1, h2, h3, h4, p, span, label, input, textarea, select) {
+  font-family: 'Noto Sans Gujarati', 'Noto Sans', sans-serif !important;
+}
+
+.nv-app-shell > div[lang="kn"] :where(button, h1, h2, h3, h4, p, span, label, input, textarea, select) {
+  font-family: 'Noto Sans Kannada', 'Noto Sans', sans-serif !important;
+}
+
+.nv-app-shell > div[lang="ml"] :where(button, h1, h2, h3, h4, p, span, label, input, textarea, select) {
+  font-family: 'Noto Sans Malayalam', 'Noto Sans', sans-serif !important;
+}
+
+@media (max-width: 480px) {
+  .nv-demo-nav {
+    position: absolute;
+    top: 0.5rem;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5rem;
+  }
+
+  .nv-demo-nav > div:last-child {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .nv-app-shell {
+    margin-top: 7.5rem !important;
+    max-height: calc(100vh - 8rem) !important;
+  }
+}
+
+@media (min-width: 481px) and (max-width: 767px) {
+  .nv-app-shell {
+    max-width: min(390px, calc(100vw - 2rem));
+  }
+}

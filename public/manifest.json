@@ -1,0 +1,24 @@
+{
+  "name": "NeuroSense — AI Seizure Detection & Neurological Health",
+  "short_name": "NeuroSense",
+  "description": "AI-powered seizure detection and neurological monitoring platform using acoustic, cognitive, and neurological biomarkers.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#f2f9fb",
+  "theme_color": "#02738a",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/logo.jpeg",
+      "sizes": "any",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/logo.jpeg",
+      "sizes": "any",
+      "type": "image/jpeg",
+      "purpose": "any maskable"
+    }
+  ]
+}
