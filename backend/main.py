@@ -75,7 +75,7 @@ class CaretakerVerifyOtpPayload(BaseModel):
 
 
 class CaretakerPinLoginPayload(BaseModel):
-    phone: str
+    phone: Optional[str] = None
     pin: str
 
 

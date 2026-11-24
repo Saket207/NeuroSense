@@ -14,7 +14,7 @@ const supabaseAnonKey =
   DEFAULT_SUPABASE_ANON_KEY
 
 export const DEFAULT_SUPABASE_SERVICE_ROLE_KEY =
-  (import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string | undefined) || ""
+  import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string | undefined || ""
 
 const supabaseServiceKey =
   import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string | undefined ||

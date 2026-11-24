@@ -288,43 +288,87 @@ class AuthStore:
         }
 
     @staticmethod
-    def authenticate_caretaker_pin(caregiver_phone: str, pin: str) -> Optional[Dict[str, Any]]:
-        """Authenticates a caretaker directly using their registered WhatsApp number and 4-digit PIN."""
-        clean_cp = clean_digits(caregiver_phone)
+    def authenticate_caretaker_pin(
+        caregiver_phone: Optional[str], pin: str
+    ) -> Optional[Dict[str, Any]]:
+        """Authenticates a caretaker using their 4-digit PIN (phone is optional)."""
         clean_pin = "".join(ch for ch in str(pin or "") if ch.isdigit())
-
-        if len(clean_cp) < 10 or len(clean_pin) != 4:
+        if len(clean_pin) != 4:
             return None
+
+        clean_cp = clean_digits(caregiver_phone) if caregiver_phone else ""
 
         with _get_connection() as conn:
             cursor = conn.cursor()
-            cursor.execute("SELECT * FROM users WHERE clean_caregiver_phone = ?", (clean_cp,))
-            row = cursor.fetchone()
+            if clean_cp and len(clean_cp) >= 10:
+                cursor.execute(
+                    "SELECT * FROM users WHERE clean_caregiver_phone = ?",
+                    (clean_cp,),
+                )
+                rows = cursor.fetchall()
+            else:
+                cursor.execute("SELECT * FROM users ORDER BY created_at DESC")
+                rows = cursor.fetchall()
 
-        if not row:
-            return None
+        for row in rows:
+            if row["caregiver_pin_hash"] and row["caregiver_pin_salt"]:
+                if verify_secret(
+                    clean_pin, row["caregiver_pin_hash"], row["caregiver_pin_salt"]
+                ):
+                    return {
+                        "status": "success",
+                        "is_caregiver": True,
+                        "caregiver_name": row["caregiver_name"],
+                        "caregiver_phone": row["caregiver_phone"],
+                        "clean_caregiver_phone": row["clean_caregiver_phone"],
+                        "patient_id": row["patient_id"],
+                        "patient_name": row["full_name"],
+                        "full_name": f"{row['caregiver_name']} (Caretaker)",
+                        "phone": row["caregiver_phone"],
+                        "linked_patient": {
+                            "patient_id": row["patient_id"],
+                            "full_name": row["full_name"],
+                            "phone": row["phone"],
+                            "age": row["age"],
+                            "gender": row["gender"],
+                        },
+                    }
 
-        if not verify_secret(clean_pin, row["caregiver_pin_hash"], row["caregiver_pin_salt"]):
-            return None
+        # Cloud fallback: Check Supabase Auth user metadata for matching caretaker PIN
+        try:
+            from backend.supabase_service import SupabaseService
 
-        return {
-            "status": "success",
-            "is_caregiver": True,
-            "caregiver_name": row["caregiver_name"],
-            "caregiver_phone": row["caregiver_phone"],
-            "clean_caregiver_phone": row["clean_caregiver_phone"],
-            "patient_id": row["patient_id"],
-            "patient_name": row["full_name"],
-            "full_name": f"{row['caregiver_name']} (Caretaker)",
-            "phone": row["caregiver_phone"],
-            "linked_patient": {
-                "patient_id": row["patient_id"],
-                "full_name": row["full_name"],
-                "phone": row["phone"],
-                "age": row["age"],
-                "gender": row["gender"],
-            },
-        }
+            s = SupabaseService()
+            if s.client:
+                users_res = s.client.auth.admin.list_users()
+                for u in users_res:
+                    meta = getattr(u, "user_metadata", {}) or {}
+                    meta_pin = str(meta.get("caregiver_pin", "")).strip()
+                    if meta_pin and meta_pin == clean_pin:
+                        return {
+                            "status": "success",
+                            "is_caregiver": True,
+                            "caregiver_name": meta.get("caregiver_name", "Caretaker"),
+                            "caregiver_phone": meta.get("caregiver_phone", ""),
+                            "clean_caregiver_phone": "".join(
+                                ch for ch in str(meta.get("caregiver_phone", "")) if ch.isdigit()
+                            ),
+                            "patient_id": str(getattr(u, "id", "")),
+                            "patient_name": meta.get("full_name", "Patient"),
+                            "full_name": f"{meta.get('caregiver_name', 'Caretaker')} (Caretaker)",
+                            "phone": meta.get("caregiver_phone", ""),
+                            "linked_patient": {
+                                "patient_id": str(getattr(u, "id", "")),
+                                "full_name": meta.get("full_name", "Patient"),
+                                "age": meta.get("age"),
+                                "gender": meta.get("gender"),
+                                "phone": meta.get("phone"),
+                            },
+                        }
+        except Exception:
+            pass
+
+        return None
 
     @staticmethod
     def generate_caretaker_otp(caregiver_phone: str) -> Dict[str, Any]:

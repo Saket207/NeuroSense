@@ -190,19 +190,14 @@ export default function AloisAuthContainer({
   }
 
   // Caretaker Direct PIN Login
+  // Caretaker Direct PIN Login (PIN Only - No WhatsApp number required)
   const handleCaretakerPinLogin = async () => {
     setAuthError(null)
     setAuthSuccess(null)
 
-    const cleanPhone = caregiverPhoneInput.replace(/\D/g, "")
-    if (cleanPhone.length < 10) {
-      setAuthError("Please enter a valid 10-digit Caretaker WhatsApp number.")
-      return
-    }
-
     const cleanPin = caregiverPinInput.replace(/\D/g, "")
     if (cleanPin.length !== 4) {
-      setAuthError("Please enter the complete 4-digit Caretaker PIN.")
+      setAuthError("Please enter your 4-digit Caretaker PIN.")
       return
     }
 
@@ -214,7 +209,6 @@ export default function AloisAuthContainer({
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({
-            phone: cleanPhone,
             pin: cleanPin,
           }),
         },
@@ -224,7 +218,7 @@ export default function AloisAuthContainer({
         const errData = await response.json().catch(() => ({}))
         throw new Error(
           errData.detail ||
-            "Invalid Caretaker WhatsApp number or 4-digit PIN. Please verify your details or request an OTP.",
+            "Invalid 4-digit Caretaker PIN. Please check your PIN and try again.",
         )
       }
 
@@ -239,7 +233,7 @@ export default function AloisAuthContainer({
         gender: res.linked_patient.gender || "",
         age: String(res.linked_patient.age || ""),
         dob: "",
-        email: `${res.clean_caregiver_phone || cleanPhone}@neurosense.app`,
+        email: `${res.clean_caregiver_phone || cleanPin}@neurosense.app`,
         city: "",
         diagnosis: "Monitored",
         stage: "Caregiver Assisted",
@@ -880,46 +874,46 @@ export default function AloisAuthContainer({
                 </div>
               )}
 
-              {/* Caregiver/Caretaker Access View */}
+              {/* Caregiver/Caretaker Access View (PIN Only) */}
               {screen === "caregiver" && (
-                <div className="space-y-3.5 pt-1">
+                <div className="space-y-4 pt-1">
                   <div className="p-3 bg-blue-50/70 rounded-xl border border-blue-100 text-[12px] text-slate-700 leading-relaxed">
                     <div className="font-semibold text-blue-900 flex items-center gap-1.5 mb-0.5">
                       <Users className="w-4 h-4 text-blue-600" />
                       <span>Caretaker Portal</span>
                     </div>
-                    Sign in with your registered Caretaker WhatsApp number to
-                    monitor and assist your family member.
+                    Enter your 4-digit Caretaker PIN to access and monitor your
+                    family member.
                   </div>
-
-                  <label className="text-[12px] font-medium text-[#525252] block">
-                    Caretaker WhatsApp Number
-                    <input
-                      type="tel"
-                      value={caregiverPhoneInput}
-                      onChange={(event) =>
-                        setCaregiverPhoneInput(event.target.value)
-                      }
-                      placeholder="Caretaker WhatsApp (e.g. 9876543210)"
-                      className={`${inputClass} mt-1`}
-                    />
-                  </label>
 
                   {/* 4-Digit PIN Input */}
                   <label className="text-[12px] font-medium text-[#525252] block">
                     4-Digit Caretaker PIN
-                    <span className="relative block mt-1">
+                    <span className="relative block mt-1.5">
                       <input
                         type={showCaregiverPin ? "text" : "password"}
                         maxLength={4}
                         value={caregiverPinInput}
-                        onChange={(event) =>
-                          setCaregiverPinInput(
-                            event.target.value.replace(/\D/g, "").slice(0, 4),
-                          )
-                        }
-                        placeholder="Enter 4-digit PIN"
-                        className={`${inputClass} pr-10 tracking-widest font-mono text-center text-[16px]`}
+                        onChange={(event) => {
+                          const val = event.target.value
+                            .replace(/\D/g, "")
+                            .slice(0, 4)
+                          setCaregiverPinInput(val)
+                          if (val.length === 4) {
+                            setAuthError(null)
+                          }
+                        }}
+                        onKeyDown={(e) => {
+                          if (
+                            e.key === "Enter" &&
+                            caregiverPinInput.length === 4
+                          ) {
+                            void handleCaretakerPinLogin()
+                          }
+                        }}
+                        placeholder="••••"
+                        className={`${inputClass} tracking-widest font-mono text-center text-[22px] font-bold h-12`}
+                        autoFocus
                       />
                       <button
                         type="button"
@@ -941,29 +935,11 @@ export default function AloisAuthContainer({
                   <button
                     type="button"
                     onClick={() => void handleCaretakerPinLogin()}
-                    disabled={isBusy}
-                    className="w-full py-2.5 rounded-lg bg-[#0F62FE] hover:bg-[#0353e9] text-white text-[13px] font-semibold shadow-xs transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
+                    disabled={isBusy || caregiverPinInput.length !== 4}
+                    className="w-full py-3 rounded-lg bg-[#0F62FE] hover:bg-[#0353e9] text-white text-[14px] font-semibold shadow-xs transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
                   >
                     <ShieldCheck className="w-4 h-4" />
-                    <span>{isBusy ? "Verifying..." : "Login with PIN"}</span>
-                  </button>
-
-                  <div className="relative flex py-0.5 items-center">
-                    <div className="grow border-t border-slate-200" />
-                    <span className="shrink mx-3 text-slate-400 text-[10px] uppercase tracking-wider font-semibold">
-                      Or One-Time Code
-                    </span>
-                    <div className="grow border-t border-slate-200" />
-                  </div>
-
-                  <button
-                    type="button"
-                    onClick={() => void handleGenerateCaretakerOtp()}
-                    disabled={isBusy}
-                    className="w-full py-2.5 rounded-lg border border-[#0F62FE] text-[#0F62FE] hover:bg-blue-50/50 text-[13px] font-semibold transition-colors flex items-center justify-center gap-2"
-                  >
-                    <KeyRound className="w-4 h-4" />
-                    <span>Generate Code (Request OTP)</span>
+                    <span>{isBusy ? "Logging in..." : "Login with PIN"}</span>
                   </button>
                 </div>
               )}
