@@ -33,6 +33,14 @@ interface AloisContainerProps {
 
   caregiverName?: string
 
+  caregiverPhone?: string
+
+  patientAge?: string
+
+  patientGender?: string
+
+  patientPhone?: string
+
   isAssisted?: boolean
 
   selectedLanguageName: string
@@ -57,6 +65,8 @@ interface AloisContainerProps {
 
   onOpenCognitiveGames?: () => void
 
+  onUpdateProfile?: (data: any) => void
+
   fontFamily?: string
 }
 
@@ -69,6 +79,14 @@ export default function AloisContainer({
   patientName,
 
   caregiverName = "Marcus",
+
+  caregiverPhone = "+91 98765 43210",
+
+  patientAge = "72",
+
+  patientGender = "Female",
+
+  patientPhone = "+91 99779 92477",
 
   isAssisted = false,
 
@@ -93,6 +111,8 @@ export default function AloisContainer({
   onOpenDoctorDash,
 
   onOpenCognitiveGames,
+
+  onUpdateProfile,
 
   fontFamily = "'Outfit', sans-serif",
 }: AloisContainerProps) {
@@ -171,6 +191,10 @@ export default function AloisContainer({
           <AloisProfile
             patientName={patientName}
             caregiverName={caregiverName}
+            caregiverPhone={caregiverPhone}
+            patientAge={patientAge}
+            patientGender={patientGender}
+            patientPhone={patientPhone}
             isAssisted={isAssisted}
             selectedLanguageName={selectedLanguageName}
             onBack={() => setActiveTab("home")}
@@ -180,6 +204,7 @@ export default function AloisContainer({
             onOpenLanguageModal={onOpenLanguageModal}
             onOpenDoctorDash={onOpenDoctorDash}
             onLogout={onLogout}
+            onUpdateProfile={onUpdateProfile}
             fontFamily={fontFamily}
           />
         )}

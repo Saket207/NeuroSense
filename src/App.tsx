@@ -5813,6 +5813,12 @@ function NeuroSenseApp({
               <AloisContainer
                 patientName={activeMember?.displayName || userName}
                 caregiverName={caregiverName}
+                caregiverPhone={caregiverPhone}
+                patientAge={String(userAge || editAge || "72")}
+                patientGender={patientProfile?.gender || "Female"}
+                patientPhone={
+                  patientProfile?.phone || caregiverPhone || "+91 99779 92477"
+                }
                 isAssisted={activeMember?.isPatient}
                 selectedLanguageName={
                   LANGUAGES.find((l) => l.code === lang)?.name || "English"
@@ -5835,6 +5841,22 @@ function NeuroSenseApp({
                 onOpenHistory={() => navigate("history")}
                 onOpenDoctorDash={() => navigate("doctorDash")}
                 onOpenCognitiveGames={() => navigate("cognitiveGamesHub")}
+                onUpdateProfile={(updated) => {
+                  if (updated.patientName) {
+                    setUserName(updated.patientName)
+                    setEditName(updated.patientName)
+                  }
+                  if (updated.caregiverName) {
+                    setCaregiverName(updated.caregiverName)
+                  }
+                  if (updated.caregiverPhone) {
+                    setCaregiverPhone(updated.caregiverPhone)
+                  }
+                  if (updated.age) {
+                    setUserAge(Number(updated.age))
+                    setEditAge(String(updated.age))
+                  }
+                }}
                 fontFamily={F.display}
               />
             </div>
