@@ -4219,6 +4219,25 @@ function NeuroSenseApp({
 
   const [isTestingAudio, setIsTestingAudio] = useState<boolean>(false)
 
+  useEffect(() => {
+    if (patientProfile) {
+      if (patientProfile.caregiverName) {
+        setCaregiverName(patientProfile.caregiverName)
+      }
+      if (patientProfile.caregiverPhone) {
+        setCaregiverPhone(patientProfile.caregiverPhone)
+      }
+      if (patientProfile.fullName) {
+        setEditName(patientProfile.fullName)
+        setUserName(patientProfile.fullName)
+      }
+      if (patientProfile.age) {
+        setEditAge(String(patientProfile.age))
+        setUserAge(Number(patientProfile.age))
+      }
+    }
+  }, [patientProfile])
+
   // Real ML Screening state
 
   const [screeningApiResult, setScreeningApiResult] =

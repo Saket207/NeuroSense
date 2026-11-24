@@ -13,6 +13,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 
 from auth import optional_supabase_user, require_supabase_user
+from auth_store import auth_store
 from screening_jobs import job_manager, no_speech_message, warm_engine
 from supabase_service import supabase_service
 from task_scoring import TASKS
@@ -50,6 +51,27 @@ class RegisterPayload(BaseModel):
     gender: Optional[str] = None
     caregiver_name: Optional[str] = None
     caregiver_phone: Optional[str] = None
+    caregiver_pin: Optional[str] = None
+    patient_id: Optional[str] = None
+
+
+class LoginPayload(BaseModel):
+    identifier: str
+    password: str
+
+
+class CaretakerRequestOtpPayload(BaseModel):
+    phone: str
+
+
+class CaretakerVerifyOtpPayload(BaseModel):
+    phone: str
+    otp: str
+
+
+class CaretakerPinLoginPayload(BaseModel):
+    phone: str
+    pin: str
 
 
 class LookupPayload(BaseModel):
@@ -196,100 +218,160 @@ def update_my_patient_profile(
 
 @app.post("/api/auth/register")
 def register_patient_user(payload: RegisterPayload):
-    """Registers a patient user directly in Supabase Auth with auto-confirmed status and metadata."""
-    digits = "".join(ch for ch in payload.phone if ch.isdigit())
-    if not digits:
-        raise HTTPException(status_code=400, detail="A valid phone number is required.")
+    """
+    Registers a patient user and linked caretaker securely.
+    Persists salted hashes in AuthStore and mirrors to Supabase when available.
+    """
+    if not payload.full_name or not payload.full_name.strip():
+        raise HTTPException(status_code=400, detail="Full Name is required.")
 
-    phone_key = digits[-10:] if len(digits) >= 10 else digits
-    phone_with_code = f"91{phone_key}" if len(digits) == 10 else digits
-    virtual_email = f"{phone_key}@neurosense.app"
+    if not payload.phone or not payload.phone.strip():
+        raise HTTPException(status_code=400, detail="Patient WhatsApp number is required.")
 
-    if not supabase_service.is_configured():
-        raise HTTPException(status_code=503, detail="Supabase service is unavailable.")
+    if not payload.password or len(payload.password.strip()) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters.")
+
+    if not payload.caregiver_name or not payload.caregiver_name.strip():
+        raise HTTPException(status_code=400, detail="Caretaker Name is required.")
+
+    if not payload.caregiver_phone or not payload.caregiver_phone.strip():
+        raise HTTPException(status_code=400, detail="Caretaker WhatsApp number is required.")
+
+    clean_pin = "".join(ch for ch in str(payload.caregiver_pin or "") if ch.isdigit())
+    if len(clean_pin) != 4:
+        raise HTTPException(status_code=400, detail="Caretaker PIN must be exactly 4 digits.")
 
     try:
-        user_res = supabase_service.client.auth.admin.create_user({
-            "phone": phone_with_code,
-            "phone_confirm": True,
-            "email": virtual_email,
-            "email_confirm": True,
-            "password": payload.password,
-            "user_metadata": {
-                "full_name": payload.full_name,
-                "username": payload.full_name,
-                "phone": payload.phone,
-                "clean_phone": phone_key,
-                "age": payload.age,
-                "gender": payload.gender,
-                "caregiver_name": payload.caregiver_name,
-                "caregiver_phone": payload.caregiver_phone,
-            },
-        })
-        created_user = getattr(user_res, "user", None) or user_res
-        user_id = str(getattr(created_user, "id", "") or created_user.get("id"))
-
-        # Also mirror profile data in Supabase
-        supabase_service.get_or_create_authenticated_profile(
-            user_id,
-            {
-                "full_name": payload.full_name,
-                "phone": payload.phone,
-                "age": payload.age,
-                "gender": payload.gender,
-                "caregiver_name": payload.caregiver_name,
-                "caregiver_phone": payload.caregiver_phone,
-            },
+        # Step 1: Persist securely in local AuthStore
+        local_user = auth_store.register_user(
+            full_name=payload.full_name,
+            phone=payload.phone,
+            password=payload.password,
+            age=payload.age,
+            gender=payload.gender,
+            caregiver_name=payload.caregiver_name,
+            caregiver_phone=payload.caregiver_phone,
+            caregiver_pin=clean_pin,
+            patient_id=payload.patient_id,
         )
+    except ValueError as val_err:
+        raise HTTPException(status_code=400, detail=str(val_err))
 
-        return {
-            "status": "success",
-            "email": virtual_email,
-            "user_id": user_id,
-            "message": "User registered in Supabase.",
-        }
-    except Exception as e:
-        err_str = str(e)
-        if "already registered" in err_str.lower() or "already exists" in err_str.lower():
-            # Update password and metadata for existing user so they can sign in
-            try:
-                users_list = supabase_service.client.auth.admin.list_users()
-                target = next((u for u in users_list if getattr(u, "email", "") == virtual_email or getattr(u, "phone", "") == phone_with_code), None)
-                if target:
-                    supabase_service.client.auth.admin.update_user_by_id(
-                        target.id,
-                        {
-                            "phone": phone_with_code,
-                            "phone_confirm": True,
-                            "password": payload.password,
-                            "user_metadata": {
-                                "full_name": payload.full_name,
-                                "phone": payload.phone,
-                                "clean_phone": phone_key,
-                                "age": payload.age,
-                                "gender": payload.gender,
-                            },
-                        },
-                    )
-                    return {
-                        "status": "updated",
-                        "email": virtual_email,
-                        "user_id": target.id,
-                        "message": "Credentials updated in Supabase.",
-                    }
-            except Exception as upd_err:
-                logger.warning(f"Could not update user: {upd_err}")
-            raise HTTPException(status_code=409, detail="This WhatsApp number is already registered. Please sign in.")
-        logger.error(f"Supabase user creation failed: {e}")
-        raise HTTPException(status_code=500, detail=f"Registration failed: {err_str}")
+    # Step 2: Safely dual-write/mirror to Supabase if configured
+    phone_key = local_user["clean_phone"]
+    phone_with_code = f"91{phone_key}"
+    virtual_email = f"{phone_key}@neurosense.app"
+
+    if supabase_service.is_configured():
+        try:
+            user_res = supabase_service.client.auth.admin.create_user({
+                "phone": phone_with_code,
+                "phone_confirm": True,
+                "email": virtual_email,
+                "email_confirm": True,
+                "password": payload.password,
+                "user_metadata": {
+                    "full_name": payload.full_name,
+                    "username": payload.full_name,
+                    "phone": payload.phone,
+                    "clean_phone": phone_key,
+                    "age": payload.age,
+                    "gender": payload.gender,
+                    "caregiver_name": payload.caregiver_name,
+                    "caregiver_phone": payload.caregiver_phone,
+                },
+            })
+            created_user = getattr(user_res, "user", None) or user_res
+            user_id = str(getattr(created_user, "id", "") or created_user.get("id"))
+
+            supabase_service.get_or_create_authenticated_profile(
+                user_id,
+                {
+                    "full_name": payload.full_name,
+                    "phone": payload.phone,
+                    "age": payload.age,
+                    "gender": payload.gender,
+                    "caregiver_name": payload.caregiver_name,
+                    "caregiver_phone": payload.caregiver_phone,
+                },
+            )
+        except Exception as e:
+            logger.info(f"Supabase background sync note: {e}")
+
+    return {
+        "status": "success",
+        "email": virtual_email,
+        "patient_id": local_user["patient_id"],
+        "user_id": local_user["user_id"],
+        "full_name": local_user["full_name"],
+        "phone": local_user["phone"],
+        "caregiver_name": local_user["caregiver_name"],
+        "caregiver_phone": local_user["caregiver_phone"],
+        "message": "User registered successfully.",
+    }
+
+
+@app.post("/api/auth/login")
+def login_user(payload: LoginPayload):
+    """Authenticates a patient using their full name or WhatsApp number and password."""
+    user = auth_store.authenticate_patient(payload.identifier, payload.password)
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid name/WhatsApp number or password.")
+    return {"status": "success", "user": user}
+
+
+@app.post("/api/auth/caretaker/request-otp")
+def caretaker_request_otp(payload: CaretakerRequestOtpPayload):
+    """
+    Generates a unique, cryptographically random 4-digit code (valid for 5 minutes)
+    for the registered caretaker WhatsApp number.
+    """
+    try:
+        otp_info = auth_store.generate_caretaker_otp(payload.phone)
+        return otp_info
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@app.post("/api/auth/caretaker/verify-otp")
+def caretaker_verify_otp(payload: CaretakerVerifyOtpPayload):
+    """
+    Validates the entered 4-digit code against the active time-limited code for this caretaker.
+    Connects the caretaker directly to the linked patient account.
+    """
+    try:
+        result = auth_store.verify_caretaker_otp(payload.phone, payload.otp)
+        return result
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+
+@app.post("/api/auth/caretaker/login")
+def caretaker_login_pin(payload: CaretakerPinLoginPayload):
+    """
+    Authenticates a caretaker directly using their registered WhatsApp number
+    and 4-digit PIN to access the patient's information.
+    """
+    result = auth_store.authenticate_caretaker_pin(payload.phone, payload.pin)
+    if not result:
+        raise HTTPException(
+            status_code=401,
+            detail="Invalid Caretaker WhatsApp number or 4-digit PIN. Please verify your details or request an OTP.",
+        )
+    return result
 
 
 @app.post("/api/auth/lookup")
 def lookup_patient_user(payload: LookupPayload):
-    """Resolves an identifier (name or WhatsApp phone number) to a login email."""
+    """Resolves an identifier (name or WhatsApp phone number) to user details."""
     raw = payload.identifier.strip()
     if not raw:
         raise HTTPException(status_code=400, detail="Identifier is required.")
+
+    # 1. Check local AuthStore first
+    local_match = auth_store.lookup_user(raw)
+    if local_match:
+        return local_match
 
     if "@" in raw:
         return {"found": True, "email": raw.lower()}
@@ -299,7 +381,7 @@ def lookup_patient_user(payload: LookupPayload):
         phone_key = digits[-10:]
         return {"found": True, "email": f"{phone_key}@neurosense.app", "phone": digits}
 
-    # Search by full_name in Supabase users
+    # 2. Fallback to Supabase users
     if supabase_service.is_configured():
         try:
             users_res = supabase_service.client.auth.admin.list_users()

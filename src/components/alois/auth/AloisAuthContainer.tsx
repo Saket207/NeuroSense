@@ -1,21 +1,23 @@
 import React, { useEffect, useState } from "react"
-
 import {
   ArrowRight,
   CheckCircle2,
   Delete,
   Eye,
   EyeOff,
+  KeyRound,
   MessageSquare,
+  ShieldCheck,
+  User,
+  Users,
 } from "lucide-react"
 
 import { getApiBaseUrl } from "../../../services/apiConfig"
-
+import { setCaregiverPin } from "../../../services/household"
 import {
   getMyPatientProfile,
   upsertMyPatientProfile,
 } from "../../../services/patientProfile"
-
 import {
   isSupabaseConfigured,
   lookupVerifiedSupabaseUser,
@@ -25,55 +27,41 @@ import {
 
 export interface AloisAuthUser {
   patientId: string
-
   username: string
-
   fullName: string
-
   gender: string
-
   age: string
-
   dob: string
-
   email: string
-
   phone: string
-
   city: string
-
   diagnosis: string
-
   stage: string
-
   caregiverName: string
-
   caregiverEmail: string
-
   caregiverPhone: string
+  caregiverPin?: string
+  isCaregiver?: boolean
+  linkedPatientId?: string
+  linkedPatientName?: string
 }
 
 interface AloisAuthContainerProps {
   onAuthenticated: (user: AloisAuthUser) => void
-
   fontFamily?: string
 }
 
 type AuthScreen = "you" | "caregiver" | "caregiverVerify" | "register"
 
 export const NEUROSENSE_USER_STORAGE_KEY = "neurosense-user-profile"
-
 export const NEUROSENSE_AUTH_SESSION_KEY = "neurosense-auth-session"
-
 export const ALOIS_USER_STORAGE_KEY = NEUROSENSE_USER_STORAGE_KEY
-
 export const ALOIS_AUTH_SESSION_KEY = NEUROSENSE_AUTH_SESSION_KEY
 
 function createPatientId(): string {
   if (typeof crypto !== "undefined" && "randomUUID" in crypto) {
     return crypto.randomUUID()
   }
-
   return `00000000-0000-4000-8000-${Date.now().toString().slice(-12).padStart(12, "0")}`
 }
 
@@ -82,9 +70,7 @@ function getStoredPatientId(): string {
     const stored =
       localStorage.getItem(NEUROSENSE_USER_STORAGE_KEY) ||
       localStorage.getItem("alois-user-profile")
-
     const user = stored ? JSON.parse(stored) as Partial<AloisAuthUser> : null
-
     return user?.patientId || createPatientId()
   } catch {
     return createPatientId()
@@ -113,110 +99,89 @@ function NeuroSenseLogo() {
 const AloisLogo = NeuroSenseLogo
 
 const inputClass =
-  "w-full px-3.5 py-3 rounded-lg bg-[#F4F4F4] text-[14px] text-[#161616] placeholder:text-[#8D8D8D] focus:outline-hidden focus:ring-1 focus:ring-[#0F62FE]"
+  "w-full px-3.5 py-2.5 rounded-lg bg-[#F4F4F4] text-[14px] text-[#161616] placeholder:text-[#8D8D8D] focus:outline-hidden focus:ring-1 focus:ring-[#0F62FE]"
 
 export default function AloisAuthContainer({
   onAuthenticated,
-
   fontFamily = "'Outfit', sans-serif",
 }: AloisAuthContainerProps) {
   const [screen, setScreen] = useState<AuthScreen>("you")
-
   const [loginIdentifier, setLoginIdentifier] = useState("")
-
   const [password, setPassword] = useState("")
-
   const [showPassword, setShowPassword] = useState(false)
-
   const [showRegPassword, setShowRegPassword] = useState(false)
-
   const [regAgreeTerms, setRegAgreeTerms] = useState(false)
 
+  // Caregiver access state
+  const [caregiverPhoneInput, setCaregiverPhoneInput] = useState("")
+  const [caregiverPinInput, setCaregiverPinInput] = useState("")
+  const [showCaregiverPin, setShowCaregiverPin] = useState(false)
+  const [activeGeneratedOtp, setActiveGeneratedOtp] = useState<string | null>(
+    null,
+  )
+  const [linkedPatientName, setLinkedPatientName] = useState<string | null>(
+    null,
+  )
+
   const [otpDigits, setOtpDigits] = useState(["", "", "", ""])
-
-  const [resendCountdown, setResendCountdown] = useState(56)
-
+  const [resendCountdown, setResendCountdown] = useState(300)
   const [authError, setAuthError] = useState<string | null>(null)
-
   const [authSuccess, setAuthSuccess] = useState<string | null>(null)
-
   const [isBusy, setIsBusy] = useState(false)
 
   // WhatsApp confirmation dialog state
-
   const [whatsAppData, setWhatsAppModal] = useState<{
     open: boolean
-
     phone: string
-
     password: string
-
     fullName: string
-
+    caregiverName: string
+    caregiverPhone: string
+    caregiverPin: string
     waUrl: string
-
     userToAuthenticate?: AloisAuthUser
   } | null>(null)
 
   const [formData, setFormData] = useState<AloisAuthUser>({
     patientId: getStoredPatientId(),
-
     username: "",
-
     fullName: "",
-
     gender: "",
-
     age: "",
-
     dob: "",
-
     email: "",
-
     phone: "",
-
     city: "",
-
     diagnosis: "Select",
-
     stage: "Select",
-
     caregiverName: "",
-
     caregiverEmail: "",
-
     caregiverPhone: "",
+    caregiverPin: "",
   })
 
   useEffect(() => {
     if (screen !== "caregiverVerify" || resendCountdown <= 0) return
-
     const timer = window.setInterval(() => {
       setResendCountdown((countdown) => countdown - 1)
     }, 1000)
-
     return () => window.clearInterval(timer)
   }, [screen, resendCountdown])
 
   const completeAuthentication = (user: AloisAuthUser) => {
     const authenticatedUser = {
       ...user,
-
       patientId: user.patientId || createPatientId(),
     }
-
     try {
       localStorage.setItem(
         ALOIS_USER_STORAGE_KEY,
-
         JSON.stringify(authenticatedUser),
       )
-
       localStorage.setItem(ALOIS_AUTH_SESSION_KEY, "active")
     } catch {
       // Ignore storage errors and continue into the app.
     }
-
     onAuthenticated(authenticatedUser)
   }
 
@@ -224,166 +189,359 @@ export default function AloisAuthContainer({
     setFormData((current) => ({ ...current, [field]: value }))
   }
 
+  // Caretaker Direct PIN Login
+  const handleCaretakerPinLogin = async () => {
+    setAuthError(null)
+    setAuthSuccess(null)
+
+    const cleanPhone = caregiverPhoneInput.replace(/\D/g, "")
+    if (cleanPhone.length < 10) {
+      setAuthError("Please enter a valid 10-digit Caretaker WhatsApp number.")
+      return
+    }
+
+    const cleanPin = caregiverPinInput.replace(/\D/g, "")
+    if (cleanPin.length !== 4) {
+      setAuthError("Please enter the complete 4-digit Caretaker PIN.")
+      return
+    }
+
+    setIsBusy(true)
+    try {
+      const response = await fetch(
+        `${getApiBaseUrl()}/api/auth/caretaker/login`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            phone: cleanPhone,
+            pin: cleanPin,
+          }),
+        },
+      )
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}))
+        throw new Error(
+          errData.detail ||
+            "Invalid Caretaker WhatsApp number or 4-digit PIN. Please verify your details or request an OTP.",
+        )
+      }
+
+      const res = await response.json()
+      await setCaregiverPin(cleanPin)
+
+      const authUser: AloisAuthUser = {
+        patientId: res.linked_patient.patient_id,
+        fullName: `${res.caregiver_name} (Caretaker)`,
+        username: res.caregiver_name,
+        phone: res.caregiver_phone,
+        gender: res.linked_patient.gender || "",
+        age: String(res.linked_patient.age || ""),
+        dob: "",
+        email: `${res.clean_caregiver_phone || cleanPhone}@neurosense.app`,
+        city: "",
+        diagnosis: "Monitored",
+        stage: "Caregiver Assisted",
+        caregiverName: res.caregiver_name,
+        caregiverPhone: res.caregiver_phone,
+        caregiverEmail: "",
+        caregiverPin: cleanPin,
+        isCaregiver: true,
+        linkedPatientId: res.linked_patient.patient_id,
+        linkedPatientName: res.linked_patient.full_name,
+      }
+
+      completeAuthentication(authUser)
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error ? err.message : "Caretaker authentication failed."
+      setAuthError(msg)
+    } finally {
+      setIsBusy(false)
+    }
+  }
+
+  // Caretaker OTP Generation (Unique, Random, Time-Limited)
+  const handleGenerateCaretakerOtp = async () => {
+    setAuthError(null)
+    setAuthSuccess(null)
+
+    const cleanPhone = caregiverPhoneInput.replace(/\D/g, "")
+    if (cleanPhone.length < 10) {
+      setAuthError("Please enter a valid 10-digit Caretaker WhatsApp number.")
+      return
+    }
+
+    setIsBusy(true)
+    try {
+      const response = await fetch(
+        `${getApiBaseUrl()}/api/auth/caretaker/request-otp`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ phone: cleanPhone }),
+        },
+      )
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}))
+        throw new Error(
+          errData.detail ||
+            "This Caretaker WhatsApp number is not registered. Please register first.",
+        )
+      }
+
+      const res = await response.json()
+      setActiveGeneratedOtp(res.otp)
+      setLinkedPatientName(res.patient_name)
+      setOtpDigits(["", "", "", ""])
+      setResendCountdown(res.expires_in || 300)
+      setScreen("caregiverVerify")
+      setAuthSuccess(
+        `Generated unique security code: ${res.otp} (Valid for 5 minutes for patient ${res.patient_name}).`,
+      )
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Failed to generate verification code."
+      setAuthError(msg)
+    } finally {
+      setIsBusy(false)
+    }
+  }
+
+  // Caretaker OTP Verification
+  const handleVerifyCaretakerOtp = async () => {
+    setAuthError(null)
+    setAuthSuccess(null)
+
+    const cleanPhone = caregiverPhoneInput.replace(/\D/g, "")
+    const enteredOtp = otpDigits.join("")
+
+    if (enteredOtp.length !== 4) {
+      setAuthError("Please enter all 4 digits of the verification code.")
+      return
+    }
+
+    setIsBusy(true)
+    try {
+      const response = await fetch(
+        `${getApiBaseUrl()}/api/auth/caretaker/verify-otp`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            phone: cleanPhone,
+            otp: enteredOtp,
+          }),
+        },
+      )
+
+      if (!response.ok) {
+        const errData = await response.json().catch(() => ({}))
+        throw new Error(
+          errData.detail ||
+            "Invalid verification code. Please check and try again.",
+        )
+      }
+
+      const res = await response.json()
+      const authUser: AloisAuthUser = {
+        patientId: res.linked_patient.patient_id,
+        fullName: `${res.caregiver_name} (Caretaker)`,
+        username: res.caregiver_name,
+        phone: res.caregiver_phone,
+        gender: res.linked_patient.gender || "",
+        age: String(res.linked_patient.age || ""),
+        dob: "",
+        email: `${cleanPhone}@neurosense.app`,
+        city: "",
+        diagnosis: "Monitored",
+        stage: "Caregiver Assisted",
+        caregiverName: res.caregiver_name,
+        caregiverPhone: res.caregiver_phone,
+        caregiverEmail: "",
+        isCaregiver: true,
+        linkedPatientId: res.linked_patient.patient_id,
+        linkedPatientName: res.linked_patient.full_name,
+      }
+
+      completeAuthentication(authUser)
+    } catch (err: unknown) {
+      const msg =
+        err instanceof Error
+          ? err.message
+          : "Verification failed. Please check the code."
+      setAuthError(msg)
+      setOtpDigits(["", "", "", ""])
+    } finally {
+      setIsBusy(false)
+    }
+  }
+
+  // Patient Registration & Login handler
   const handleFinishLogin = async (registration = false) => {
     setAuthError(null)
-
     setAuthSuccess(null)
 
     if (registration) {
-      // Validate Registration Inputs
-
-      if (!formData.fullName.trim()) {
-        setAuthError("Please enter your full name.")
-
+      // 1. Full Name validation
+      if (!formData.fullName.trim() || formData.fullName.trim().length < 2) {
+        setAuthError("Please enter patient's full name.")
         return
       }
 
-      const digits = formData.phone.replace(/\D/g, "")
-
-      if (digits.length < 10) {
-        setAuthError("Please enter a valid 10-digit WhatsApp phone number.")
-
+      // 2. Patient WhatsApp Number validation
+      const pDigits = formData.phone.replace(/\D/g, "")
+      if (pDigits.length < 10) {
+        setAuthError(
+          "Please enter a valid 10-digit patient WhatsApp phone number.",
+        )
         return
       }
 
+      // 3. Password validation
       if (!password.trim() || password.length < 6) {
         setAuthError("Password must be at least 6 characters.")
-
         return
       }
 
+      // 4. Age validation
       if (
         !formData.age ||
         Number(formData.age) < 1 ||
         Number(formData.age) > 120
       ) {
         setAuthError("Please enter a valid age (1-120).")
-
         return
       }
 
+      // 5. Gender validation
       if (!formData.gender) {
-        setAuthError("Please select your gender.")
-
+        setAuthError("Please select patient's gender.")
         return
       }
 
+      // 6. Caretaker Name validation
+      if (
+        !formData.caregiverName.trim() ||
+        formData.caregiverName.trim().length < 2
+      ) {
+        setAuthError("Please enter caretaker/family member's full name.")
+        return
+      }
+
+      // 7. Caretaker WhatsApp Number validation
+      const cDigits = formData.caregiverPhone.replace(/\D/g, "")
+      if (cDigits.length < 10) {
+        setAuthError(
+          "Please enter a valid 10-digit caretaker WhatsApp phone number.",
+        )
+        return
+      }
+
+      // 8. Caretaker PIN validation (exactly 4 digits)
+      const pinDigits = (formData.caregiverPin || "").replace(/\D/g, "")
+      if (pinDigits.length !== 4) {
+        setAuthError("Please set a 4-digit numeric Caretaker PIN.")
+        return
+      }
+
+      // 9. Terms agreement validation
       if (!regAgreeTerms) {
         setAuthError("Please accept the terms of service.")
-
         return
       }
 
       setIsBusy(true)
 
-      const phoneKey = digits.slice(-10)
+      const patientPhoneKey = pDigits.slice(-10)
+      const patientPhoneWithCode =
+        pDigits.length === 10 ? `91${pDigits}` : pDigits
+      const virtualEmail = `${patientPhoneKey}@neurosense.app`
 
-      const phoneWithCode = digits.length === 10 ? `91${digits}` : digits
-
-      const virtualEmail = `${phoneKey}@neurosense.app`
-
-      const waText = `*NeuroSense Healthcare Credentials* 🩺\n\nHello *${formData.fullName.trim()}*,\n\nYour NeuroSense account is created successfully.\n\n🔑 *Password:* ${password}\n📱 *WhatsApp Number:* +${phoneWithCode}\n\nYou can sign in using your Name or WhatsApp number anytime!`
-
-      const waUrl = `https://wa.me/${phoneWithCode}?text=${encodeURIComponent(waText)}`
-
-      // Open WhatsApp to deliver credentials
+      const waText = `*NeuroSense Healthcare Account Created* 🩺\n\n👤 *Patient:* ${formData.fullName.trim()}\n📱 *Patient WhatsApp:* +${patientPhoneWithCode}\n🔑 *Password:* ${password}\n\n🛡️ *Caretaker:* ${formData.caregiverName.trim()}\n📱 *Caretaker WhatsApp:* +${cDigits}\n🔢 *Caretaker PIN:* ${pinDigits}\n\nBoth the patient and caretaker can now access NeuroSense anytime!`
+      const waUrl = `https://wa.me/${patientPhoneWithCode}?text=${encodeURIComponent(waText)}`
 
       try {
         window.open(waUrl, "_blank")
       } catch {
-        // Popup blocker fallback
+        // Fallback for pop-up blockers
       }
 
-      // Step 1: Register or sync user directly in Supabase Cloud
-
-      const regResult = await registerVerifiedSupabaseUser({
-        fullName: formData.fullName.trim(),
-
-        phone: formData.phone.trim(),
-
-        password: password.trim(),
-
-        age: Number(formData.age),
-
-        gender: formData.gender,
-      })
-
-      // Also notify backend in background if available
-
-      fetch(`${getApiBaseUrl()}/api/auth/register`, {
-        method: "POST",
-
-        headers: { "Content-Type": "application/json" },
-
-        body: JSON.stringify({
-          full_name: formData.fullName.trim(),
-
-          phone: formData.phone.trim(),
-
-          password: password.trim(),
-
-          age: Number(formData.age),
-
-          gender: formData.gender,
-        }),
-      }).catch(() => {})
-
-      // Step 2: Sign in with Supabase Auth to obtain a session
-
       try {
-        const authResult = await supabase.auth.signInWithPassword({
-          email: regResult.email || virtualEmail,
-
-          password: password.trim(),
+        // Step A: Register in Backend Database (AuthStore SQLite + Supabase Mirror)
+        const response = await fetch(`${getApiBaseUrl()}/api/auth/register`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            full_name: formData.fullName.trim(),
+            phone: formData.phone.trim(),
+            password: password.trim(),
+            age: Number(formData.age),
+            gender: formData.gender,
+            caregiver_name: formData.caregiverName.trim(),
+            caregiver_phone: formData.caregiverPhone.trim(),
+            caregiver_pin: pinDigits,
+            patient_id: formData.patientId,
+          }),
         })
 
-        if (authResult.error) {
-          throw new Error(authResult.error.message)
+        if (!response.ok) {
+          const errData = await response.json().catch(() => ({}))
+          throw new Error(errData.detail || "Registration failed on backend.")
         }
 
-        // Step 3: Persist patient profile in Supabase DB
+        const regData = await response.json()
 
-        await upsertMyPatientProfile({
-          patientId: formData.patientId,
+        // Step B: Set local caregiver gate PIN on device
+        await setCaregiverPin(pinDigits)
 
-          username: formData.fullName.trim(),
-
+        // Step C: Background sync with Supabase Auth
+        registerVerifiedSupabaseUser({
           fullName: formData.fullName.trim(),
-
-          age: Number(formData.age),
-
-          gender: formData.gender,
-
           phone: formData.phone.trim(),
-        }).catch((err) => {
-          console.warn("Supabase profile sync note:", err)
-        })
+          password: password.trim(),
+          age: Number(formData.age),
+          gender: formData.gender,
+        }).catch(() => {})
+
+        upsertMyPatientProfile({
+          patientId: regData.patient_id || formData.patientId,
+          username: formData.fullName.trim(),
+          fullName: formData.fullName.trim(),
+          age: Number(formData.age),
+          gender: formData.gender,
+          phone: formData.phone.trim(),
+          caregiverName: formData.caregiverName.trim(),
+          caregiverPhone: formData.caregiverPhone.trim(),
+        }).catch(() => {})
 
         const authenticatedUser: AloisAuthUser = {
           ...formData,
-
+          patientId: regData.patient_id || formData.patientId,
           username: formData.fullName.trim(),
-
           fullName: formData.fullName.trim(),
-
-          email: regResult.email || virtualEmail,
-
+          email: virtualEmail,
           phone: formData.phone.trim(),
+          caregiverName: formData.caregiverName.trim(),
+          caregiverPhone: formData.caregiverPhone.trim(),
+          caregiverPin: pinDigits,
+          isCaregiver: false,
         }
 
-        // Show WhatsApp verification modal
-
+        // Show confirmation modal with full credentials
         setWhatsAppModal({
           open: true,
-
-          phone: phoneWithCode,
-
+          phone: patientPhoneWithCode,
           password,
-
           fullName: formData.fullName.trim(),
-
+          caregiverName: formData.caregiverName.trim(),
+          caregiverPhone: cDigits,
+          caregiverPin: pinDigits,
           waUrl,
-
           userToAuthenticate: authenticatedUser,
         })
       } catch (err: unknown) {
@@ -391,189 +549,94 @@ export default function AloisAuthContainer({
           err instanceof Error
             ? err.message
             : "Registration failed. Please try again."
-
         setAuthError(message)
       } finally {
         setIsBusy(false)
       }
     } else {
-      // LOGIN FLOW: Name or WhatsApp Number
-
+      // PATIENT LOGIN FLOW: Name or WhatsApp Number + Password
       const raw = loginIdentifier.trim()
-
       if (!raw) {
         setAuthError("Please enter your name or WhatsApp number.")
-
         return
       }
 
       if (!password.trim()) {
         setAuthError("Please enter your password.")
-
         return
       }
 
       setIsBusy(true)
 
-      let emailToUse = ""
+      try {
+        // Attempt backend login first
+        const res = await fetch(`${getApiBaseUrl()}/api/auth/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            identifier: raw,
+            password: password.trim(),
+          }),
+        })
 
-      let resolvedName = raw
-
-      if (raw.includes("@")) {
-        emailToUse = raw.toLowerCase()
-      } else {
-        const digits = raw.replace(/\D/g, "")
-
-        if (digits.length >= 10) {
-          const phoneKey = digits.slice(-10)
-
-          emailToUse = `${phoneKey}@neurosense.app`
-        } else {
-          // Name lookup: check local storage first
-
-          try {
-            const stored = localStorage.getItem(ALOIS_USER_STORAGE_KEY)
-
-            if (stored) {
-              const parsed = JSON.parse(stored) as Partial<AloisAuthUser>
-
-              if (
-                parsed.fullName?.toLowerCase() === raw.toLowerCase() ||
-                parsed.username?.toLowerCase() === raw.toLowerCase()
-              ) {
-                if (parsed.email) emailToUse = parsed.email
-                else if (parsed.phone) {
-                  const storedDigits = parsed.phone.replace(/\D/g, "")
-
-                  if (storedDigits.length >= 10) {
-                    emailToUse = `${storedDigits.slice(-10)}@neurosense.app`
-                  }
-                }
-              }
-            }
-          } catch {
-            // ignore
+        if (res.ok) {
+          const data = await res.json()
+          const u = data.user
+          const authenticatedUser: AloisAuthUser = {
+            ...formData,
+            patientId: u.patient_id || formData.patientId,
+            fullName: u.full_name,
+            username: u.full_name,
+            phone: u.phone,
+            email: `${u.clean_phone || u.phone}@neurosense.app`,
+            age: u.age ? String(u.age) : formData.age,
+            gender: u.gender || formData.gender,
+            caregiverName: u.caregiver_name || formData.caregiverName,
+            caregiverPhone: u.caregiver_phone || formData.caregiverPhone,
+            isCaregiver: false,
           }
+          completeAuthentication(authenticatedUser)
+          return
+        }
 
-          // If not in local storage, query backend lookup
+        // Fallback: Supabase login
+        let emailToUse = raw.includes("@") ? raw.toLowerCase() : ""
+        let resolvedName = raw
 
-          if (!emailToUse) {
-            // Direct Cloud Supabase lookup + backend fallback
-
-            try {
-              const lookup = await lookupVerifiedSupabaseUser(raw)
-
-              if (lookup.found && lookup.email) {
-                emailToUse = lookup.email
-
-                if (lookup.fullName) resolvedName = lookup.fullName
-              }
-            } catch {
-              // fallback
-            }
-
-            if (!emailToUse) {
-              try {
-                const lookupRes = await fetch(
-                  `${getApiBaseUrl()}/api/auth/lookup`,
-
-                  {
-                    method: "POST",
-
-                    headers: { "Content-Type": "application/json" },
-
-                    body: JSON.stringify({ identifier: raw }),
-                  },
-                )
-
-                if (lookupRes.ok) {
-                  const data = await lookupRes.json()
-
-                  if (data.found && data.email) {
-                    emailToUse = data.email
-
-                    if (data.full_name) resolvedName = data.full_name
-                  }
-                }
-              } catch {
-                // Backend offline
-              }
-            }
-          }
-
-          if (!emailToUse) {
-            setAuthError(
-              "Could not find an account with this name. Please enter your 10-digit WhatsApp number.",
+        if (!emailToUse) {
+          const digits = raw.replace(/\D/g, "")
+          if (digits.length >= 10) {
+            emailToUse = `${digits.slice(-10)}@neurosense.app`
+          } else {
+            const lookup = await lookupVerifiedSupabaseUser(raw).catch(
+              () => null,
             )
-
-            setIsBusy(false)
-
-            return
+            if (lookup && lookup.found && lookup.email) {
+              emailToUse = lookup.email
+              if (lookup.fullName) resolvedName = lookup.fullName
+            }
           }
         }
-      }
 
-      try {
+        if (!emailToUse) {
+          throw new Error("Invalid name/WhatsApp number or password.")
+        }
+
         const authResult = await supabase.auth.signInWithPassword({
           email: emailToUse,
-
           password: password.trim(),
         })
 
         if (authResult.error) {
-          const message =
-            authResult.error.message.includes("Invalid login") ||
-            authResult.error.message.includes("invalid") ||
-            authResult.error.message.includes("password")
-              ? "Invalid name/WhatsApp number or password."
-              : authResult.error.message
-
-          throw new Error(message)
+          throw new Error("Invalid name/WhatsApp number or password.")
         }
 
-        let authenticatedUser: AloisAuthUser = {
+        const authenticatedUser: AloisAuthUser = {
           ...formData,
-
           fullName: resolvedName,
-
           username: resolvedName,
-
           email: emailToUse,
-        }
-
-        // Pull latest profile from Supabase
-
-        try {
-          const dbProfile = await getMyPatientProfile()
-
-          if (dbProfile) {
-            authenticatedUser = {
-              ...authenticatedUser,
-
-              fullName: dbProfile.full_name || authenticatedUser.fullName,
-
-              username: dbProfile.username || authenticatedUser.username,
-
-              phone: dbProfile.phone || authenticatedUser.phone,
-
-              age: dbProfile.age
-                ? String(dbProfile.age)
-                : authenticatedUser.age,
-
-              gender: dbProfile.gender || authenticatedUser.gender,
-
-              caregiverName:
-                dbProfile.caregiver_name || authenticatedUser.caregiverName,
-
-              caregiverPhone:
-                dbProfile.caregiver_phone || authenticatedUser.caregiverPhone,
-
-              caregiverEmail:
-                dbProfile.caregiver_email || authenticatedUser.caregiverEmail,
-            }
-          }
-        } catch {
-          // Use default user
+          isCaregiver: false,
         }
 
         completeAuthentication(authenticatedUser)
@@ -582,7 +645,6 @@ export default function AloisAuthContainer({
           err instanceof Error
             ? err.message
             : "Invalid name/WhatsApp number or password."
-
         setAuthError(message)
       } finally {
         setIsBusy(false)
@@ -595,25 +657,18 @@ export default function AloisAuthContainer({
       for (let index = otpDigits.length - 1; index >= 0; index -= 1) {
         if (otpDigits[index]) {
           const next = [...otpDigits]
-
           next[index] = ""
-
           setOtpDigits(next)
-
           break
         }
       }
-
       return
     }
 
     const index = otpDigits.findIndex((digit) => digit === "")
-
     if (index >= 0) {
       const next = [...otpDigits]
-
       next[index] = value
-
       setOtpDigits(next)
     }
   }
@@ -630,33 +685,54 @@ export default function AloisAuthContainer({
         {/* WhatsApp Credential Dispatch Modal */}
         {whatsAppData?.open && (
           <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-6 animate-in fade-in duration-200">
-            <div className="w-full bg-white rounded-3xl p-6 shadow-2xl text-center space-y-4 border border-emerald-100">
-              <div className="w-14 h-14 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
-                <CheckCircle2 className="w-8 h-8" />
+            <div className="w-full max-h-[720px] overflow-y-auto bg-white rounded-3xl p-5 shadow-2xl text-center space-y-3.5 border border-emerald-100">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
+                <CheckCircle2 className="w-7 h-7" />
               </div>
               <div>
-                <h3 className="text-[18px] font-bold text-[#161616]">
-                  Account Created!
+                <h3 className="text-[17px] font-bold text-[#161616]">
+                  Account & Caretaker Registered!
                 </h3>
-                <p className="text-[12px] text-[#525252] mt-1">
-                  Your login password was sent to WhatsApp:
+                <p className="text-[11px] text-[#525252] mt-0.5">
+                  Credentials prepared for WhatsApp delivery:
                 </p>
-                <div className="mt-2 py-1.5 px-3 rounded-lg bg-emerald-50 text-emerald-800 text-[13px] font-semibold border border-emerald-200 inline-block">
+                <div className="mt-1.5 py-1 px-3 rounded-lg bg-emerald-50 text-emerald-800 text-[12px] font-semibold border border-emerald-200 inline-block">
                   +{whatsAppData.phone}
                 </div>
               </div>
 
-              <div className="p-3 bg-slate-50 rounded-xl text-left text-[12px] space-y-1 text-slate-700 border border-slate-200">
+              <div className="p-3 bg-slate-50 rounded-xl text-left text-[11px] space-y-1.5 text-slate-700 border border-slate-200">
+                <div className="font-semibold text-slate-900 border-b pb-1 text-[12px] flex items-center gap-1">
+                  <User className="w-3.5 h-3.5 text-blue-600" />
+                  <span>Patient Credentials:</span>
+                </div>
                 <div>
-                  <span className="font-semibold text-slate-900">Name:</span>{" "}
+                  <span className="font-semibold">Name:</span>{" "}
                   {whatsAppData.fullName}
                 </div>
                 <div>
-                  <span className="font-semibold text-slate-900">
-                    Password:
-                  </span>{" "}
+                  <span className="font-semibold">Password:</span>{" "}
                   <span className="font-mono font-bold text-blue-600">
                     {whatsAppData.password}
+                  </span>
+                </div>
+
+                <div className="font-semibold text-slate-900 border-b pt-1.5 pb-1 text-[12px] flex items-center gap-1">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Caretaker Access:</span>
+                </div>
+                <div>
+                  <span className="font-semibold">Caretaker:</span>{" "}
+                  {whatsAppData.caregiverName}
+                </div>
+                <div>
+                  <span className="font-semibold">WhatsApp:</span> +
+                  {whatsAppData.caregiverPhone}
+                </div>
+                <div>
+                  <span className="font-semibold">Caretaker PIN:</span>{" "}
+                  <span className="font-mono font-bold text-emerald-700 bg-emerald-100/60 px-1 rounded">
+                    {whatsAppData.caregiverPin}
                   </span>
                 </div>
               </div>
@@ -666,7 +742,7 @@ export default function AloisAuthContainer({
                   href={whatsAppData.waUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="w-full py-3 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-[14px] font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors"
+                  className="w-full py-2.5 rounded-xl bg-[#25D366] hover:bg-[#20bd5a] text-white text-[13px] font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors"
                 >
                   <MessageSquare className="w-4 h-4" />
                   Open WhatsApp Message
@@ -678,10 +754,9 @@ export default function AloisAuthContainer({
                     if (whatsAppData.userToAuthenticate) {
                       completeAuthentication(whatsAppData.userToAuthenticate)
                     }
-
                     setWhatsAppModal(null)
                   }}
-                  className="w-full py-3 rounded-xl bg-[#0F62FE] hover:bg-[#0353e9] text-white text-[14px] font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors"
+                  className="w-full py-2.5 rounded-xl bg-[#0F62FE] hover:bg-[#0353e9] text-white text-[13px] font-semibold flex items-center justify-center gap-2 shadow-xs transition-colors"
                 >
                   <span>Continue to App</span>
                   <ArrowRight className="w-4 h-4" />
@@ -691,14 +766,14 @@ export default function AloisAuthContainer({
           </div>
         )}
 
-        {/* LOGIN SCREENS: You & Caregiver */}
+        {/* LOGIN SCREENS: You (Patient) & Caregiver (Caretaker) */}
         {(screen === "you" ||
           screen === "caregiver" ||
           screen === "caregiverVerify") && (
-          <div className="flex-1 overflow-y-auto px-6 pt-3 pb-6 flex flex-col justify-between">
+          <div className="flex-1 overflow-y-auto px-6 pt-2 pb-5 flex flex-col justify-between">
             <div>
               <AloisLogo />
-              <div className="text-center mb-4">
+              <div className="text-center mb-3">
                 <h1
                   style={{ fontFamily }}
                   className="text-[20px] font-bold text-[#161616]"
@@ -709,30 +784,29 @@ export default function AloisAuthContainer({
                   Choose who is signing in
                 </p>
                 {authError && (
-                  <p className="text-[12px] text-rose-600 mt-2">{authError}</p>
+                  <p className="text-[12px] text-rose-600 mt-2 bg-rose-50 p-2 rounded-lg border border-rose-200">
+                    {authError}
+                  </p>
                 )}
                 {authSuccess && (
-                  <p className="text-[12px] text-emerald-600 mt-2">
+                  <p className="text-[12px] text-emerald-600 mt-2 bg-emerald-50 p-2 rounded-lg border border-emerald-200">
                     {authSuccess}
                   </p>
                 )}
               </div>
 
-              {/* Tab Selector */}
-              <div className="flex border-b border-[#E0E0E0] mb-6">
+              {/* Tab Selector: Patient vs Caregiver */}
+              <div className="flex border-b border-[#E0E0E0] mb-5">
                 {([
-                  ["you", "You"],
-
-                  ["caregiver", "Caregiver"],
+                  ["you", "Patient"],
+                  ["caregiver", "Caretaker"],
                 ] as const).map(([tab, label]) => (
                   <button
                     key={tab}
                     type="button"
                     onClick={() => {
                       setAuthError(null)
-
                       setAuthSuccess(null)
-
                       setScreen(tab)
                     }}
                     className={`flex-1 py-2 text-[14px] font-medium text-center transition-all relative ${
@@ -763,7 +837,7 @@ export default function AloisAuthContainer({
                       onChange={(event) =>
                         setLoginIdentifier(event.target.value)
                       }
-                      placeholder="Enter your name or WhatsApp number"
+                      placeholder="Enter patient name or WhatsApp"
                       className={`${inputClass} mt-1.5`}
                     />
                   </label>
@@ -806,24 +880,90 @@ export default function AloisAuthContainer({
                 </div>
               )}
 
-              {/* Caregiver View */}
+              {/* Caregiver/Caretaker Access View */}
               {screen === "caregiver" && (
-                <div className="space-y-5 text-center pt-4">
-                  <p className="text-[14px] text-[#525252]">
-                    Generate your unique code
-                  </p>
+                <div className="space-y-3.5 pt-1">
+                  <div className="p-3 bg-blue-50/70 rounded-xl border border-blue-100 text-[12px] text-slate-700 leading-relaxed">
+                    <div className="font-semibold text-blue-900 flex items-center gap-1.5 mb-0.5">
+                      <Users className="w-4 h-4 text-blue-600" />
+                      <span>Caretaker Portal</span>
+                    </div>
+                    Sign in with your registered Caretaker WhatsApp number to
+                    monitor and assist your family member.
+                  </div>
+
+                  <label className="text-[12px] font-medium text-[#525252] block">
+                    Caretaker WhatsApp Number
+                    <input
+                      type="tel"
+                      value={caregiverPhoneInput}
+                      onChange={(event) =>
+                        setCaregiverPhoneInput(event.target.value)
+                      }
+                      placeholder="Caretaker WhatsApp (e.g. 9876543210)"
+                      className={`${inputClass} mt-1`}
+                    />
+                  </label>
+
+                  {/* 4-Digit PIN Input */}
+                  <label className="text-[12px] font-medium text-[#525252] block">
+                    4-Digit Caretaker PIN
+                    <span className="relative block mt-1">
+                      <input
+                        type={showCaregiverPin ? "text" : "password"}
+                        maxLength={4}
+                        value={caregiverPinInput}
+                        onChange={(event) =>
+                          setCaregiverPinInput(
+                            event.target.value.replace(/\D/g, "").slice(0, 4),
+                          )
+                        }
+                        placeholder="Enter 4-digit PIN"
+                        className={`${inputClass} pr-10 tracking-widest font-mono text-center text-[16px]`}
+                      />
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setShowCaregiverPin((visible) => !visible)
+                        }
+                        className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#525252]"
+                        aria-label={showCaregiverPin ? "Hide PIN" : "Show PIN"}
+                      >
+                        {showCaregiverPin ? (
+                          <EyeOff className="w-4 h-4" />
+                        ) : (
+                          <Eye className="w-4 h-4" />
+                        )}
+                      </button>
+                    </span>
+                  </label>
+
                   <button
                     type="button"
-                    onClick={() => {
-                      setOtpDigits(["7", "4", "2", "9"])
-
-                      setResendCountdown(56)
-
-                      setScreen("caregiverVerify")
-                    }}
-                    className="w-full py-3 rounded-lg bg-[#0F62FE] hover:bg-[#0353e9] text-white text-[14px] font-semibold shadow-xs transition-colors"
+                    onClick={() => void handleCaretakerPinLogin()}
+                    disabled={isBusy}
+                    className="w-full py-2.5 rounded-lg bg-[#0F62FE] hover:bg-[#0353e9] text-white text-[13px] font-semibold shadow-xs transition-colors disabled:opacity-60 flex items-center justify-center gap-2"
                   >
-                    Generate code
+                    <ShieldCheck className="w-4 h-4" />
+                    <span>{isBusy ? "Verifying..." : "Login with PIN"}</span>
+                  </button>
+
+                  <div className="relative flex py-0.5 items-center">
+                    <div className="grow border-t border-slate-200" />
+                    <span className="shrink mx-3 text-slate-400 text-[10px] uppercase tracking-wider font-semibold">
+                      Or One-Time Code
+                    </span>
+                    <div className="grow border-t border-slate-200" />
+                  </div>
+
+                  <button
+                    type="button"
+                    onClick={() => void handleGenerateCaretakerOtp()}
+                    disabled={isBusy}
+                    className="w-full py-2.5 rounded-lg border border-[#0F62FE] text-[#0F62FE] hover:bg-blue-50/50 text-[13px] font-semibold transition-colors flex items-center justify-center gap-2"
+                  >
+                    <KeyRound className="w-4 h-4" />
+                    <span>Generate Code (Request OTP)</span>
                   </button>
                 </div>
               )}
@@ -831,9 +971,43 @@ export default function AloisAuthContainer({
               {/* Caregiver Verification View */}
               {screen === "caregiverVerify" && (
                 <div className="space-y-3 pt-1">
-                  <p className="text-[12px] text-[#525252] text-center">
-                    Your unique code was sent to your caregiver
-                  </p>
+                  <div className="text-center space-y-1">
+                    <div className="text-[13px] font-bold text-slate-800">
+                      Enter 4-Digit Security Code
+                    </div>
+                    <p className="text-[11px] text-[#525252]">
+                      Verification code for caretaker:{" "}
+                      <span className="font-semibold text-slate-900">
+                        +{caregiverPhoneInput}
+                      </span>
+                    </p>
+                    {linkedPatientName && (
+                      <p className="text-[11px] text-blue-700 font-medium bg-blue-50 py-0.5 px-2 rounded-md inline-block">
+                        Patient: {linkedPatientName}
+                      </p>
+                    )}
+                  </div>
+
+                  {activeGeneratedOtp && (
+                    <div className="p-2.5 bg-emerald-50 border border-emerald-200 rounded-xl text-center space-y-1">
+                      <div className="text-[11px] font-semibold text-emerald-800">
+                        Active Time-Limited Code
+                      </div>
+                      <div className="text-[20px] font-mono font-bold tracking-widest text-emerald-900">
+                        {activeGeneratedOtp}
+                      </div>
+                      <button
+                        type="button"
+                        onClick={() =>
+                          setOtpDigits(activeGeneratedOtp.split(""))
+                        }
+                        className="text-[11px] text-emerald-700 underline font-medium hover:text-emerald-900"
+                      >
+                        Auto-fill code
+                      </button>
+                    </div>
+                  )}
+
                   <div className="flex justify-center gap-3 py-1">
                     {otpDigits.map((digit, index) => (
                       <div
@@ -848,52 +1022,59 @@ export default function AloisAuthContainer({
                       </div>
                     ))}
                   </div>
+
                   <button
                     type="button"
-                    onClick={() => {
-                      completeAuthentication({
-                        ...formData,
-
-                        fullName: formData.fullName || "Caregiver Patient",
-
-                        username: formData.username || "Caregiver Patient",
-                      })
-                    }}
+                    onClick={() => void handleVerifyCaretakerOtp()}
                     disabled={isBusy}
-                    className="w-full py-2.5 rounded-lg bg-[#0F62FE] hover:bg-[#0353e9] text-white text-[14px] font-semibold shadow-xs transition-colors"
+                    className="w-full py-2.5 rounded-lg bg-[#0F62FE] hover:bg-[#0353e9] text-white text-[14px] font-semibold shadow-xs transition-colors disabled:opacity-60"
                   >
-                    Verify
+                    {isBusy ? "Verifying..." : "Verify & Access Patient"}
                   </button>
-                  <div className="text-center text-[12px] text-[#525252]">
-                    Resend in 00:
-                    {resendCountdown < 10
-                      ? `0${resendCountdown}`
-                      : resendCountdown}
+
+                  <div className="flex items-center justify-between text-[11px] text-[#525252] pt-0.5">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setOtpDigits(["", "", "", ""])
+                        setScreen("caregiver")
+                      }}
+                      className="text-[#525252] hover:text-[#161616] underline"
+                    >
+                      ← Back
+                    </button>
+
+                    <div>
+                      {resendCountdown > 0 ? (
+                        <span>
+                          Expires in {Math.floor(resendCountdown / 60)}:
+                          {(resendCountdown % 60).toString().padStart(2, "0")}
+                        </span>
+                      ) : (
+                        <button
+                          type="button"
+                          onClick={() => void handleGenerateCaretakerOtp()}
+                          className="text-[#0F62FE] font-medium hover:underline"
+                        >
+                          Resend Code
+                        </button>
+                      )}
+                    </div>
                   </div>
-                  <div className="grid grid-cols-3 gap-1 pt-2">
+
+                  <div className="grid grid-cols-3 gap-1 pt-1">
                     {[
                       "1",
-
                       "2",
-
                       "3",
-
                       "4",
-
                       "5",
-
                       "6",
-
                       "7",
-
                       "8",
-
                       "9",
-
                       "",
-
                       "0",
-
                       "backspace",
                     ].map((key, index) =>
                       key ? (
@@ -901,7 +1082,7 @@ export default function AloisAuthContainer({
                           key={index}
                           type="button"
                           onClick={() => handleKeypadPress(key)}
-                          className="h-11 rounded-lg bg-[#F4F4F4] hover:bg-slate-200 flex items-center justify-center text-[#161616]"
+                          className="h-10 rounded-lg bg-[#F4F4F4] hover:bg-slate-200 flex items-center justify-center text-[#161616]"
                         >
                           {key === "backspace" ? (
                             <Delete className="w-5 h-5 text-[#525252]" />
@@ -910,7 +1091,7 @@ export default function AloisAuthContainer({
                           )}
                         </button>
                       ) : (
-                        <div key={index} className="h-11" />
+                        <div key={index} className="h-10" />
                       ),
                     )}
                   </div>
@@ -918,15 +1099,13 @@ export default function AloisAuthContainer({
               )}
             </div>
 
-            <div className="text-center pt-3 border-t border-[#E0E0E0]">
+            <div className="text-center pt-2.5 border-t border-[#E0E0E0]">
               <span className="text-[12px] text-[#525252]">New here? </span>
               <button
                 type="button"
                 onClick={() => {
                   setAuthError(null)
-
                   setAuthSuccess(null)
-
                   setScreen("register")
                 }}
                 className="text-[12px] font-medium text-[#0F62FE] hover:underline"
@@ -937,33 +1116,41 @@ export default function AloisAuthContainer({
           </div>
         )}
 
-        {/* REGISTER SCREEN: Name & WhatsApp Number */}
+        {/* REGISTER SCREEN: Patient & Caretaker Complete Form */}
         {screen === "register" && (
-          <div className="flex-1 overflow-y-auto px-6 pt-4 pb-6 flex flex-col justify-between">
+          <div className="flex-1 overflow-y-auto px-6 pt-2 pb-5 flex flex-col justify-between">
             <div>
               <AloisLogo />
-              <div className="text-center mb-4">
+              <div className="text-center mb-2.5">
                 <h1
                   style={{ fontFamily }}
-                  className="text-[20px] font-bold text-[#161616]"
+                  className="text-[19px] font-bold text-[#161616]"
                 >
                   Register
                 </h1>
-                <p className="text-[13px] text-[#525252] mt-0.5">
-                  Create your account
+                <p className="text-[12px] text-[#525252] mt-0.5">
+                  Patient & Caretaker Profile Setup
                 </p>
                 {authError && (
-                  <p className="text-[12px] text-rose-600 mt-2">{authError}</p>
+                  <p className="text-[12px] text-rose-600 mt-1.5 bg-rose-50 p-2 rounded-lg border border-rose-200">
+                    {authError}
+                  </p>
                 )}
                 {authSuccess && (
-                  <p className="text-[12px] text-emerald-600 mt-2">
+                  <p className="text-[12px] text-emerald-600 mt-1.5 bg-emerald-50 p-2 rounded-lg border border-emerald-200">
                     {authSuccess}
                   </p>
                 )}
               </div>
 
-              <div className="space-y-3.5">
-                {/* Full Name in place of Email */}
+              <div className="space-y-3">
+                {/* Section 1: Patient Information */}
+                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 pt-1 border-b border-slate-200 pb-1 flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5 text-[#0F62FE]" />
+                  <span>Patient Information</span>
+                </div>
+
+                {/* Full Name */}
                 <label className="text-[12px] font-medium text-[#525252] block">
                   Full Name
                   <input
@@ -972,12 +1159,12 @@ export default function AloisAuthContainer({
                     onChange={(event) =>
                       updateForm("fullName", event.target.value)
                     }
-                    placeholder="Enter your full name"
-                    className={`${inputClass} mt-1.5`}
+                    placeholder="Enter patient full name"
+                    className={`${inputClass} mt-1`}
                   />
                 </label>
 
-                {/* WhatsApp Phone Number */}
+                {/* Patient WhatsApp Phone Number */}
                 <label className="text-[12px] font-medium text-[#525252] block">
                   WhatsApp Number
                   <input
@@ -986,13 +1173,13 @@ export default function AloisAuthContainer({
                     onChange={(event) =>
                       updateForm("phone", event.target.value)
                     }
-                    placeholder="Enter your WhatsApp number (e.g. 9876543210)"
-                    className={`${inputClass} mt-1.5`}
+                    placeholder="Patient WhatsApp number (10 digits)"
+                    className={`${inputClass} mt-1`}
                   />
                 </label>
 
                 {/* Age and Gender */}
-                <div className="grid grid-cols-2 gap-3">
+                <div className="grid grid-cols-2 gap-2.5">
                   <label className="text-[12px] font-medium text-[#525252] block">
                     Age
                     <input
@@ -1004,7 +1191,7 @@ export default function AloisAuthContainer({
                         updateForm("age", event.target.value)
                       }
                       placeholder="Age"
-                      className={`${inputClass} mt-1.5`}
+                      className={`${inputClass} mt-1`}
                     />
                   </label>
                   <label className="text-[12px] font-medium text-[#525252] block">
@@ -1014,7 +1201,7 @@ export default function AloisAuthContainer({
                       onChange={(event) =>
                         updateForm("gender", event.target.value)
                       }
-                      className={`${inputClass} mt-1.5`}
+                      className={`${inputClass} mt-1`}
                     >
                       <option value="">Select</option>
                       <option value="Male">Male</option>
@@ -1024,15 +1211,15 @@ export default function AloisAuthContainer({
                   </label>
                 </div>
 
-                {/* Password with WhatsApp Dispatch Indicator */}
+                {/* Password */}
                 <label className="text-[12px] font-medium text-[#525252] block">
                   Password
-                  <span className="relative block mt-1.5">
+                  <span className="relative block mt-1">
                     <input
                       type={showRegPassword ? "text" : "password"}
                       value={password}
                       onChange={(event) => setPassword(event.target.value)}
-                      placeholder="Create a password"
+                      placeholder="Create login password (min 6 chars)"
                       className={`${inputClass} pr-10`}
                     />
                     <button
@@ -1052,12 +1239,82 @@ export default function AloisAuthContainer({
                   </span>
                 </label>
 
+                {/* Section 2: Caretaker Details */}
+                <div className="text-[11px] font-bold uppercase tracking-wider text-slate-500 pt-2 border-b border-slate-200 pb-1 flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600" />
+                  <span>Caretaker Information & Access</span>
+                </div>
+
+                {/* Caretaker Name */}
+                <label className="text-[12px] font-medium text-[#525252] block">
+                  Caretaker Name
+                  <input
+                    type="text"
+                    value={formData.caregiverName}
+                    onChange={(event) =>
+                      updateForm("caregiverName", event.target.value)
+                    }
+                    placeholder="Enter caretaker/family member name"
+                    className={`${inputClass} mt-1`}
+                  />
+                </label>
+
+                {/* Caretaker WhatsApp Number */}
+                <label className="text-[12px] font-medium text-[#525252] block">
+                  Caretaker WhatsApp Number
+                  <input
+                    type="tel"
+                    value={formData.caregiverPhone}
+                    onChange={(event) =>
+                      updateForm("caregiverPhone", event.target.value)
+                    }
+                    placeholder="Caretaker WhatsApp (10 digits)"
+                    className={`${inputClass} mt-1`}
+                  />
+                </label>
+
+                {/* Caretaker 4-digit PIN */}
+                <label className="text-[12px] font-medium text-[#525252] block">
+                  Caretaker PIN/OTP (4 digits)
+                  <span className="relative block mt-1">
+                    <input
+                      type={showCaregiverPin ? "text" : "password"}
+                      maxLength={4}
+                      value={formData.caregiverPin || ""}
+                      onChange={(event) =>
+                        updateForm(
+                          "caregiverPin",
+                          event.target.value.replace(/\D/g, "").slice(0, 4),
+                        )
+                      }
+                      placeholder="Set 4-digit security PIN"
+                      className={`${inputClass} pr-10 font-mono tracking-widest text-[15px]`}
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowCaregiverPin((v) => !v)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#525252]"
+                      aria-label={showCaregiverPin ? "Hide PIN" : "Show PIN"}
+                    >
+                      {showCaregiverPin ? (
+                        <EyeOff className="w-4 h-4" />
+                      ) : (
+                        <Eye className="w-4 h-4" />
+                      )}
+                    </button>
+                  </span>
+                  <span className="text-[11px] text-[#737373] mt-0.5 block">
+                    Used by caretaker for direct access and emergency clinician
+                    view.
+                  </span>
+                </label>
+
                 {/* WhatsApp Dispatch Notice */}
                 <div className="flex items-center gap-2 px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-800 text-[11px] leading-tight">
                   <span className="text-[14px]">📱</span>
                   <span>
-                    Your password will be securely sent to your{" "}
-                    <strong>WhatsApp number</strong> upon registration.
+                    Login credentials and caretaker PIN will be dispatched to
+                    WhatsApp upon registration.
                   </span>
                 </div>
 
@@ -1070,7 +1327,7 @@ export default function AloisAuthContainer({
                     className="w-4 h-4 mt-0.5 rounded border-slate-300 text-[#0F62FE] focus:ring-0"
                   />
                   <span>
-                    I agree to the terms of the Alzheimer's Association.
+                    I agree to the terms of the Alzheimer&apos;s Association.
                   </span>
                 </label>
 
@@ -1080,12 +1337,12 @@ export default function AloisAuthContainer({
                   disabled={isBusy}
                   className="w-full py-3 rounded-lg bg-[#0F62FE] hover:bg-[#0353e9] text-white text-[14px] font-semibold shadow-xs transition-colors disabled:opacity-60"
                 >
-                  {isBusy ? "Creating account..." : "Register & Send Password"}
+                  {isBusy ? "Creating accounts..." : "Register & Save Details"}
                 </button>
               </div>
             </div>
 
-            <div className="text-center pt-3 border-t border-[#E0E0E0]">
+            <div className="text-center pt-2.5 border-t border-[#E0E0E0]">
               <span className="text-[12px] text-[#525252]">
                 I already have an account,{" "}
               </span>
@@ -1093,9 +1350,7 @@ export default function AloisAuthContainer({
                 type="button"
                 onClick={() => {
                   setAuthError(null)
-
                   setAuthSuccess(null)
-
                   setScreen("you")
                 }}
                 className="text-[12px] font-medium text-[#0F62FE] hover:underline"
