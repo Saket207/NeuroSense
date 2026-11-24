@@ -172,6 +172,14 @@ import NoiseCheckCard from "./components/NoiseCheckCard"
 import AloisContainer from "./components/alois/AloisContainer"
 
 import CognitiveGamesHub from "./components/cognitiveGames/CognitiveGamesHub"
+import FamilySetupWizard from "./components/familySetup/FamilySetupWizard"
+import LifeMemorySession from "./components/lifeMemory/LifeMemorySession"
+import CognitiveTrendsView from "./components/trends/CognitiveTrendsView"
+import {
+  generateInitialSetup,
+  loadFamilySetup,
+} from "./services/familySetupStorage"
+import type { FamilySetupRecord } from "./types/familySetup"
 
 import { NoiseReading } from "./services/noiseCheck"
 
@@ -4057,6 +4065,8 @@ function NeuroSenseApp({
 
   const [screen, setScreen] = useState<Screen>("home")
   const [screenHistory, setScreenHistory] = useState<Screen[]>([])
+  const [activeFamilySetup, setActiveFamilySetup] =
+    useState<FamilySetupRecord | null>(null)
 
   const restoredSession = useRef(loadSession()).current
 
@@ -5837,6 +5847,8 @@ function NeuroSenseApp({
 
                   navigate("voiceIntro")
                 }}
+                onStartLifeMemoryCheck={() => navigate("familySetup")}
+                onOpenTrends={() => navigate("trends")}
                 onUploadVoiceFile={handleUploadVoiceScreening}
                 onViewReport={() => {
                   if (screeningsList[0]) {
@@ -10154,6 +10166,67 @@ function NeuroSenseApp({
               />
             </div>
             <HomeIndicator />
+          </div>
+        )
+
+      case "familySetup":
+        return (
+          <div className="flex-1 flex flex-col h-full bg-[#f8fafc] overflow-y-auto">
+            <FamilySetupWizard
+              patientId={patientProfile?.patientId || "elder_1"}
+              elderName={
+                patientProfile?.fullName ||
+                activeMember?.displayName ||
+                userName ||
+                "Elder"
+              }
+              onComplete={(completedSetup) => {
+                setActiveFamilySetup(completedSetup)
+                navigate("lifeMemory")
+              }}
+              onCancel={() => navigate("home")}
+            />
+          </div>
+        )
+
+      case "lifeMemory":
+        return (
+          <div className="flex-1 flex flex-col h-full bg-[#f8fafc] overflow-y-auto">
+            <LifeMemorySession
+              setup={
+                activeFamilySetup ||
+                generateInitialSetup(
+                  patientProfile?.patientId || "elder_1",
+                  patientProfile?.fullName ||
+                    activeMember?.displayName ||
+                    userName ||
+                    "Elder",
+                )
+              }
+              onComplete={(results, scoreData) => {
+                console.log("Life Memory check completed:", results, scoreData)
+                navigate("trends")
+              }}
+              onCancel={() => navigate("home")}
+            />
+          </div>
+        )
+
+      case "trends":
+        return (
+          <div className="flex-1 flex flex-col h-full bg-[#f8fafc] overflow-y-auto">
+            <CognitiveTrendsView
+              patientId={patientProfile?.patientId || "elder_1"}
+              patientName={
+                patientProfile?.fullName ||
+                activeMember?.displayName ||
+                userName ||
+                "Elder"
+              }
+              onStartNewScreening={() => navigate("familySetup")}
+              onUpdateRecentEvents={() => navigate("familySetup")}
+              onBack={() => navigate("home")}
+            />
           </div>
         )
 

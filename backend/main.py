@@ -17,6 +17,10 @@ from auth_store import auth_store
 from screening_jobs import job_manager, no_speech_message, warm_engine
 from supabase_service import supabase_service
 from task_scoring import TASKS
+from life_memory_matcher import score_life_fact_answer, compute_life_memory_score
+from unified_scorer import compute_unified_screening_score, compute_informant_concern_score, MANDATORY_DISCLAIMER
+from language_registry import SUPPORTED_LANGUAGES, VOICE_PROMPTS
+from model_interface import quantum_model_interface
 
 # Configure backend logger
 logging.basicConfig(level=logging.INFO)
@@ -81,6 +85,40 @@ class CaretakerPinLoginPayload(BaseModel):
 
 class LookupPayload(BaseModel):
     identifier: str
+
+
+class LifeMemoryMatchPayload(BaseModel):
+    transcript: str
+    target_answer: str
+    aliases: Optional[list] = None
+    stage: Optional[str] = "free"
+    distractors: Optional[list] = None
+    fact_type: Optional[str] = None
+    lang: Optional[str] = "en"
+    latency_ms: Optional[int] = None
+
+
+class ComputeLifeMemoryScorePayload(BaseModel):
+    results: list
+
+
+class InformantScorePayload(BaseModel):
+    items: list
+    contact_frequency: Optional[str] = "daily"
+
+
+class ScoreScreeningPayload(BaseModel):
+    life_memory_score: Optional[float] = None
+    naming_score: Optional[float] = None
+    speech_score: Optional[float] = None
+    informant_score: Optional[float] = None
+    schooling_years: Optional[int] = 10
+    audio_snr_db: Optional[float] = 20.0
+    retry_rate: Optional[float] = 0.0
+    confounders: Optional[dict] = None
+    informant_details: Optional[dict] = None
+    life_memory_details: Optional[dict] = None
+    patient_id: Optional[str] = None
 
 # Configure CORS: support ALLOWED_ORIGINS env var for production frontend domains (comma-separated),
 # while preserving standard local development origins.
@@ -777,6 +815,112 @@ async def analyze_audio(
             saved_path.unlink(missing_ok=True)
         except Exception:
             pass
+
+
+# ---------------------------------------------------------------------------
+# Family-Verified Life Memory Check & Unified CSI Endpoints
+# ---------------------------------------------------------------------------
+
+@app.post("/api/match-life-memory")
+def match_life_memory(payload: LifeMemoryMatchPayload):
+    """
+    Evaluates patient response against family-verified target answer and aliases across 5 layers.
+    Returns stage-credited score, match type, confidence, and reason.
+    """
+    res = score_life_fact_answer(
+        transcript=payload.transcript,
+        target_answer=payload.target_answer,
+        aliases=payload.aliases or [],
+        stage=payload.stage or "free",
+        distractors=payload.distractors or [],
+        fact_type=payload.fact_type,
+        lang=payload.lang or "en",
+        latency_ms=payload.latency_ms,
+    )
+    return {
+        "is_correct": res.is_correct,
+        "is_partial": res.is_partial,
+        "credit": res.credit,
+        "stage_reached": res.stage_reached,
+        "match_type": res.match_type,
+        "confidence": res.confidence,
+        "matched_text": res.matched_text,
+        "target_answer": res.target_answer,
+        "transcript": res.transcript,
+        "reason": res.reason,
+        "metadata": res.metadata,
+    }
+
+
+@app.post("/api/compute-life-memory-score")
+def compute_life_memory_score_endpoint(payload: ComputeLifeMemoryScorePayload):
+    """
+    Computes weighted Life Memory Score (M in [0, 100]) and remote vs. recent episodic breakdown.
+    """
+    return compute_life_memory_score(payload.results)
+
+
+@app.post("/api/compute-informant-score")
+def compute_informant_score_endpoint(payload: InformantScorePayload):
+    """
+    Computes Informant Concern Score (I in [0, 100]) from 16 daily-life questions.
+    """
+    return compute_informant_concern_score(
+        items=payload.items,
+        contact_frequency=payload.contact_frequency or "daily",
+    )
+
+
+@app.post("/api/score-screening")
+def score_screening_endpoint(payload: ScoreScreeningPayload):
+    """
+    Computes Unified Cognitive Screening Index (CSI in [0, 100]).
+    Applies dynamic weight renormalisation, safety overrides, discordance checks,
+    confidence penalties, and explainability drivers.
+    """
+    scored = compute_unified_screening_score(
+        life_memory_score=payload.life_memory_score,
+        naming_score=payload.naming_score,
+        speech_score=payload.speech_score,
+        informant_score=payload.informant_score,
+        schooling_years=payload.schooling_years,
+        audio_snr_db=payload.audio_snr_db,
+        retry_rate=payload.retry_rate,
+        confounders=payload.confounders,
+        informant_details=payload.informant_details,
+        life_memory_details=payload.life_memory_details,
+    )
+    return {
+        "csi": scored.csi,
+        "risk_tier": scored.risk_tier,
+        "tier_label": scored.tier_label,
+        "confidence": scored.confidence,
+        "is_inconclusive": scored.is_inconclusive,
+        "components": scored.components,
+        "weights_used": scored.weights_used,
+        "safety_override_triggered": scored.safety_override_triggered,
+        "safety_alert_message": scored.safety_alert_message,
+        "discordance_flags": scored.discordance_flags,
+        "education_adjusted": scored.education_adjusted,
+        "top_drivers": scored.top_drivers,
+        "disclaimer": scored.disclaimer,
+        "metadata": scored.metadata,
+    }
+
+
+@app.get("/api/languages")
+def get_supported_languages():
+    """Returns data-driven registry of launch languages and voice prompts."""
+    return {
+        "languages": SUPPORTED_LANGUAGES,
+        "voice_prompts": VOICE_PROMPTS,
+    }
+
+
+@app.get("/api/model-info")
+def get_model_information():
+    """Returns quantum-classical hybrid model metadata and production feature contract."""
+    return quantum_model_interface.get_metadata()
 
 
 if __name__ == "__main__":

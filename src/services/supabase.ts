@@ -20,6 +20,12 @@ const supabaseServiceKey =
   import.meta.env.VITE_SUPABASE_SERVICE_ROLE_KEY as string | undefined ||
   DEFAULT_SUPABASE_SERVICE_ROLE_KEY
 
+export interface SupabaseAdminUserRecord {
+  id?: string
+  email?: string
+  user_metadata?: Record<string, any>
+}
+
 export const supabase: SupabaseClient = createClient(
   supabaseUrl,
 
@@ -385,18 +391,16 @@ export async function syncUserProfileToSupabase(
       if (listRes.ok) {
         const usersData = await listRes.json()
         const users = usersData.users || []
-        const found = users.find(
-          (u: { email?: string user_metadata?: Record<string, any> }) => {
-            const m = u.user_metadata || {}
-            return (
-              (virtualEmail && u.email === virtualEmail) ||
-              (profile.fullName &&
-                String(m.full_name || "").toLowerCase() ===
-                  profile.fullName.toLowerCase()) ||
-              (phoneKey && m.clean_phone === phoneKey)
-            )
-          },
-        )
+        const found = users.find((u: SupabaseAdminUserRecord) => {
+          const m = u.user_metadata || {}
+          return (
+            (virtualEmail && u.email === virtualEmail) ||
+            (profile.fullName &&
+              String(m.full_name || "").toLowerCase() ===
+                profile.fullName.toLowerCase()) ||
+            (phoneKey && m.clean_phone === phoneKey)
+          )
+        })
         if (found) targetUserId = found.id
       }
     }
@@ -469,17 +473,15 @@ export async function loadUserProfileFromSupabase(
 
     const usersData = await listRes.json()
     const users = usersData.users || []
-    const match = users.find(
-      (u: { email?: string user_metadata?: Record<string, any> }) => {
-        const m = u.user_metadata || {}
-        return (
-          (phoneKey && m.clean_phone === phoneKey) ||
-          (raw &&
-            String(m.full_name || "").toLowerCase() === raw.toLowerCase()) ||
-          (u.email && u.email.toLowerCase() === raw.toLowerCase())
-        )
-      },
-    )
+    const match = users.find((u: SupabaseAdminUserRecord) => {
+      const m = u.user_metadata || {}
+      return (
+        (phoneKey && m.clean_phone === phoneKey) ||
+        (raw &&
+          String(m.full_name || "").toLowerCase() === raw.toLowerCase()) ||
+        (u.email && u.email.toLowerCase() === raw.toLowerCase())
+      )
+    })
     if (!match) return null
 
     const meta = match.user_metadata || {}

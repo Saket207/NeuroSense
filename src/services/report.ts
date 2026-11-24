@@ -252,3 +252,220 @@ export function generateAndDownloadReport(session: ScreeningSession): void {
     a.click()
   }
 }
+
+export function generateUnifiedCSIReport(data: {
+  patientName: string
+  patientAge: number
+  patientGender?: string
+  schoolingYears?: number
+  language?: string
+  csi: number
+  riskTier: string
+  tierLabel: string
+  confidence: number
+  components: {
+    life_memory?: number
+    naming?: number
+    speech_acoustic?: number
+    informant_concern?: number
+  }
+  lifeMemoryDetails?: {
+    remote_score?: number
+    recent_score?: number
+    episodic_gap?: number
+  }
+  factsTable?: Array<{
+    question: string
+    target_answer: string
+    transcript: string
+    stage_reached: string
+    credit: number
+  }>
+  topDrivers?: string[]
+  discordanceFlags?: Array<{
+    summary: string
+    code?: string
+  }>
+  safetyAlertMessage?: string
+}): void {
+  const dateFormatted = new Date().toLocaleString("en-IN", {
+    dateStyle: "long",
+    timeStyle: "short",
+  })
+
+  const tierColor =
+    data.riskTier === "green"
+      ? "#16a34a"
+      : data.riskTier === "amber"
+        ? "#d97706"
+        : "#dc2626"
+
+  const tierBg =
+    data.riskTier === "green"
+      ? "#dcfce7"
+      : data.riskTier === "amber"
+        ? "#fef3c7"
+        : "#fee2e2"
+
+  const tableRows = (data.factsTable || [])
+    .map(
+      (f, i) => `
+    <tr style="border-bottom: 1px solid #e2e8f0; font-size: 12px;">
+      <td style="padding: 8px 6px;">${i + 1}</td>
+      <td style="padding: 8px 6px; font-weight: 600;">${f.question}</td>
+      <td style="padding: 8px 6px; color: #4338ca;">${f.target_answer}</td>
+      <td style="padding: 8px 6px;"><em>"${f.transcript}"</em></td>
+      <td style="padding: 8px 6px; text-transform: capitalize;">${f.stage_reached}</td>
+      <td style="padding: 8px 6px; font-weight: bold; color: ${
+        f.credit >= 0.5 ? "#16a34a" : "#dc2626"
+      };">${f.credit}</td>
+    </tr>`,
+    )
+    .join("")
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>NeuroSense Unified Cognitive Screening Report - ${data.patientName}</title>
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; background: #f8fafc; color: #0f172a; margin: 0; padding: 24px; }
+    .container { max-width: 820px; margin: 0 auto; background: #ffffff; padding: 36px; border-radius: 16px; border: 1px solid #e2e8f0; box-shadow: 0 4px 20px rgba(0,0,0,0.05); }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; border-bottom: 2px solid #e2e8f0; padding-bottom: 16px; margin-bottom: 20px; }
+    .title { font-size: 22px; font-weight: 800; color: #1e1b4b; margin: 0; }
+    .subtitle { font-size: 13px; color: #64748b; margin-top: 4px; }
+    .meta-box { text-align: right; font-size: 12px; color: #64748b; }
+    .tier-card { background: ${tierBg}; border: 1px solid ${tierColor}40; border-radius: 12px; padding: 16px; margin-bottom: 20px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px; }
+    .stat-card { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px; text-align: center; }
+    .stat-label { font-size: 11px; color: #64748b; text-transform: uppercase; font-weight: 600; }
+    .stat-val { font-size: 20px; font-weight: 800; color: #0f172a; margin-top: 4px; }
+    .section-title { font-size: 13px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #475569; margin-bottom: 10px; border-left: 4px solid #4338ca; padding-left: 8px; }
+    table { width: 100%; border-collapse: collapse; text-align: left; }
+    th { background: #f1f5f9; padding: 8px 6px; font-size: 11px; font-weight: 700; color: #475569; text-transform: uppercase; }
+    .disclaimer-box { background: #eff6ff; border: 1px solid #bfdbfe; border-radius: 10px; padding: 14px; font-size: 12px; color: #1e40af; line-height: 1.5; margin-top: 24px; }
+    .family-box { background: #faf5ff; border: 1px solid #e9d5ff; border-radius: 12px; padding: 18px; margin-top: 24px; }
+    .print-btn { display: block; margin: 24px auto 0; padding: 12px 24px; background: #4338ca; color: white; font-weight: 700; border: none; border-radius: 8px; cursor: pointer; }
+    @media print { .print-btn { display: none; } body { background: white; padding: 0; } .container { border: none; box-shadow: none; padding: 0; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div>
+        <h1 class="title">NeuroSense Unified Cognitive Screening Report</h1>
+        <div class="subtitle">Family-Verified Life Memory Check & Unified Screening Aid</div>
+      </div>
+      <div class="meta-box">
+        <div><strong>Date:</strong> ${dateFormatted}</div>
+        <div><strong>Patient:</strong> ${data.patientName} (${data.patientAge}y, ${data.patientGender || "Elder"})</div>
+        <div><strong>Schooling:</strong> ${data.schoolingYears || 0} years</div>
+      </div>
+    </div>
+
+    <!-- Tier Card -->
+    <div class="tier-card">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <span style="font-size: 16px; font-weight: 800; color: ${tierColor};">
+          ${data.tierLabel}
+        </span>
+        <span style="background: ${tierColor}; color: white; padding: 4px 12px; border-radius: 20px; font-size: 12px; font-weight: bold;">
+          CSI: ${data.csi} / 100 · Confidence: ${data.confidence}%
+        </span>
+      </div>
+      <p style="margin: 0; font-size: 13px; color: #334155;">
+        Unified Cognitive Screening Index combines personal lived memory, picture-naming, speech acoustic features, and 5-year daily life change reports.
+      </p>
+      ${
+        data.safetyAlertMessage
+          ? `<div style="margin-top: 8px; font-size: 12px; font-weight: bold; color: #b91c1c;">⚠️ ${data.safetyAlertMessage}</div>`
+          : ""
+      }
+    </div>
+
+    <!-- Component Breakdown -->
+    <div class="section-title">Cognitive Domain Breakdown</div>
+    <div class="grid-4">
+      <div class="stat-card">
+        <div class="stat-label">Life Memory (M)</div>
+        <div class="stat-val" style="color: #4338ca;">${data.components.life_memory ?? "—"}</div>
+        <div style="font-size: 10px; color: #64748b; margin-top: 2px;">Weight: 40%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Picture Naming (N)</div>
+        <div class="stat-val">${data.components.naming ?? "—"}</div>
+        <div style="font-size: 10px; color: #64748b; margin-top: 2px;">Weight: 20%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Speech Acoustic (S)</div>
+        <div class="stat-val">${data.components.speech_acoustic ?? "—"}</div>
+        <div style="font-size: 10px; color: #64748b; margin-top: 2px;">Weight: 10%</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Informant Concern (I)</div>
+        <div class="stat-val" style="color: ${
+          (data.components.informant_concern ?? 0) >= 50 ? "#dc2626" : "#16a34a"
+        };">${data.components.informant_concern ?? "—"}</div>
+        <div style="font-size: 10px; color: #64748b; margin-top: 2px;">Weight: 30%</div>
+      </div>
+    </div>
+
+    <!-- Table of Tested Facts -->
+    ${
+      tableRows
+        ? `
+      <div class="section-title">Verified Life Facts Recall Detail</div>
+      <div style="overflow-x: auto; margin-bottom: 24px;">
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Question Prompt</th>
+              <th>Target Fact</th>
+              <th>Spoken Response</th>
+              <th>Stage</th>
+              <th>Credit</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${tableRows}
+          </tbody>
+        </table>
+      </div>`
+        : ""
+    }
+
+    <!-- Family Friendly Guidance -->
+    <div class="family-box">
+      <h3 style="margin: 0 0 8px 0; font-size: 15px; font-weight: 700; color: #6b21a8;">
+        Family Summary & Next Steps
+      </h3>
+      <p style="margin: 0 0 10px 0; font-size: 13px; color: #4c1d95; line-height: 1.5;">
+        Share these findings with your doctor during your next visit. This screening measures recall of personally meaningful life events and daily habits without academic or language bias.
+      </p>
+      <ul style="margin: 0 0 0 16px; padding: 0; font-size: 12px; color: #374151;">
+        <li>Review any recent changes in sleep, stress, or medications.</li>
+        <li>Schedule periodic screening every 3–6 months to establish a personal trajectory.</li>
+      </ul>
+    </div>
+
+    <!-- Mandatory Regulatory Disclaimer -->
+    <div class="disclaimer-box">
+      <strong>Clinical Safety Notice:</strong> This is a screening aid, not a diagnosis. Only a doctor can diagnose. Many factors such as tiredness, hearing loss, low mood, or medication can affect results.
+    </div>
+
+    <button class="print-btn" onclick="window.print()">Print or Save as PDF</button>
+  </div>
+</body>
+</html>`
+
+  const blob = new Blob([html], { type: "text/html" })
+  const url = URL.createObjectURL(blob)
+  const win = window.open(url, "_blank")
+  if (!win) {
+    const a = document.createElement("a")
+    a.href = url
+    a.download = `NeuroSense_CSI_Report_${data.patientName.replace(/\s+/g, "_")}.html`
+    a.click()
+  }
+}

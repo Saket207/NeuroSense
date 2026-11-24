@@ -36,6 +36,10 @@ interface AloisHomeDashboardProps {
 
   onStartVoiceCheck: () => void
 
+  onStartLifeMemoryCheck?: () => void
+
+  onOpenTrends?: () => void
+
   onUploadVoiceFile?: (file: File, task?: string, duration?: number) => void
 
   onSelectTab: (tab: AloisTab) => void
@@ -62,6 +66,10 @@ export default function AloisHomeDashboard({
   latestSession,
 
   onStartVoiceCheck,
+
+  onStartLifeMemoryCheck,
+
+  onOpenTrends,
 
   onUploadVoiceFile,
 
@@ -172,6 +180,58 @@ export default function AloisHomeDashboard({
                 <Check className="w-3 h-3" /> Latest Score: {confidencePct}%
               </span>
             )}
+          </div>
+
+          {/* Family-Verified Life Memory Check (Zero Literacy Bias) */}
+          <div
+            onClick={onStartLifeMemoryCheck || onStartVoiceCheck}
+            className="w-full rounded-2xl bg-gradient-to-br from-indigo-900 via-indigo-800 to-indigo-950 text-white p-5 relative overflow-hidden shadow-md cursor-pointer active:scale-[0.99] transition-all group border border-indigo-700/50"
+          >
+            <div className="relative z-10 flex items-start gap-3.5">
+              <div className="w-[52px] h-[52px] rounded-2xl bg-indigo-500 text-white flex items-center justify-center shadow-md shrink-0 group-hover:scale-105 transition-transform">
+                <span className="text-2xl">📖</span>
+              </div>
+              <div className="flex-1 min-w-0">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded-full border border-indigo-500/30">
+                  Autobiographical Lived Memory
+                </span>
+                <h3
+                  style={{ fontFamily }}
+                  className="text-[18px] font-bold text-white tracking-tight leading-tight mt-1"
+                >
+                  Family Life Memory Check
+                </h3>
+                <p className="text-[12px] text-indigo-200 mt-1 leading-snug">
+                  Zero-literacy screening based on family-verified life facts
+                  and daily habits.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-4 pt-3 border-t border-indigo-700/50 flex items-center justify-between gap-2">
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onOpenTrends?.()
+                }}
+                className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-indigo-100 text-[11px] font-medium flex items-center gap-1 border border-white/10 transition-all cursor-pointer"
+              >
+                <span>📈 View Trends</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  onStartLifeMemoryCheck?.()
+                }}
+                className="px-3.5 py-1.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-[12px] font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer"
+              >
+                <span>Setup & Start</span>
+                <ChevronRight className="w-3.5 h-3.5" />
+              </button>
+            </div>
           </div>
 
           <div

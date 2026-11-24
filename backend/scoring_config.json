@@ -1,0 +1,90 @@
+{
+  "version": "1.0.0",
+  "last_updated": "2026-11-25",
+  "status": "provisional",
+  "provisional_disclaimer": "Thresholds, weights, and scoring rules are provisional clinical decision-support parameters and will be refined upon completion of multicentric cohort calibration under ABDM guidelines.",
+  "composite_weights": {
+    "life_memory": 0.40,
+    "picture_naming": 0.20,
+    "speech_acoustics": 0.10,
+    "informant_concern": 0.30
+  },
+  "life_memory_fact_weights": {
+    "recent_event": 1.50,
+    "children_grandchildren": 1.25,
+    "standard": 1.00
+  },
+  "staged_retrieval_credits": {
+    "free_recall_correct": 1.00,
+    "free_recall_partial": 0.60,
+    "cued_recall_correct": 0.50,
+    "recognition_correct": 0.25,
+    "incorrect_or_no_answer": 0.00
+  },
+  "numeric_tolerances": {
+    "year": {
+      "exact_tolerance": 2,
+      "partial_tolerance": 5
+    },
+    "age": {
+      "exact_tolerance": 1,
+      "partial_tolerance": 3
+    },
+    "count": {
+      "exact_tolerance": 0,
+      "partial_tolerance": 1
+    },
+    "marriage_year_correct_delta": 2,
+    "marriage_year_partial_delta": 5,
+    "years_married_correct_delta": 2,
+    "years_married_partial_delta": 5
+  },
+  "risk_thresholds": {
+    "green_min_csi": 75.0,
+    "amber_min_csi": 55.0,
+    "inconclusive_confidence_cutoff": 50.0
+  },
+  "informant_scoring": {
+    "frequency_scores": {
+      "never": 0.0,
+      "rarely": 1.0,
+      "sometimes": 2.0,
+      "often": 3.0
+    },
+    "onset_multipliers": {
+      "under_6_months": 1.35,
+      "6_to_12_months": 1.20,
+      "1_to_3_years": 1.05,
+      "over_3_years": 1.00,
+      "not_sure": 1.00
+    },
+    "safety_item_multiplier": 1.60,
+    "reliability_weights": {
+      "daily": 1.00,
+      "weekly": 0.85,
+      "rarely": 0.60
+    }
+  },
+  "education_adjustment": {
+    "low_schooling_years_threshold": 5,
+    "green_band_widening_points": 5.0
+  },
+  "discordance_rules": {
+    "high_informant_threshold": 65.0,
+    "elder_high_csi_threshold": 75.0,
+    "low_informant_threshold": 30.0,
+    "elder_low_csi_threshold": 55.0
+  },
+  "confidence_deductions": {
+    "hearing_difficulty": 12.0,
+    "vision_difficulty": 5.0,
+    "poor_sleep": 8.0,
+    "recent_bereavement": 10.0,
+    "recent_illness": 10.0,
+    "sedating_medication": 12.0,
+    "today_unwell_anxious": 10.0,
+    "snr_below_20db": 15.0,
+    "snr_below_10db": 25.0,
+    "per_unclear_asr_item": 5.0
+  }
+}
