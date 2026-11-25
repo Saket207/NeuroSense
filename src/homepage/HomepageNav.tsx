@@ -14,6 +14,7 @@ export default function HomepageNav({
   onEnterApp,
 }: HomepageNavProps) {
   const [isScrolled, setIsScrolled] = useState(false)
+  const [scrollPercent, setScrollPercent] = useState(0)
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
   const t = translations[currentLang].nav
 
@@ -27,8 +28,15 @@ export default function HomepageNav({
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 20)
+      const total = document.documentElement.scrollHeight - window.innerHeight
+      if (total > 0) {
+        setScrollPercent(
+          Math.min(100, Math.max(0, (window.scrollY / total) * 100)),
+        )
+      }
     }
     window.addEventListener("scroll", handleScroll, { passive: true })
+    handleScroll()
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
@@ -231,6 +239,14 @@ export default function HomepageNav({
             </button>
           </div>
         )}
+      </div>
+
+      {/* Slim Scroll Progress Indicator */}
+      <div className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-transparent overflow-hidden">
+        <div
+          className="h-full bg-gradient-to-r from-[#80103A] via-[#200110] to-[#F4A261] transition-all duration-150 ease-out"
+          style={{ width: `${scrollPercent}%` }}
+        />
       </div>
     </header>
   )
