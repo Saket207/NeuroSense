@@ -4052,6 +4052,8 @@ function NeuroSenseApp({
   onSwitchMember,
 
   onLogout,
+
+  onOpenHomepage,
 }: {
   authenticatedName: string
 
@@ -4072,6 +4074,8 @@ function NeuroSenseApp({
   onSwitchMember: (member?: HouseholdMember) => void
 
   onLogout: () => void
+
+  onOpenHomepage?: () => void
 }) {
   // Caregiver gate. Only destructive or outbound actions pass through here;
 
@@ -4477,26 +4481,23 @@ function NeuroSenseApp({
     }
   }
 
-  const navigate = useCallback(
-    (s: Screen, options?: { replace?: boolean }) => {
-      stopSpeech()
+  const navigate = useCallback((s: Screen, options?: { replace?: boolean }) => {
+    stopSpeech()
 
-      setScreen((current) => {
-        if (current !== s && !options?.replace) {
-          setScreenHistory((prev) => [...prev, current])
+    setScreen((current) => {
+      if (current !== s && !options?.replace) {
+        setScreenHistory((prev) => [...prev, current])
 
-          try {
-            window.history.pushState({ screen: s }, "", "")
-          } catch {
-            // ignore in environments without history API
-          }
+        try {
+          window.history.pushState({ screen: s }, "", "")
+        } catch {
+          // ignore in environments without history API
         }
+      }
 
-        return s
-      })
-    },
-    [],
-  )
+      return s
+    })
+  }, [])
 
   const goBack = useCallback(() => {
     stopSpeech()
@@ -10421,6 +10422,18 @@ function NeuroSenseApp({
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Home / About (Returns to the new public editorial Homepage) */}
+          {onOpenHomepage && (
+            <button
+              onClick={onOpenHomepage}
+              className="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-[#38bdf8] hover:text-white cursor-pointer"
+              title="Go to Homepage / About"
+            >
+              <HomeIcon className="w-3.5 h-3.5 text-[#38bdf8]" />
+              <span>Home / About</span>
+            </button>
+          )}
+
           {/* Quick Demo Studio Toggle */}
           <button
             onClick={() => {
@@ -10478,6 +10491,25 @@ function NeuroSenseApp({
                   onClick={() => setShowRestartMenu(false)}
                 />
                 <div className="absolute left-0 sm:right-0 sm:left-auto top-full mt-2 w-64 rounded-2xl bg-[#03222a] border border-[#0d4f5e] shadow-2xl p-1.5 z-50 animate-fade-in text-xs space-y-1">
+                  {onOpenHomepage && (
+                    <button
+                      onClick={() => {
+                        setShowRestartMenu(false)
+                        onOpenHomepage()
+                      }}
+                      className="w-full px-3 py-2 rounded-xl text-left hover:bg-[#073c4b] text-slate-200 hover:text-white transition-colors flex items-center gap-2.5 cursor-pointer"
+                    >
+                      <HomeIcon className="w-4 h-4 text-[#38bdf8] shrink-0" />
+                      <div>
+                        <div className="font-bold text-white">
+                          Homepage / About
+                        </div>
+                        <div className="text-[10px] text-slate-400">
+                          View the editorial homepage & product intro
+                        </div>
+                      </div>
+                    </button>
+                  )}
                   <button
                     onClick={onLogout}
                     className="w-full px-3 py-2 rounded-xl text-left hover:bg-[#073c4b] text-slate-200 hover:text-white transition-colors flex items-center gap-2.5"
@@ -10994,6 +11026,12 @@ export default function App() {
           setIsAuthenticated(true)
         }}
         fontFamily={F.display}
+        onBackToHome={() => {
+          setShowLanding(true)
+          if (typeof window !== "undefined") {
+            window.location.hash = "home"
+          }
+        }}
       />
     )
   }
@@ -11019,6 +11057,12 @@ export default function App() {
       }}
       onSwitchMember={handleSwitchMember}
       onLogout={handleLogout}
+      onOpenHomepage={() => {
+        setShowLanding(true)
+        if (typeof window !== "undefined") {
+          window.location.hash = "home"
+        }
+      }}
     />
   )
 }

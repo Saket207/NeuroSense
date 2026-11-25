@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react"
 import {
+  ArrowLeft,
   ArrowRight,
   CheckCircle2,
   Delete,
@@ -49,6 +50,7 @@ export interface AloisAuthUser {
 interface AloisAuthContainerProps {
   onAuthenticated: (user: AloisAuthUser) => void
   fontFamily?: string
+  onBackToHome?: () => void
 }
 
 type AuthScreen = "you" | "caregiver" | "caregiverVerify" | "register"
@@ -104,6 +106,7 @@ const inputClass =
 export default function AloisAuthContainer({
   onAuthenticated,
   fontFamily = "'Outfit', sans-serif",
+  onBackToHome,
 }: AloisAuthContainerProps) {
   const [screen, setScreen] = useState<AuthScreen>("you")
   const [loginIdentifier, setLoginIdentifier] = useState("")
@@ -779,6 +782,18 @@ export default function AloisAuthContainer({
           screen === "caregiverVerify") && (
           <div className="flex-1 overflow-y-auto px-6 pt-2 pb-5 flex flex-col justify-between">
             <div>
+              {onBackToHome && (
+                <div className="flex items-center justify-between mb-2">
+                  <button
+                    type="button"
+                    onClick={onBackToHome}
+                    className="text-xs font-semibold text-[#02738a] hover:text-[#015364] flex items-center gap-1.5 transition-colors cursor-pointer"
+                  >
+                    <ArrowLeft className="w-3.5 h-3.5" />
+                    <span>Homepage / About</span>
+                  </button>
+                </div>
+              )}
               <AloisLogo />
               <div className="text-center mb-3">
                 <h1
