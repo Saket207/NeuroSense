@@ -182,6 +182,7 @@ import {
 import type { FamilySetupRecord } from "./types/familySetup"
 
 const DemoStudioDrawer = React.lazy(() => import("./demo/DemoStudioDrawer"))
+const Homepage = React.lazy(() => import("./homepage/Homepage"))
 
 const isDemoModeEnabled = (): boolean => {
   if (typeof window === "undefined") return false
@@ -10560,6 +10561,33 @@ function createFallbackPatientId(): string {
 }
 
 export default function App() {
+  const [showLanding, setShowLanding] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      const hash = window.location.hash
+      const search = window.location.search
+      if (
+        hash.includes("app") ||
+        hash.includes("legacy-home") ||
+        search.includes("app=1")
+      ) {
+        return false
+      }
+    }
+    return true
+  })
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash
+      if (hash.includes("app") || hash.includes("legacy-home")) {
+        setShowLanding(false)
+      } else if (hash.includes("home") || hash === "" || hash === "#") {
+        setShowLanding(true)
+      }
+    }
+    window.addEventListener("hashchange", handleHashChange)
+    return () => window.removeEventListener("hashchange", handleHashChange)
+  }, [])
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     try {
       const activeSession =
@@ -10826,6 +10854,21 @@ export default function App() {
     setActiveMember(null)
 
     setIsAuthenticated(false)
+  }
+
+  if (showLanding) {
+    return (
+      <React.Suspense fallback={<div className="min-h-screen bg-[#0B0F19]" />}>
+        <Homepage
+          onEnterApp={() => {
+            setShowLanding(false)
+            if (typeof window !== "undefined") {
+              window.location.hash = "app"
+            }
+          }}
+        />
+      </React.Suspense>
+    )
   }
 
   if (!isAuthenticated) {

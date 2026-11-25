@@ -1,0 +1,149 @@
+/* NeuroSense Homepage — scoped styles */
+/* All classes use .ns-hp prefix to avoid leaking into the in-app experience */
+
+.ns-hp {
+  --hp-bg-deep: #0B0F19;
+  --hp-bg-surface: #111827;
+  --hp-bg-card: rgba(17, 24, 39, 0.7);
+  --hp-bg-card-hover: rgba(31, 41, 55, 0.85);
+  --hp-text-primary: #FFFFFF;
+  --hp-text-secondary: #94A3B8;
+  --hp-text-muted: #64748B;
+  --hp-border: rgba(255, 255, 255, 0.08);
+  --hp-border-hover: rgba(14, 165, 233, 0.35);
+  --hp-accent: #02738A;
+  --hp-accent-hover: #038fa8;
+  --hp-accent-light: #0EA5E9;
+  --hp-accent-glow: rgba(2, 115, 138, 0.25);
+  --hp-success: #10B981;
+  --hp-warning: #F59E0B;
+  --hp-rose: #F43F5E;
+  --hp-font-display: 'Plus Jakarta Sans', 'Outfit', system-ui, sans-serif;
+  --hp-font-body: 'Inter', 'Noto Sans', system-ui, sans-serif;
+
+  background-color: var(--hp-bg-deep);
+  color: var(--hp-text-primary);
+  font-family: var(--hp-font-body);
+  scroll-behavior: smooth;
+  min-height: 100vh;
+}
+
+.ns-hp * {
+  box-sizing: border-box;
+}
+
+/* Container */
+.ns-hp-container {
+  width: 100%;
+  max-width: 1240px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+@media (min-width: 640px) {
+  .ns-hp-container {
+    padding: 0 32px;
+  }
+}
+
+@media (min-width: 1024px) {
+  .ns-hp-container {
+    padding: 0 48px;
+  }
+}
+
+/* Section vertical rhythm */
+.ns-hp-section {
+  padding: 72px 0;
+  position: relative;
+}
+
+@media (min-width: 768px) {
+  .ns-hp-section {
+    padding: 100px 0;
+  }
+}
+
+@media (min-width: 1280px) {
+  .ns-hp-section {
+    padding: 128px 0;
+  }
+}
+
+/* Subtle background glows */
+.ns-hp-ambient-glow {
+  position: absolute;
+  pointer-events: none;
+  border-radius: 9999px;
+  filter: blur(120px);
+  z-index: 0;
+}
+
+/* Marquee track */
+@keyframes ns-hp-marquee {
+  0% {
+    transform: translateX(0%);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+
+.ns-hp-marquee-track {
+  display: flex;
+  width: 200%;
+  animation: ns-hp-marquee 36s linear infinite;
+}
+
+.ns-hp-marquee-track:hover {
+  animation-play-state: paused;
+}
+
+/* Waveform pulse */
+@keyframes ns-hp-bar-pulse {
+  0%, 100% {
+    transform: scaleY(0.25);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+.ns-hp-bar {
+  animation: ns-hp-bar-pulse 1.4s ease-in-out infinite;
+  transform-origin: bottom;
+}
+
+/* Floating animation */
+@keyframes ns-hp-float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-8px);
+  }
+}
+
+.ns-hp-floating {
+  animation: ns-hp-float 5s ease-in-out infinite;
+}
+
+/* Reduced motion accessibility */
+@media (prefers-reduced-motion: reduce) {
+  .ns-hp-marquee-track {
+    animation: none;
+  }
+  .ns-hp-bar {
+    animation: none;
+    transform: scaleY(0.6);
+  }
+  .ns-hp-floating {
+    animation: none;
+  }
+  .ns-hp * {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+  }
+}
