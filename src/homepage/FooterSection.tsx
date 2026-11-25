@@ -49,7 +49,7 @@ export default function FooterSection({
         {/* Main 2-Column Split matching f_14 */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 pb-16">
           {/* Left Column: Brand, Mission & Clinical Safety Notice */}
-          <div className="lg:col-span-5 space-y-6">
+          <div className="lg:col-span-5 space-y-6 lg:border-r lg:border-[rgba(32,1,16,0.08)] lg:pr-12">
             {/* Logo Mark + Wordmark */}
             <div className="flex items-center gap-2.5">
               <div className="w-8 h-8 rounded-full bg-[#200110] flex items-center justify-center text-[#FBFAF8] flex-shrink-0">
@@ -90,6 +90,12 @@ export default function FooterSection({
               {t.disclaimer}
             </div>
 
+            {/* Illustrative Notice */}
+            <div className="text-[11px] text-[#6E6268]/80 leading-normal">
+              Note: All elder and healthcare photographs are illustrative
+              demonstrations created to respect and protect family privacy.
+            </div>
+
             {/* Quick Language Switcher in Footer */}
             <div className="flex items-center gap-2 text-xs font-semibold text-[#6E6268] pt-2">
               <span>Language:</span>
@@ -110,11 +116,8 @@ export default function FooterSection({
             </div>
           </div>
 
-          {/* Thin Vertical Divider (Desktop) */}
-          <div className="hidden lg:block lg:col-span-1 border-r border-[rgba(32,1,16,0.08)] h-full" />
-
           {/* Right Column: Link Columns + Newsletter Field (matching f_14 right) */}
-          <div className="lg:col-span-6 space-y-10">
+          <div className="lg:col-span-7 space-y-10">
             {/* 3 Link Columns */}
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-8">
               {/* Col 1 */}

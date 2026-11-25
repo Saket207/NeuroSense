@@ -1,0 +1,43 @@
+<svg width="400" height="240" viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="obsBg" x1="0" y1="0" x2="400" y2="240" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDFBF9" />
+      <stop offset="1" stop-color="#F5EFEA" />
+    </linearGradient>
+  </defs>
+
+  <rect width="400" height="240" rx="20" fill="url(#obsBg)" stroke="#200110" stroke-opacity="0.08" />
+
+  <!-- Header Row of Matrix -->
+  <rect x="24" y="24" width="352" height="36" rx="10" fill="#200110" />
+  <text x="44" y="46" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#FFFFFF">16 Family Observation Markers</text>
+  <rect x="280" y="32" width="84" height="20" rx="6" fill="#FFFFFF" fill-opacity="0.15" />
+  <text x="322" y="46" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#F4F08A" text-anchor="middle">Weighted IQCODE</text>
+
+  <!-- Row 1: Memory of Recent Conversations -->
+  <rect x="24" y="68" width="352" height="42" rx="10" fill="#FFFFFF" stroke="#200110" stroke-opacity="0.06" />
+  <circle cx="44" cy="89" r="10" fill="#E6F4EA" />
+  <path d="M40 89 L43 92 L48 86" stroke="#137333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="64" y="87" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#200110">Recent Conversations Recall</text>
+  <text x="64" y="100" font-family="Inter, sans-serif" font-size="9" fill="#6E6268">No significant change noted by daughter</text>
+  <rect x="300" y="78" width="64" height="22" rx="6" fill="#F6F5F1" />
+  <text x="332" y="93" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#137333" text-anchor="middle">Stable</text>
+
+  <!-- Row 2: Finding Everyday Household Objects -->
+  <rect x="24" y="118" width="352" height="42" rx="10" fill="#FFFFFF" stroke="#200110" stroke-opacity="0.06" />
+  <circle cx="44" cy="139" r="10" fill="#FEF7E0" />
+  <text x="44" y="143" font-family="Inter, sans-serif" font-size="12" font-weight="700" fill="#B06000" text-anchor="middle">!</text>
+  <text x="64" y="137" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#200110">Misplacing Common Items</text>
+  <text x="64" y="150" font-family="Inter, sans-serif" font-size="9" fill="#6E6268">Occasional mild misplacement (glasses, keys)</text>
+  <rect x="300" y="128" width="64" height="22" rx="6" fill="#FEF7E0" />
+  <text x="332" y="143" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#B06000" text-anchor="middle">Mild (1x/wk)</text>
+
+  <!-- Row 3: Managing Personal Finances / Medication -->
+  <rect x="24" y="168" width="352" height="42" rx="10" fill="#FFFFFF" stroke="#200110" stroke-opacity="0.06" />
+  <circle cx="44" cy="189" r="10" fill="#E6F4EA" />
+  <path d="M40 189 L43 192 L48 186" stroke="#137333" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+  <text x="64" y="187" font-family="Inter, sans-serif" font-size="11" font-weight="600" fill="#200110">Medication & Daily Routine Independence</text>
+  <text x="64" y="200" font-family="Inter, sans-serif" font-size="9" fill="#6E6268">Independent with daily medicine routine</text>
+  <rect x="300" y="178" width="64" height="22" rx="6" fill="#F6F5F1" />
+  <text x="332" y="193" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#137333" text-anchor="middle">Independent</text>
+</svg>

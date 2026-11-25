@@ -108,7 +108,27 @@ export interface HomepageContent {
     leftCardTitle: string
     leftCardDesc: string
     leftCardButton: string
-    items: Array<{ q: string; a: string }>
+    items: Array<{ q: string a: string }>
+  }
+  story: {
+    chap1: string
+    bridge1: string
+    chap2: string
+    bridge2: string
+    chap3: string
+    bridge3: string
+    chap4: string
+    bridge4: string
+    chap5: string
+    bridge5: string
+    chap6: string
+    bridge6: string
+    chap7: string
+    ctaTitle: string
+    ctaSub: string
+    ctaButton: string
+    ctaSecondary: string
+    imageIllustrativeNotice: string
   }
   footer: {
     tagline: string
@@ -285,6 +305,33 @@ export const translations: Record<LanguageCode, HomepageContent> = {
           a: "You receive an explainable report with a confidence level and next steps. If concerning signs are found, you can download a structured summary to take to a physician or neurologist.",
         },
       ],
+    },
+    story: {
+      chap1: "01 · The Worry",
+      bridge1:
+        "When small changes start showing, why does conventional testing fall short?",
+      chap2: "02 · Why It's Missed",
+      bridge2:
+        "So how do you check for cognitive change without asking someone to read or write?",
+      chap3: "03 · A Different Way",
+      bridge3:
+        "Here is how a four-minute conversation turns personal memories into clinical clarity.",
+      chap4: "04 · How It Works",
+      bridge4:
+        "Can a spoken conversation really be as reliable as a formal clinical battery?",
+      chap5: "05 · Why You Can Trust It",
+      bridge5:
+        "Designed for real homes across every neighbourhood and village.",
+      chap6: "06 · Who It Helps",
+      bridge6: "Ready to check in on someone you love today?",
+      chap7: "07 · The Next Step",
+      ctaTitle: "Start your family's baseline check today",
+      ctaSub:
+        "A 4-minute spoken screening that respects dignity, speaks your mother tongue, and creates a clear summary for your doctor.",
+      ctaButton: "Start a Family Screening",
+      ctaSecondary: "Explore Clinical Dashboard",
+      imageIllustrativeNotice:
+        "All family and healthcare photos are illustrative examples created for demonstration.",
     },
     footer: {
       tagline:
@@ -466,6 +513,29 @@ export const translations: Record<LanguageCode, HomepageContent> = {
         },
       ],
     },
+    story: {
+      chap1: "01 · चिंता की शुरुआत",
+      bridge1: "जब छोटे-छोटे बदलाव दिखने लगें, तो पारंपरिक जांच क्यों पीछे रह जाती है?",
+      chap2: "02 · क्यों छूट जाती है पहचान",
+      bridge2: "तो बिना पढ़ना-लिखना जाने याददाश्त में बदलाव की जांच कैसे की जाए?",
+      chap3: "03 · एक नया और सरल मार्ग",
+      bridge3:
+        "देखिए कैसे चार मिनट की बातचीत व्यक्तिगत यादों को चिकित्सकीय स्पष्टता में बदलती है।",
+      chap4: "04 · यह कैसे काम करता है",
+      bridge4: "क्या सिर्फ बातचीत से इतनी विश्वसनीय जांच संभव है?",
+      chap5: "05 · आप इस पर भरोसा क्यों कर सकते हैं",
+      bridge5: "हर घर, मोहल्ले और गांव के लिए विशेष रूप से तैयार।",
+      chap6: "06 · यह किसकी मदद करता है",
+      bridge6: "क्या आप आज किसी अपने की खैरियत जांचने के लिए तैयार हैं?",
+      chap7: "07 · अगला कदम",
+      ctaTitle: "आज ही अपने परिवार की प्रारंभिक जांच शुरू करें",
+      ctaSub:
+        "4 मिनट की सरल आवाज-आधारित जांच जो सम्मान देती है, आपकी मातृभाषा बोलती है, और डॉक्टर के लिए स्पष्ट रिपोर्ट बनाती है।",
+      ctaButton: "परिवार की जांच शुरू करें",
+      ctaSecondary: "डॉक्टर डैशबोर्ड देखें",
+      imageIllustrativeNotice:
+        "सभी चित्र और परिस्थितियां परिवार की गरिमा और सुरक्षा के लिए प्रतीकात्मक उदाहरण हैं।",
+    },
     footer: {
       tagline:
         "बुजुर्गों के लिए आवाज-आधारित, बहुभाषी प्रारंभिक संज्ञानात्मक स्क्रीनिंग सहायता।",
@@ -639,6 +709,28 @@ export const translations: Record<LanguageCode, HomepageContent> = {
           a: "ನಿಮಗೆ ಸ್ಪಷ್ಟವಾದ ಸಾರಾಂಶ ವರದಿ ದೊರೆಯುತ್ತದೆ. ಒಂದು ವೇಳೆ ಯಾವುದೇ ಎಚ್ಚರಿಕೆಯ ಅಂಶಗಳಿದ್ದರೆ, ಆ ವರದಿಯೊಂದಿಗೆ ವೈದ್ಯರನ್ನು ಸಂಪರ್ಕಿಸಿ ಸಮಾಲೋಚನೆ ನಡೆಸಬಹುದು.",
         },
       ],
+    },
+    story: {
+      chap1: "01 · ಆತಂಕದ ಆರಂಭ",
+      bridge1: "ಸಣ್ಣ ಬದಲಾವಣೆಗಳು ಕಾಣಿಸಿಕೊಂಡಾಗ, ಸಾಂಪ್ರದಾಯಿಕ ಪರೀಕ್ಷೆಗಳು ಏಕೆ ಸಾಲದು?",
+      chap2: "02 · ಏಕೆ ಗಮನಕ್ಕೆ ಬರುವುದಿಲ್ಲ",
+      bridge2: "ಹಾಗಾದರೆ ಓದು-ಬರಹ ಕೇಳದೆ ನೆನಪಿನ ಬದಲಾವಣೆಯನ್ನು ಪರೀಕ್ಷಿಸುವುದು ಹೇಗೆ?",
+      chap3: "03 · ಹೊಸ ಮತ್ತು ಗೌರವಯುತ ಮಾರ್ಗ",
+      bridge3:
+        "ನಾಲ್ಕು ನಿಮಿಷಗಳ ಸರಳ ಮಾತುಕತೆ ಹೇಗೆ ನೆನಪುಗಳನ್ನು ವೈದ್ಯಕೀಯ ಸ್ಪಷ್ಟತೆಯನ್ನಾಗಿ ಪರಿವರ್ತಿಸುತ್ತದೆ ನೋಡಿ.",
+      chap4: "04 · ಇದು ಹೇಗೆ ಕಾರ್ಯನಿರ್ವಹಿಸುತ್ತದೆ",
+      bridge4: "ಕೇವಲ ಧ್ವನಿ ಮಾತುಕತೆಯಿಂದ ಇಷ್ಟೊಂದು ನಿಖರವಾದ ಪರೀಕ್ಷೆ ಸಾಧ್ಯವೇ?",
+      chap5: "05 · ನೀವು ಏಕೆ ನಂಬಬಹುದು",
+      bridge5: "ಪ್ರತಿಯೊಂದು ಮನೆ ಮತ್ತು ಊರಿಗಾಗಿ ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ.",
+      chap6: "06 · ಇದು ಯಾರಿಗೆ ಸಹಕಾರಿ",
+      bridge6: "ಇಂದೇ ನಿಮ್ಮ ಹಿರಿಯರ ಕ್ಷೇಮವನ್ನು ಪರೀಕ್ಷಿಸಲು ಸಿದ್ಧರಿದ್ದೀರಾ?",
+      chap7: "07 · ಮುಂದಿನ ಹಂತ",
+      ctaTitle: "ಇಂದೇ ನಿಮ್ಮ ಕುಟುಂಬದ ನೆನಪಿನ ಪರೀಕ್ಷೆ ಪ್ರಾರಂಭಿಸಿ",
+      ctaSub: "4 ನಿಮಿಷಗಳ ಗೌರವಯುತ ಧ್ವನಿ ಪರೀಕ್ಷೆ, ನಿಮ್ಮದೇ ಮಾತೃಭಾಷೆ, ಮತ್ತು ವೈದ್ಯರಿಗಾಗಿ ಸ್ಪಷ್ಟ ವರದಿ.",
+      ctaButton: "ಪರೀಕ್ಷೆ ಪ್ರಾರಂಭಿಸಿ",
+      ctaSecondary: "ವೈದ್ಯರ ಡ್ಯಾಶ್‌ಬೋರ್ಡ್ ವೀಕ್ಷಿಸಿ",
+      imageIllustrativeNotice:
+        "ಎಲ್ಲಾ ಛಾಯಾಚಿತ್ರಗಳು ಕುಟುಂಬದ ಗೌರವಕ್ಕಾಗಿ ರೂಪಿಸಲಾದ ಸಾಂಕೇತಿಕ ಚಿತ್ರಗಳಾಗಿವೆ.",
     },
     footer: {
       tagline: "ಹಿರಿಯರಿಗಾಗಿ ಧ್ವನಿ-ಆಧಾರಿತ, ಬಹುಭಾಷಾ ಪ್ರಾಥಮಿಕ ಅರಿವಿನ ತಪಾಸಣಾ ಸಹಾಯಕ ಸಾಧನ.",

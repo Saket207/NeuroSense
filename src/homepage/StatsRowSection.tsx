@@ -16,6 +16,7 @@ interface StatsRowSectionProps {
  */
 export default function StatsRowSection({ currentLang }: StatsRowSectionProps) {
   const t = translations[currentLang].stats
+  const story = translations[currentLang].story
 
   const serifClass =
     currentLang === "hi"
@@ -25,8 +26,22 @@ export default function StatsRowSection({ currentLang }: StatsRowSectionProps) {
         : styles.fontSerif
 
   return (
-    <section className="py-12 border-y border-[rgba(32,1,16,0.06)] bg-[#FBFAF8]">
+    <section
+      id="why-missed"
+      className="py-14 border-y border-[rgba(32,1,16,0.06)] bg-[#FBFAF8]"
+    >
       <div className={styles.container}>
+        {/* Chapter 02 Pill */}
+        <div className="mb-8 flex items-center justify-between">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-[#200110] text-[#FBFAF8] text-[12px] font-bold shadow-2xs">
+            <span className="w-1.5 h-1.5 rounded-full bg-[#F4F08A] animate-pulse" />
+            <span>{story.chap2}</span>
+          </div>
+          <span className="text-[12px] text-[#6E6268]">
+            Why conventional testing is missed in India
+          </span>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
           {/* Avatar stack with dark circular pill (matching f_01.jpg left) */}
           <div className="md:col-span-3 flex items-center gap-3">
@@ -90,6 +105,14 @@ export default function StatsRowSection({ currentLang }: StatsRowSectionProps) {
                 {t.stat3Label}
               </span>
             </div>
+          </div>
+        </div>
+
+        {/* Bridge Line 02 */}
+        <div className="mt-12 text-center">
+          <div className="inline-flex items-center gap-2.5 px-5 py-2.5 rounded-full bg-[#F6F5F1] border border-[rgba(32,1,16,0.08)] text-[13px] sm:text-[14px] text-[#200110] font-medium shadow-2xs hover:bg-white transition-colors">
+            <span>{story.bridge2}</span>
+            <span className="text-[#80103A] font-bold">↓</span>
           </div>
         </div>
       </div>

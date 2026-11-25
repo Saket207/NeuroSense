@@ -1,0 +1,49 @@
+<svg width="400" height="240" viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="voiceBg" x1="0" y1="0" x2="400" y2="240" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FDFBF9" />
+      <stop offset="1" stop-color="#F5EFEA" />
+    </linearGradient>
+    <linearGradient id="waveGrad" x1="0" y1="0" x2="400" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#200110" />
+      <stop offset="0.5" stop-color="#80103A" />
+      <stop offset="1" stop-color="#F4A261" />
+    </linearGradient>
+    <linearGradient id="glowGrad" x1="200" y1="80" x2="200" y2="160" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#80103A" stop-opacity="0.25" />
+      <stop offset="1" stop-color="#80103A" stop-opacity="0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background Card -->
+  <rect width="400" height="240" rx="20" fill="url(#voiceBg)" stroke="#200110" stroke-opacity="0.08" />
+
+  <!-- Subtle Grid Lines -->
+  <line x1="40" y1="60" x2="360" y2="60" stroke="#200110" stroke-opacity="0.04" stroke-dasharray="4 4" />
+  <line x1="40" y1="120" x2="360" y2="120" stroke="#200110" stroke-opacity="0.08" />
+  <line x1="40" y1="180" x2="360" y2="180" stroke="#200110" stroke-opacity="0.04" stroke-dasharray="4 4" />
+
+  <!-- Spectrogram Area Under Curve -->
+  <path d="M40 120 C 70 80, 90 160, 120 120 C 140 90, 160 50, 180 120 C 200 190, 220 70, 250 120 C 280 170, 310 90, 360 120 L 360 180 L 40 180 Z" fill="url(#glowGrad)" />
+
+  <!-- Main Acoustic Waveform -->
+  <path d="M40 120 C 70 70, 90 170, 120 120 C 140 85, 160 45, 180 120 C 200 195, 220 65, 250 120 C 280 175, 310 85, 360 120" stroke="url(#waveGrad)" stroke-width="3.5" stroke-linecap="round" />
+
+  <!-- Envelope / Formant Contour -->
+  <path d="M40 105 C 80 60, 130 40, 180 75 C 230 110, 280 50, 360 95" stroke="#F4A261" stroke-width="1.8" stroke-dasharray="3 3" opacity="0.8" />
+
+  <!-- Measurement Markers -->
+  <circle cx="160" cy="45" r="4.5" fill="#200110" />
+  <rect x="135" y="16" width="50" height="20" rx="10" fill="#200110" />
+  <text x="160" y="30" font-family="Inter, sans-serif" font-size="10" font-weight="700" fill="#FFFFFF" text-anchor="middle">Pitch F0</text>
+
+  <circle cx="220" cy="65" r="4.5" fill="#80103A" />
+  <rect x="230" y="55" width="62" height="20" rx="10" fill="#FFFFFF" stroke="#200110" stroke-opacity="0.1" />
+  <text x="261" y="69" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#200110" text-anchor="middle">Formant F2</text>
+
+  <rect x="40" y="196" width="90" height="24" rx="8" fill="#FFFFFF" stroke="#200110" stroke-opacity="0.08" />
+  <text x="85" y="212" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#200110" text-anchor="middle">Latency: 280ms</text>
+
+  <rect x="270" y="196" width="90" height="24" rx="8" fill="#FFFFFF" stroke="#200110" stroke-opacity="0.08" />
+  <text x="315" y="212" font-family="Inter, sans-serif" font-size="10" font-weight="600" fill="#0F766E" text-anchor="middle">Stability: 94.2%</text>
+</svg>

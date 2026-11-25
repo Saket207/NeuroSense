@@ -81,12 +81,13 @@
   border: 1px solid var(--hp-border-light);
 }
 
-/* Dark section */
+/* Dark section with subtle curved transition borders */
 .darkSection {
   background-color: var(--hp-dark);
   color: var(--hp-dark-text);
-  border-top: 1px solid var(--hp-dark);
-  border-bottom: 1px solid var(--hp-dark);
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  position: relative;
 }
 
 /* Pill Badge */
@@ -173,10 +174,25 @@
   padding: 24px 28px;
 }
 
+/* Smooth Image Transitions */
+.imageCard {
+  transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+}
+
+.imageCard:hover {
+  transform: scale(1.02);
+}
+
 /* Reduced motion */
 @media (prefers-reduced-motion: reduce) {
   .marqueeRowLeft,
   .marqueeRowRight {
     animation: none;
+  }
+  .imageCard {
+    transition: none;
+  }
+  .imageCard:hover {
+    transform: none;
   }
 }
