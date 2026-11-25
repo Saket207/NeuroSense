@@ -172,21 +172,29 @@ import NoiseCheckCard from "./components/NoiseCheckCard"
 import AloisContainer from "./components/alois/AloisContainer"
 
 import CognitiveGamesHub from "./components/cognitiveGames/CognitiveGamesHub"
+
 import FamilySetupWizard from "./components/familySetup/FamilySetupWizard"
+
 import LifeMemorySession from "./components/lifeMemory/LifeMemorySession"
+
 import CognitiveTrendsView from "./components/trends/CognitiveTrendsView"
+
 import {
   generateInitialSetup,
   loadFamilySetup,
 } from "./services/familySetupStorage"
+
 import type { FamilySetupRecord } from "./types/familySetup"
 
 const DemoStudioDrawer = React.lazy(() => import("./demo/DemoStudioDrawer"))
+
 const Homepage = React.lazy(() => import("./homepage/Homepage"))
 
 const isDemoModeEnabled = (): boolean => {
   if (typeof window === "undefined") return false
+
   const params = new URLSearchParams(window.location.search)
+
   return (
     params.get("demo") === "1" ||
     (import.meta as any).env?.VITE_DEMO_MODE === "true"
@@ -3795,6 +3803,7 @@ function AudioBtn({
 
 interface BackBtnProps {
   onBack: () => void
+
   title?: string
 }
 
@@ -4054,7 +4063,9 @@ function NeuroSenseApp({
 
   onUpdateActiveMember?: (updated: {
     photo?: string
+
     name?: string
+
     age?: number
   }) => void
 
@@ -4076,10 +4087,14 @@ function NeuroSenseApp({
     setPendingGatedAction({ label, run })
 
   const [screen, setScreen] = useState<Screen>("home")
+
   const [screenHistory, setScreenHistory] = useState<Screen[]>([])
+
   const [activeFamilySetup, setActiveFamilySetup] =
     useState<FamilySetupRecord | null>(null)
+
   const [inspectorState, setInspectorState] = useState<any | null>(null)
+
   const [demoMode, setDemoMode] = useState<boolean>(() => isDemoModeEnabled())
 
   const restoredSession = useRef(loadSession()).current
@@ -4212,8 +4227,11 @@ function NeuroSenseApp({
     }
 
     reviewAudioRef.current
+
       .play()
+
       .then(() => setIsReviewPlaying(true))
+
       .catch((err) => {
         console.error("[NeuroSense] Playback error:", err)
 
@@ -4256,15 +4274,20 @@ function NeuroSenseApp({
       if (patientProfile.caregiverName) {
         setCaregiverName(patientProfile.caregiverName)
       }
+
       if (patientProfile.caregiverPhone) {
         setCaregiverPhone(patientProfile.caregiverPhone)
       }
+
       if (patientProfile.fullName) {
         setEditName(patientProfile.fullName)
+
         setUserName(patientProfile.fullName)
       }
+
       if (patientProfile.age) {
         setEditAge(String(patientProfile.age))
+
         setUserAge(Number(patientProfile.age))
       }
     }
@@ -4454,39 +4477,55 @@ function NeuroSenseApp({
     }
   }
 
-  const navigate = useCallback((s: Screen, options?: { replace?: boolean }) => {
-    stopSpeech()
-    setScreen((current) => {
-      if (current !== s && !options?.replace) {
-        setScreenHistory((prev) => [...prev, current])
-        try {
-          window.history.pushState({ screen: s }, "", "")
-        } catch {
-          // ignore in environments without history API
+  const navigate = useCallback(
+    (s: Screen, options?: { replace?: boolean }) => {
+      stopSpeech()
+
+      setScreen((current) => {
+        if (current !== s && !options?.replace) {
+          setScreenHistory((prev) => [...prev, current])
+
+          try {
+            window.history.pushState({ screen: s }, "", "")
+          } catch {
+            // ignore in environments without history API
+          }
         }
-      }
-      return s
-    })
-  }, [])
+
+        return s
+      })
+    },
+    [],
+  )
 
   const goBack = useCallback(() => {
     stopSpeech()
+
     setScreenHistory((prevHistory) => {
       if (prevHistory.length > 0) {
         const previousScreen = prevHistory[prevHistory.length - 1]
+
         setScreen(previousScreen)
+
         return prevHistory.slice(0, -1)
       }
+
       setScreen((current) => {
         if (current === "doctorPatient") return "doctorDash"
+
         if (current === "doctorReport") return "doctorPatient"
+
         if (current === "screeningDetails" || current === "trend")
           return "history"
+
         if (current === "doctorDash" || current === "cognitiveGamesHub")
           return "home"
+
         if (current !== "home") return "home"
+
         return current
       })
+
       return []
     })
   }, [])
@@ -4495,7 +4534,9 @@ function NeuroSenseApp({
     const handlePopState = () => {
       goBack()
     }
+
     window.addEventListener("popstate", handlePopState)
+
     return () => window.removeEventListener("popstate", handlePopState)
   }, [goBack])
 
@@ -4583,6 +4624,7 @@ function NeuroSenseApp({
 
       if (recordingContext === "pictureDesc") {
         pictureBlobRef.current = res.blob
+
         pictureDurationRef.current = res.durationSeconds
       }
 
@@ -5878,18 +5920,24 @@ function NeuroSenseApp({
                 onUpdateProfile={(updated) => {
                   if (updated.patientName) {
                     setUserName(updated.patientName)
+
                     setEditName(updated.patientName)
                   }
+
                   if (updated.caregiverName) {
                     setCaregiverName(updated.caregiverName)
                   }
+
                   if (updated.caregiverPhone) {
                     setCaregiverPhone(updated.caregiverPhone)
                   }
+
                   if (updated.age) {
                     setUserAge(Number(updated.age))
+
                     setEditAge(String(updated.age))
                   }
+
                   if (updated.photo) {
                     onUpdateActiveMember?.({ photo: updated.photo })
                   }
@@ -6356,6 +6404,7 @@ function NeuroSenseApp({
                   onClick={() => {
                     if (reviewAudioRef.current) {
                       reviewAudioRef.current.pause()
+
                       setIsReviewPlaying(false)
                     }
 
@@ -6393,8 +6442,10 @@ function NeuroSenseApp({
                   onClick={() => {
                     if (reviewAudioRef.current) {
                       reviewAudioRef.current.pause()
+
                       setIsReviewPlaying(false)
                     }
+
                     navigate("recording")
                   }}
                   variant="ghost"
@@ -10196,6 +10247,7 @@ function NeuroSenseApp({
               }
               onComplete={(completedSetup) => {
                 setActiveFamilySetup(completedSetup)
+
                 navigate("lifeMemory")
               }}
               onCancel={() => navigate("home")}
@@ -10211,6 +10263,7 @@ function NeuroSenseApp({
                 activeFamilySetup ||
                 generateInitialSetup(
                   patientProfile?.patientId || "elder_1",
+
                   patientProfile?.fullName ||
                     activeMember?.displayName ||
                     userName ||
@@ -10219,53 +10272,82 @@ function NeuroSenseApp({
               }
               onComplete={async (results, scoreData) => {
                 console.log("Life Memory check completed:", results, scoreData)
+
                 try {
                   const db = await getDB()
+
                   const tx = db.transaction("screenings", "readwrite")
+
                   const store = tx.objectStore("screenings")
+
                   const recId = `screening_${Date.now()}`
+
                   const pId =
                     activeFamilySetup?.patientId ||
                     patientProfile?.patientId ||
                     "elder_1"
+
                   const pName =
                     activeFamilySetup?.elderProfile?.fullName ||
                     patientProfile?.fullName ||
                     "Elder"
+
                   await store.put({
                     id: recId,
+
                     patientId: pId,
+
                     patientName: pName,
+
                     patientAge: activeFamilySetup?.elderProfile?.age || 72,
+
                     language:
                       activeFamilySetup?.elderProfile
                         ?.preferredTestingLanguage as any || "en",
+
                     assistedMode: false,
+
                     durationSeconds: 120,
+
                     audioQuality: "good" as any,
+
                     tasks: [],
+
                     biomarkers: {} as any,
+
                     mlResult: {} as any,
+
                     synced: true,
+
                     createdAt: new Date().toISOString(),
+
                     csi:
                       scoreData.unifiedScreening?.csi ||
                       Math.round(scoreData.score * 0.8 + 15),
+
                     riskTier: scoreData.unifiedScreening?.risk_tier || "green",
+
                     tierLabel:
                       scoreData.unifiedScreening?.tier_label || "Low Concern",
+
                     lifeMemoryScore: scoreData.score,
+
                     namingScore: 85,
+
                     speechScore: 78,
+
                     informantScore: 20,
+
                     confidence: Math.round(
                       scoreData.unifiedScreening?.confidence || 88,
                     ),
+
                     results,
                   })
                 } catch (e) {
                   console.warn("Could not record screening session in DB:", e)
                 }
+
                 navigate("trends")
               }}
               onInspectorUpdate={(state) => setInspectorState(state)}
@@ -10308,6 +10390,7 @@ function NeuroSenseApp({
           <DemoStudioDrawer
             onScenarioLoaded={(_scenarioMeta, profile) => {
               setActiveFamilySetup(profile)
+
               navigate("familySetup")
             }}
             onNavigateScreen={(scr) => navigate(scr as any)}
@@ -10342,13 +10425,17 @@ function NeuroSenseApp({
           <button
             onClick={() => {
               const next = !demoMode
+
               setDemoMode(next)
+
               const url = new URL(window.location.href)
+
               if (next) {
                 url.searchParams.set("demo", "1")
               } else {
                 url.searchParams.delete("demo")
               }
+
               window.history.replaceState({}, "", url.toString())
             }}
             className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer ${
@@ -10564,7 +10651,9 @@ export default function App() {
   const [showLanding, setShowLanding] = useState<boolean>(() => {
     if (typeof window !== "undefined") {
       const hash = window.location.hash
+
       const search = window.location.search
+
       if (
         hash.includes("app") ||
         hash.includes("legacy-home") ||
@@ -10573,21 +10662,26 @@ export default function App() {
         return false
       }
     }
+
     return true
   })
 
   useEffect(() => {
     const handleHashChange = () => {
       const hash = window.location.hash
+
       if (hash.includes("app") || hash.includes("legacy-home")) {
         setShowLanding(false)
       } else if (hash.includes("home") || hash === "" || hash === "#") {
         setShowLanding(true)
       }
     }
+
     window.addEventListener("hashchange", handleHashChange)
+
     return () => window.removeEventListener("hashchange", handleHashChange)
   }, [])
+
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
     try {
       const activeSession =
@@ -10820,10 +10914,13 @@ export default function App() {
   const handleSwitchMember = (targetMember?: HouseholdMember) => {
     if (targetMember) {
       setActiveMember(targetMember)
+
       setActiveMemberId(targetMember.id)
+
       setAuthenticatedName(targetMember.displayName)
     } else {
       clearActiveMember()
+
       setActiveMember(null)
     }
   }
@@ -10862,6 +10959,7 @@ export default function App() {
         <Homepage
           onEnterApp={() => {
             setShowLanding(false)
+
             if (typeof window !== "undefined") {
               window.location.hash = "app"
             }
@@ -10910,8 +11008,11 @@ export default function App() {
         if (activeMember) {
           setActiveMember({
             ...activeMember,
+
             ...(updated.photo !== undefined ? { photo: updated.photo } : {}),
+
             ...(updated.name ? { displayName: updated.name } : {}),
+
             ...(updated.age ? { age: updated.age } : {}),
           })
         }

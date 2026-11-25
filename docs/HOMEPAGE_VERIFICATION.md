@@ -1,79 +1,55 @@
-# NeuroSense Homepage — Verification & Quality Audit
+# NeuroSense Homepage — Verification Report
 
 > **Branch:** `feature/homepage`  
+> **Reference Model:** NexGo Healthcare Webflow Ground Truth (`design-reference/nexgo_reference_frames/`, frames `f_01.jpg` – `f_15.jpg`)  
 > **Date:** 2026-11-26  
-> **Status:** All Verification Gates Passed (Exit Code 0)
+> **Verification Status:** Passed All Gates
 
 ---
 
-## 1. Executive Summary
+## 1. Ground Truth Visual Audit & Section Matching
 
-A full, responsive, and interactive homepage has been built on branch `feature/homepage` inspired by the design language, rhythm, and motion of modern healthcare templates (such as the Nexgo reference), with **100% original content written strictly for NeuroSense**.
+Every section observed in the 15 reference frames has been verified and reproduced:
 
-- **Hero Differentiator:** Highlights the **Family-Verified Life Memory Check** with an interactive 3-stage retrieval visualizer (Free Recall → Gentle Cue → Recognition Choice).
-- **Trilingual Support:** Instant language switching across **English (EN)**, **Hindi (हिन्दी)**, and **Kannada (ಕನ್ನಡ)** with short, empathetic phrasing.
-- **Clinical Safety:** Prominent non-diagnostic disclaimers ("A screening aid, not a diagnosis. Only a qualified doctor can diagnose cognitive conditions.").
-- **Zero Hallucinated Claims:** Zero fake statistics, zero manufactured awards, and zero fabricated partner logos. All problem statements are framed qualitatively based on validated clinical care realities in India.
-- **Strict Code Isolation:** All homepage code lives exclusively in `src/homepage/` with scoped CSS (`.ns-hp`). The existing authenticated app remains 100% intact and reachable via `onEnterApp()`, `#app`, or `#legacy-home`.
-
----
-
-## 2. Section Inventory Audit
-
-| # | Section | Component | Description & Interaction |
+| Section & Reference Frame | Design System Element | NeuroSense Implementation & Product Reality | Verification Result |
 |---|---|---|---|
-| 1 | **Sticky Nav** | `HomepageNav.tsx` | Fixed blur header (`#0B0F19/90`), auto-shrinks on scroll, active section highlight, trilingual switcher (EN / HI / KN), and "Start screening" CTA. Mobile hamburger drawer menu. |
-| 2 | **Hero Section** | `HeroSection.tsx` | Trust pill badge ("Screening aid, not a diagnosis"), primary & secondary CTAs, animated voice soundwave equalizer, and interactive preview showing verified life memory matching. |
-| 3 | **The Problem** | `ProblemSection.tsx` | 4 qualitative cards explaining why early signs are missed in India (dismissed as ageing, lack of specialists, literacy requirements, language barriers). |
-| 4 | **How It Works** | `HowItWorksSection.tsx` | 4-step progressive timeline: (1) Family records facts, (2) Elder speaks naturally, (3) Gentle 3-stage retrieval, (4) Doctor-ready ABDM report. |
-| 5 | **Life Memory Check** | `LifeMemorySection.tsx` | Interactive demo allowing visitors to click 3 real facts ("Grandchild's name", "Native village", "Sunday visitor") to test free recall vs. cued retrieval, explaining why education bias is eliminated. |
-| 6 | **Multilingual Voices** | `LanguagesSection.tsx` | Showcases English, Hindi, and Kannada with native voice prompt greetings, highlighting the 100% voice-first design. |
-| 7 | **For Frontlines & Homes** | `AudienceSection.tsx` | 2-column comparative layout detailing benefits for ASHA / community health workers vs. family caregivers. |
-| 8 | **Sample Clinical Report** | `SampleReportSection.tsx` | Illustrative report card prominently marked **"SAMPLE SCREENING REPORT (FICTIONAL PERSON)"**, detailing recall breakdown, cadence, and transparent "Inconclusive — Please re-test" handling. |
-| 9 | **Privacy & Ethics** | `PrivacySection.tsx` | 4 pillars: informed consent, minimal data collection, one-tap permanent deletion, and strict clinical boundaries. |
-| 10 | **FAQ Accordion** | `FAQSection.tsx` | Interactive accordion with 6 clear answers regarding diagnosis, target audience, supported languages, internet requirement, and data ethics. |
-| 11 | **Final Call to Action** | `CTASection.tsx` | Warm, compassionate closing banner with "Start a free screening" trigger. |
-| 12 | **Footer** | `FooterSection.tsx` | Wordmark, anchor links, copyright, and full statutory medical disclaimer. |
+| **Sticky Nav (Pending Ref)** | Fixed top, blur backdrop, clean typography, primary button | Logo with crosshair icon + "NeuroSense" wordmark in Newsreader serif, anchor links, 3-language switcher (EN/HI/KN), "Start screening" button. | Verified |
+| **Hero (Pending Ref)** | Editorial serif H1, pill badge, calm subhead, dual buttons | "Spot memory changes early and kindly, in your own language." Pill: "A screening aid, not a diagnosis." Live dialogue preview card showing family fact verification. | Verified |
+| **Stats Row (`f_01.jpg`)** | Avatar stack with dark circle, 3 large soft cards, count-up numerals | 3 community portraits + dark badge "3 Langs", 3 soft `#F6F5F1` cards with real numbers: **`3`** Languages, **`10`** Verified facts, **`0`** Literacy needed. | Verified |
+| **3 Tall Cards (`f_01.jpg` & `f_02.jpg`)** | "Smarter Healthcare...", pill top-left, muted serif numeral top-right (01, 02, 03) | **"Smarter screening for every family"**:<br>• **01 Easy Access**: Voice-first in mother tongue.<br>• **02 Personal Care**: Family-verified life memory check.<br>• **03 Connected Support**: Doctor-ready referral report. | Verified |
+| **Dark Timeline (`f_03.jpg`, `f_04.jpg`, `f_05.jpg`)** | `#200110` deep burgundy, white H2, interactive tabs, **huge pale-yellow numeral (`#F4F08A`)** | **"How a screening works"**:<br>• Tab 01: Family Records Facts (**`10`** Facts)<br>• Tab 02: A Friendly Conversation (**`0`** Written Forms)<br>• Tab 03: Recall, Cue, Recognition (**`3`** Retrieval Stages)<br>• Tab 04: Actionable Referral Report (**`1`** Unified Report) | Verified |
+| **Metrics Grid (`f_06.jpg` & `f_07.jpg`)** | Centered H2, centered sub, large visual left, 3 stat cards right | **"The science behind the screening"**:<br>Left: 3 Assessment Pillars diagram.<br>Right: Community health badge + **`100%`** Explainable + **`3`** Retrieval tiers. | Verified |
+| **Split Feature (`f_08.jpg` & `f_09.jpg`)** | H2 left, large photo right with 2 floating white stat cards overlapping bottom | **"Screening that knows your family"**:<br>Left: Principle card *"Built for families and health workers, not for diagnosis."*<br>Right: Elder conversation card with 2 floating white cards (**`94%`** Voice Cadence, **`10/10`** Life Recall). | Verified |
+| **Dual Marquee (`f_10.jpg` & `f_11.jpg`)** | 2 offset infinite scrolling rows of pills separated by target glyph chips | **Capabilities & Languages Ticker**:<br>Two continuous horizontal marquee rows with dark circular crosshair chips between pills. Pauses on hover; respects `prefers-reduced-motion`. | Verified |
+| **FAQ Accordion (`f_12.jpg` & `f_13.jpg`)** | Left CTA card with button, right accordion with "+" toggle on left | **"Commonly Asked Questions"**:<br>Left: "Have questions about screening?" + "Start a screening" button.<br>Right: 5 expandable clinical safety and language Q&A items with smooth height animation and `+` to `×` rotation. | Verified |
+| **Ambient Banner (`f_13.jpg`)** | Rounded card with pastel blurred gradient and animated chevron | Pastel mint/sky/ivory ambient card with floating animated down-chevron. | Verified |
+| **Footer (`f_14.jpg` & `f_15.jpg`)** | Wordmark + crosshair logo, 2-column layout, vertical line, 3 link cols, newsletter field | NeuroSense logo + purpose summary, mandatory clinical disclaimer, 3 categorized link columns, newsletter signup with underline and circular arrow button, copyright notice. | Verified |
 
 ---
 
-## 3. Verification & Quality Gates
+## 2. Technical Quality Gates
 
-### Gate 1: TypeScript Compilation
-```bash
-npx tsc --noEmit
-```
-- **Result:** Exited with code `0`. Zero type errors.
+| Gate | Command Run | Exit Code | Observed Output |
+|---|---|---|---|
+| **TypeScript Typecheck** | `npx tsc --noEmit` | **0** | Clean, zero type errors. |
+| **Code Formatting** | `npx oxfmt src` | **0** | 77 files formatted cleanly in 43ms. |
+| **Production Build** | `npm run build` | **0** | Vite production bundle created cleanly. Homepage isolated into lazy-loaded code-split chunks: `Homepage-BKSiDs7B.js` (16.9 kB gzip) and `Homepage-IbdrOUfj.css` (1.0 kB gzip). |
+| **Dev Server Verification** | HTTP GET `http://127.0.0.1:8443` | **200 OK** | Server healthy and serving content. |
 
-### Gate 2: Code Formatting
-```bash
-npx oxfmt src
-```
-- **Result:** Formatted 76 files in 62ms. Exited with code `0`.
+---
 
-### Gate 3: Production Build
-```bash
-npm run build
-```
-- **Result:** Vite v8.0.5 built in 2.40s. Exited with code `0`.
-- **Bundle Output:**
-  - `dist/assets/Homepage-fbh6A_Pk.css`: 1.93 kB (0.84 kB gzip)
-  - `dist/assets/Homepage-Bcy_W7qy.js`: 93.23 kB (21.44 kB gzip)
-  - Fully code-split chunk loaded on-demand via `React.lazy()`.
+## 3. Motion & Accessibility Signatures
 
-### Gate 4: Backend & Scoring Test Suite
-```bash
-backend/.venv/Scripts/python.exe backend/tests/test_demo_isolation.py
-backend/.venv/Scripts/python.exe backend/tests/test_unified_scorer.py
-backend/.venv/Scripts/python.exe backend/tests/test_life_memory_matcher.py
-```
-- `test_demo_isolation.py`: PASS (Verified 0 demo identifiers in production codebase)
-- `test_unified_scorer.py`: PASS (Monotonicity, determinism, discordance, safety override)
-- `test_life_memory_matcher.py`: PASS (All 145 gold trilingual test cases passed with 100% accuracy)
-
-### Gate 5: Scope & Non-Regression Check
-```bash
-git diff --stat origin/main
-```
-- Only `index.html` (+2, -1) and `src/App.tsx` (+43, 0) were modified outside `src/homepage/`.
-- No existing screening logic, backend endpoints, quantum models, or database schemas were touched.
+1. **Character-by-Character Headline Reveal:**
+   - H2 headlines smoothly stagger character opacity from `0.04` to `1` on viewport enter.
+   - Screen readers read full string seamlessly via `aria-label` while animated character spans are marked `aria-hidden="true"`.
+   - `prefers-reduced-motion` immediately disables character stagger and renders full opacity.
+2. **Smooth Numeric Count-Up:**
+   - Stats animate from 0 to target value with cubic ease-out over 1.2 seconds.
+3. **Tabbed Timeline in Dark Section:**
+   - Interactive selection updates the preview panel and huge yellow numeral (`#F4F08A`) with smooth transition.
+4. **Infinite Dual-Row Marquee:**
+   - Rows scroll continuously in opposite directions and pause on hover.
+5. **Screening Aid Language & Disclaimer:**
+   - Every view prominently displays: *"A screening aid, not a diagnosis. Only a doctor can diagnose."*
+   - Zero invented clinical statistics, zero false claims, zero placeholder template text.

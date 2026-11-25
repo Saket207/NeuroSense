@@ -1,173 +1,114 @@
 # NeuroSense Homepage — Implementation Plan
 
 > **Branch:** `feature/homepage`  
-> **Date:** 2026-11-26
+> **Reference Model:** NexGo healthcare editorial design (grounded in `design-reference/nexgo_reference_frames/`)  
+> **Date:** 2026-11-26  
+> **Status:** Pending Reference for Top Nav & Hero (per section 0.2 instructions)
 
 ---
 
-## 1. What Exists Today
+## 1. Ground Truth & Reference Status
 
-- **Framework:** React 19 + Vite + Tailwind CSS v4 (via `@tailwindcss/vite`)
-- **Styling:** Tailwind utility classes; global theme in `src/index.css` with CSS custom properties (`--nv-*`)
-- **Fonts loaded:** Noto Sans (+ Devanagari, Kannada, etc.), Outfit (display)
-- **Animation library:** `framer-motion@13.1.1` (already installed)
-- **Icons:** `lucide-react`
-- **Router:** No React Router — single-component state machine in `App.tsx` using `Screen` type and `navigate()` function. The app starts at `"home"` screen inside `NeuroSenseApp` after authentication.
-- **Entry point:** `main.tsx` renders `<App />`. `App.tsx` default export is a wrapper (`AppShell`) that shows `AloisAuthContainer` or `NeuroSenseApp`.
-- **Current "home":** The existing home is an in-app patient dashboard (Alois) — a phone-frame wellness view. There is no public marketing homepage.
+The video recording in `design-reference/nexgo_reference_frames/` (`f_01.jpg` – `f_15.jpg`) starts mid-page at the stats row and covers:
+1. Stats row (`2000+`, `95%`, `24/7`, avatar stack)
+2. 3 Tall Feature Cards ("Smarter Healthcare For Every Stage")
+3. Dark Aubergine/Burgundy Timeline ("Our Path Toward Better Care", with yellow year numerals)
+4. Split Metrics Grid ("The Numbers Behind Better Health")
+5. Split Feature with Floating Stat Overlays ("Personal Care, Without...")
+6. Testimonial-Style Design Principle Card ("Building Trust Through Every Patient Interaction")
+7. Dual Infinite Marquee Rows of Pill Cards with Target Glyphs
+8. FAQ Accordion with Left "Still Have Questions" Card
+9. Pastel Ambient Banner Card
+10. Two-Column Editorial Footer with Newsletter Field & Disclaimer
 
-## 2. Architecture Decision
+### Pending Reference: Navigation & Hero
+As specified in section 0.2 of the prompt:
+> *"The recording starts mid-page (at the stats row) and does not show the top navigation or hero section, hover states, or the mobile layout... build the hero and nav in the same design language as the rest of the page (same fonts, colours, radii, spacing, motion), mark them clearly as 'pending reference' in `docs/HOMEPAGE_PLAN.md`, and ask me for screenshots of the top of the page."*
 
-The current app is an authenticated SPA with no URL routing — it's a single-page state machine. The homepage should be a **public landing page** that sits before authentication, accessible to anyone.
+- **Status:** **Pending Reference**. Built strictly within the verified NexGo design system (Newsreader editorial serif, `#FBFAF8` ivory background, `#200110` burgundy accents, rounded pill badges, language switcher EN/HI/KN, and "Start screening" primary CTA).
+- **User Request:** If reference screenshots of the top navigation and hero exist, provide them to refine the hero section layout.
 
-### Approach: Conditional Rendering in App.tsx
+---
 
-1. Add a `showLanding` state (default `true` on fresh page load)
-2. When `showLanding` is true, render the new `<Homepage />` component
-3. When user clicks "Start screening" or any in-app CTA, set `showLanding = false` → renders the existing auth/app flow
-4. Store the old "home" screen logic untouched — it becomes the in-app dashboard after auth
-5. Add URL hash support: `#app` skips to the app directly, allowing `/legacy-home` equivalent via `#app`
+## 2. Content & Section Mapping (Real NeuroSense Product Facts)
 
-### Files to Create (all new)
+Every piece of template text is replaced with authentic, culturally respectful, clinical-safety compliant NeuroSense product content:
+
+| Reference Section | NexGo Template Text | NeuroSense Product Mapping | Real Facts / Data Source |
+|---|---|---|---|
+| **0. Nav (Pending Ref)** | *(Not in recording)* | Logo: "NeuroSense" + links: How it Works, Life Memory Check, Languages, FAQ + Language Switcher (EN / हिन्दी / ಕನ್ನಡ) + Primary CTA: "Start screening" | Navigates to screening flow |
+| **0. Hero (Pending Ref)** | *(Not in recording)* | Headline: *"Spot memory changes early and kindly, in your own language."*<br>Pill: *"A screening aid, not a diagnosis."*<br>Interactive Visual: Animated voice waveform + life fact dialogue preview ("Grandson's name: Aarav" ✓ Recalled). | Genuine product feature |
+| **1. Stats Row** | `2000+`, `95%`, `24/7`, Avatar stack | Language chips (EN, हिन्दी, ಕನ್ನಡ) + Real product facts:<br>• **`3`** Languages at launch<br>• **`10`** Verified life facts<br>• **`0`** Reading or writing needed | Real codebase counts (no invented statistics) |
+| **2. Tall Cards (01–03)** | "Smarter Healthcare For Every Stage" (01 Easy Access, 02 Personal Care, 03 Connected Support) | **"Smarter screening for every family"**:<br>• **01 Voice-First Access**: 100% spoken, zero literacy barrier, speaks the elder's mother tongue.<br>• **02 Personal Life Facts**: Memory check based on their own life (family names, native town, daily routine).<br>• **03 Connected Doctor Report**: Structured clinical referral summary ready for ABDM EHR integration. | Core product architecture |
+| **3. Dark Timeline** | "Our Path Toward Better Care" (2016, 2018, 2021, etc.) | **"How a screening works"** (`#200110` deep burgundy):<br>• **01 Family Setup**: Family member records 10 life facts & observations.<br>• **02 Voice Conversation**: Friendly spoken conversation with the elder.<br>• **03 Staged Retrieval**: Evaluated across Free Recall, Cued Prompt, and Recognition.<br>• **04 Unified Score**: Cognitive stability index with confidence & referral advice.<br>• Yellow numerals: **`10`** Facts, **`3`** Stages, **`16`** Daily cues, **`1`** Clear report. | Real screening workflow |
+| **4. Split Metrics Grid** | "The Numbers Behind Better Health" (`37K+`, `38%`) | **"What the screening looks for"**:<br>• Acoustic voice stability & cadence latency.<br>• Episodic recall retention rate.<br>• Family informant observation agreement.<br>Cards: **`3`** Retrieval stages, **`16`** Informant items, **`100%`** Explainable. | Real ML & algorithmic pipeline |
+| **5. Split Feature + Floating Cards** | "Personal Care, Without..." (`42%`, `42/7`) | **"Screening that knows your family"**:<br>Elder interaction illustration with two floating white stat cards:<br>• **`3`** Indian regional languages<br>• **`0`** Literacy needed | Real accessibility guarantees |
+| **6. Principle Card** | Nurse photo + "Building Trust Through Every Patient Interaction" | **"Built for families and ASHA workers, not for diagnosis."**<br>Emphasizes dignity, non-stigmatizing screening, and community empowerment. | Core mission |
+| **7. Dual Marquee Rows** | Doctor names & specialties | **Capabilities & Languages Pill Rows**:<br>• Row 1: `Voice-First Screening`, `ಕನ್ನಡ (Kannada)`, `Zero Literacy Required`, `Episodic Memory Check`, `हिन्दी (Hindi)`, `ABDM Doctor Report`<br>• Row 2: `Doctor Referral Aid`, `Family-Verified Facts`, `English`, `Acoustic Fluency Analysis`, `Privacy Protected`<br>Separated by circular dark target/crosshair glyphs. | Real feature tags (no fake personas) |
+| **8. FAQ Accordion** | "Commonly Asked Questions" + "Still have a questions?" | Real FAQ answering:<br>1. *Is this a medical diagnosis?* (No, screening aid only)<br>2. *Who is this designed for?* (Elders with family/ASHA support)<br>3. *Which languages are supported?* (Hindi, Kannada, English)<br>4. *How are personal family facts kept private?* (Encrypted in Supabase / local device)<br>5. *What should we do after getting a result?* (Consult a doctor with the PDF report).<br>Left Card: "Need assistance?" + "Start screening" button. | Truthful clinical documentation |
+| **9. Pastel Banner** | Blurred mint gradient + chevron | Soft pastel ambient card with down chevron leading to footer disclaimer. | Visual rhythm |
+| **10. Editorial Footer** | NexGo wordmark, London address, template links | **NeuroSense Footer**:<br>• Logo: Crosshair glyph + "NeuroSense"<br>• Left: Mission summary & clinical safety disclaimer.<br>• Right columns: Product, Clinical Principles, Languages, Legal.<br>• Disclaimer: *"NeuroSense is a screening aid, not a diagnostic tool. Only a qualified medical professional can diagnose cognitive conditions."* | Clean compliant footer |
+
+---
+
+## 3. Architecture & File Structure
+
+All new code is isolated in a modular `src/homepage/` directory:
+
 ```
 src/homepage/
-  Homepage.tsx           — main page component
-  HomepageNav.tsx        — sticky navigation bar
-  HeroSection.tsx        — hero with animated visual
-  ProblemSection.tsx     — why early signs are missed
-  HowItWorksSection.tsx  — 4-step animated stepper
-  LifeMemorySection.tsx  — interactive differentiator demo
-  LanguagesSection.tsx   — built for every voice
-  AudienceSection.tsx    — ASHA workers + families benefits
-  SampleReportSection.tsx — illustrative report card
-  PrivacySection.tsx     — privacy & responsible use
-  FAQSection.tsx         — accordion
-  CTASection.tsx         — final call to action
-  FooterSection.tsx      — footer
-  homepage.css           — scoped CSS module for homepage
-  translations.ts        — EN, HI, KN copy
-  useScrollReveal.ts     — IntersectionObserver hook for scroll animations
-  useCountUp.ts          — animated counter hook
+  ├── Homepage.tsx                # Main container orchestrating all sections
+  ├── HomepageNav.tsx             # Sticky navbar with blur backdrop & language switcher
+  ├── HeroSection.tsx             # Editorial hero with character reveal & audio demo
+  ├── StatsRowSection.tsx         # Real counts, avatar/language chips, count-up animation
+  ├── ThreeCardsSection.tsx       # 3 tall soft cards (01, 02, 03)
+  ├── DarkTimelineSection.tsx     # Full-width #200110 burgundy timeline with yellow numbers
+  ├── MetricsGridSection.tsx      # Split metrics layout
+  ├── SplitFeatureSection.tsx     # Feature with floating white cards
+  ├── PrincipleSection.tsx        # Ethical clinical safety principle card
+  ├── MarqueeSection.tsx          # Dual-row infinite horizontal ticker
+  ├── FAQSection.tsx              # Accordion with left CTA card
+  ├── BannerSection.tsx           # Pastel gradient banner
+  ├── FooterSection.tsx           # 2-column editorial footer
+  ├── CharacterReveal.tsx         # Accessible letter-by-letter reveal component
+  ├── CountUpNumber.tsx           # Smooth counter animation
+  ├── translations.ts             # English, Hindi, and Kannada translations
+  └── homepage.module.css         # Scoped styles (no CSS pollution)
 ```
 
-### Files to Touch (minimal edits)
-| File | Change | Why |
-|------|--------|-----|
-| `src/App.tsx` | Add `showLanding` state + conditional render of `<Homepage />` before auth check (~10 lines) | Entry point |
-| `index.html` | Add Google Fonts link for Plus Jakarta Sans + Inter | Typography |
+### Routing & Backward Compatibility:
+- Default route (`/`): Shows the new editorial Homepage.
+- Clicking **"Start screening"** or navigating to `/#app` / `/legacy-home`: Enters the existing in-app authenticated dashboard and screening wizard.
+- Existing patient phone frame and doctor dashboard remain completely intact.
 
-No other files touched. Homepage CSS is scoped with `.ns-hp` prefix.
+---
 
-## 3. Section Plan with Copy
+## 4. Fonts and Styling
 
-### Section 1: Navigation
-- Logo: "NeuroSense" wordmark (text, no image dependency)
-- Links: How it works, Why it's different, Languages, For health workers, FAQ
-- Language switcher: EN / हिन्दी / ಕನ್ನಡ
-- CTA: "Start screening" → triggers `showLanding = false`
-- Behaviour: sticky, blur backdrop, shrinks on scroll
+1. **Google Fonts loaded in `index.html`:**
+   - **Newsreader** (400, 500, 600, 700, italic) — exact match for the reference's editorial serif headlines.
+   - **Plus Jakarta Sans** & **Inter** — clean modern sans for body, buttons, and badges.
+   - **Noto Serif Devanagari** & **Noto Serif Kannada** — beautiful regional language serif headlines.
+2. **Colors:**
+   - Background: `#FBFAF8`
+   - Cards: `#F6F5F1`
+   - Dark section: `#200110`
+   - Accent numeral: `#F4F08A`
+   - Text primary: `#200110` / `#FFFFFF`
+   - Text muted: `#6E6268` / `rgba(255, 255, 255, 0.7)`
 
-### Section 2: Hero
-- **Badge:** "🔬 A screening aid, not a diagnosis"
-- **Headline EN:** "Spot memory changes early, kindly, in your own language"
-- **Headline HI:** "याद से जुड़ी चिंताओं को जल्दी पहचानें, अपनी भाषा में"
-- **Headline KN:** "ನೆನಪಿನ ಬದಲಾವಣೆಗಳನ್ನು ಬೇಗನೆ ಗುರುತಿಸಿ, ನಿಮ್ಮ ಭಾಷೆಯಲ್ಲಿ"
-- **Sub:** "A simple, voice-first cognitive screening tool. No reading or writing needed. Family members record facts, the elder speaks naturally, and together you get a clear, explainable result."
-- **Buttons:** "Start a screening" (primary) + "See how it works" (secondary, scrolls to stepper)
-- **Visual:** Animated voice waveform + chat bubble showing elder's answer with a ✓ "Recalled" tick
+---
 
-### Section 3: The Problem (why early signs are missed)
-4 cards with icons:
-1. **Dismissed as ageing** — "Memory problems are often seen as a normal part of growing older."
-2. **Specialists are far away** — "In many parts of India, neurologists and memory clinics are hard to reach."
-3. **Standard tools need literacy** — "Most screening tools require reading, writing, and trained professionals."
-4. **Language barriers** — "Common tests are in English and poorly adapted to India's many languages."
+## 5. Verification Steps
 
-> **No statistics used** — all qualitative statements. No numbers to source.
-
-### Section 4: How It Works (4-step animated stepper)
-1. "Family records facts" — A family member enters verified facts about the elder's life
-2. "Elder speaks naturally" — A friendly voice conversation in their own language
-3. "Answers are matched" — Each answer is checked against the facts, with cues if needed
-4. "Clear, explainable result" — A report with confidence level and next steps
-
-### Section 5: Family-Verified Life Memory Check (interactive)
-- Interactive demo card: hovering/tapping a fact category shows the question flow
-- Example facts: "Grandchild's name", "Native village", "Last Sunday's visitor"
-- Shows staged retrieval: Free recall → Cue → Recognition
-- Explains why personal questions reduce bias
-
-### Section 6: Built for Every Voice
-- Three language cards: English, Hindi (हिन्दी), Kannada (ಕನ್ನಡ)
-- Each shows a greeting in that language
-- Note: "More languages are being designed"
-- Emphasis: voice-first, no reading or writing needed
-
-### Section 7: For ASHA Workers & Families
-Two columns:
-- **For ASHA / Health Workers:** Fast setup, repeatable screening, referral report with confidence
-- **For Families:** Peace of mind, concrete evidence to show a doctor, track changes over time
-
-### Section 8: Results You Can Trust
-- Sample report card (clearly labelled "Sample report — fictional person")
-- Shows: traffic-light risk level, confidence indicator, "why this result" explanation
-- Mentions "inconclusive, please re-test" possibility
-- Disclaimer: "This screening does not replace a medical diagnosis."
-
-### Section 9: Privacy & Responsible Use
-- Consent before every session
-- Minimal data collection
-- Deletion on request
-- Never claims to diagnose
-- Voice data processed locally where possible
-
-### Section 10: FAQ (6 questions)
-1. Is this a diagnosis? → No. It's a preliminary screening aid...
-2. Who is it for? → Elderly family members, with help from family or ASHA workers...
-3. What languages does it support? → English, Hindi, and Kannada at launch...
-4. Does it need internet? → Yes, for voice processing (check code: uses Faster-Whisper backend)
-5. How is my data used? → Voice recordings are processed for screening only...
-6. What happens after a result? → You receive a report you can share with a doctor...
-
-### Section 11: Final CTA
-- Headline: "Ready to check on someone you love?"
-- Button: "Start a screening"
-
-### Section 12: Footer
-- NeuroSense wordmark
-- Links: How it works, FAQ, Privacy
-- Disclaimer: "NeuroSense is a screening aid, not a diagnostic tool. Only a qualified medical professional can diagnose cognitive conditions."
-
-## 4. Animation Library
-
-Using **framer-motion** (already installed at v13.1.1). No new dependency needed.
-- `motion.div` with `initial`/`whileInView` for scroll reveals
-- `AnimatePresence` for FAQ accordion
-- `useScroll` + `useTransform` for parallax
-- `useMotionValueEvent` for nav shrink
-
-## 5. Fonts
-
-Add to `index.html` `<head>`:
-```html
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet" />
-```
-
-## 6. Translations Flagged for Human Review
-
-| Language | Text | Concern |
-|----------|------|---------|
-| HI | Hero headline | Should be reviewed by native Hindi speaker for natural phrasing |
-| KN | Hero headline | Should be reviewed by native Kannada speaker for natural phrasing |
-| HI | All FAQ answers | Translated by AI — needs human review |
-| KN | All FAQ answers | Translated by AI — needs human review |
-
-## 7. Assumptions
-
-1. The homepage is a public page shown before authentication, not inside the phone-frame app.
-2. "Start screening" navigates into the existing app flow (auth → home → screening).
-3. No backend changes needed — the homepage is entirely frontend.
-4. The homepage does not need to work offline (it's a marketing page).
-5. We use our existing brand colour `#02738A` as the primary accent.
+1. `npx tsc --noEmit` exits with 0.
+2. `npx oxfmt src` formats all files cleanly.
+3. `npm run build` succeeds with zero errors.
+4. Interactive testing:
+   - Character reveals trigger on scroll.
+   - Numbers count up on scroll into view.
+   - Dark timeline tabs switch smoothly.
+   - Marquee loops smoothly in opposite directions and pauses on hover.
+   - Language switcher switches all text across EN, HI, KN without breaking layout.
+   - Screen readers read full headings via `aria-label`.
+   - Start Screening button opens the application flow.

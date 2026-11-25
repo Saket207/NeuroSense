@@ -1,204 +1,180 @@
 import React, { useState } from "react"
-import {
-  Mic,
-  Volume2,
-  CheckCircle2,
-  Sparkles,
-  ArrowRight,
-  ShieldCheck,
-  UserCheck,
-  Play,
-  RotateCcw,
-} from "lucide-react"
-import type { HomepageTranslations } from "./translations"
+import { LanguageCode, translations } from "./translations"
+import CharacterReveal from "./CharacterReveal"
+import styles from "./homepage.module.css"
 
 interface HeroSectionProps {
-  t: HomepageTranslations
-  onStartScreening: () => void
-  onScrollToHow: () => void
+  currentLang: LanguageCode
+  onEnterApp: () => void
 }
 
+/**
+ * Editorial Hero Section (Pending Reference — Section 0.2)
+ * Built strictly in NexGo design language:
+ * High-contrast editorial serif, warm off-white background (#FBFAF8),
+ * soft rounded card surface (#F6F5F1), burgundy accents (#200110),
+ * and live voice memory demonstration.
+ */
 export default function HeroSection({
-  t,
-  onStartScreening,
-  onScrollToHow,
+  currentLang,
+  onEnterApp,
 }: HeroSectionProps) {
-  const [isPlayingDemo, setIsPlayingDemo] = useState(false)
-  const [stageIndex, setStageIndex] = useState(1) // 0: query, 1: answered & recalled
+  const t = translations[currentLang].hero
+  const [isPlayingAudio, setIsPlayingAudio] = useState(false)
+
+  const serifClass =
+    currentLang === "hi"
+      ? styles.fontSerifHi
+      : currentLang === "kn"
+        ? styles.fontSerifKn
+        : styles.fontSerif
+
+  const scrollToHowItWorks = () => {
+    const el = document.getElementById("how-it-works")
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" })
+    }
+  }
 
   return (
-    <section className="relative pt-32 pb-20 md:pt-40 md:pb-28 overflow-hidden bg-[#0B0F19]">
-      {/* Ambient background glow accents (inspired by Nexgo) */}
-      <div
-        className="ns-hp-ambient-glow w-[500px] h-[500px] -top-20 -left-20 bg-[#02738A]/20"
-        aria-hidden="true"
-      />
-      <div
-        className="ns-hp-ambient-glow w-[600px] h-[600px] top-40 right-[-100px] bg-[#0EA5E9]/15"
-        aria-hidden="true"
-      />
+    <section className="pt-32 pb-16 md:pt-40 md:pb-24 overflow-hidden relative">
+      <div className={styles.container}>
+        {/* Top Centered Content */}
+        <div className="max-w-[880px] mx-auto text-center space-y-6">
+          {/* Clinical Safety Pill Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-[#F6F5F1] border border-[rgba(32,1,16,0.08)] text-[12px] font-semibold text-[#6E6268] shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+            <span>{t.pill}</span>
+          </div>
 
-      <div className="ns-hp-container relative z-10">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
-          {/* Left Column: Headline & Value Proposition */}
-          <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            {/* Trust Pill Badge */}
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/[0.06] border border-white/10 backdrop-blur-md shadow-xs">
-              <span className="w-2 h-2 rounded-full bg-[#10B981] animate-pulse" />
-              <span className="text-xs font-semibold text-[#0EA5E9] tracking-wide uppercase">
-                {t.heroBadge}
+          {/* Headline with Character Reveal */}
+          <CharacterReveal
+            text={t.headline}
+            as="h1"
+            className={`text-[36px] sm:text-[48px] lg:text-[62px] font-bold text-[#200110] leading-[1.08] tracking-tight ${serifClass}`}
+            staggerMs={28}
+          />
+
+          {/* Editorial Subheadline */}
+          <p className="text-[16px] sm:text-[18px] text-[#6E6268] max-w-[640px] mx-auto leading-relaxed font-normal">
+            {t.subheadline}
+          </p>
+
+          {/* Action Buttons */}
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+            <button
+              type="button"
+              onClick={onEnterApp}
+              className="inline-flex items-center gap-2.5 px-7 py-3.5 rounded-full bg-[#200110] text-[#FBFAF8] text-[15px] font-semibold hover:bg-[#34081c] active:scale-95 transition-all shadow-md cursor-pointer group"
+            >
+              <span>{t.ctaPrimary}</span>
+              <svg
+                width="16"
+                height="16"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="group-hover:translate-x-1 transition-transform"
+              >
+                <line x1="5" y1="12" x2="19" y2="12" />
+                <polyline points="12 5 19 12 12 19" />
+              </svg>
+            </button>
+
+            <button
+              type="button"
+              onClick={scrollToHowItWorks}
+              className="inline-flex items-center px-7 py-3.5 rounded-full bg-transparent border border-[rgba(32,1,16,0.2)] text-[#200110] text-[15px] font-semibold hover:bg-[#F6F5F1] active:scale-95 transition-all cursor-pointer"
+            >
+              {t.ctaSecondary}
+            </button>
+          </div>
+        </div>
+
+        {/* Hero Interactive Visual: Voice Memory Verification Card */}
+        <div className="mt-14 max-w-[920px] mx-auto">
+          <div className="p-6 sm:p-8 rounded-[28px] bg-[#F6F5F1] border border-[rgba(32,1,16,0.08)] shadow-sm relative overflow-hidden">
+            {/* Subtle top pill header */}
+            <div className="flex items-center justify-between pb-6 border-b border-[rgba(32,1,16,0.06)]">
+              <div className="flex items-center gap-2.5">
+                <div className="w-3 h-3 rounded-full bg-rose-400" />
+                <span className="text-[13px] font-medium text-[#6E6268]">
+                  Live Voice Check Simulation
+                </span>
+              </div>
+              <span className="text-[12px] font-medium px-2.5 py-0.5 rounded-full bg-white/80 text-[#200110] border border-[rgba(32,1,16,0.06)]">
+                Staged Retrieval Engine
               </span>
             </div>
 
-            {/* Main Headline */}
-            <h1
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white tracking-tight leading-[1.12]"
-              style={{ fontFamily: "var(--hp-font-display)" }}
-            >
-              {t.heroTitle}
-            </h1>
-
-            {/* Sub-headline */}
-            <p className="text-base sm:text-lg text-[#94A3B8] leading-relaxed max-w-2xl mx-auto lg:mx-0">
-              {t.heroSub}
-            </p>
-
-            {/* Primary & Secondary Action Buttons */}
-            <div className="pt-2 flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4">
-              <button
-                onClick={onStartScreening}
-                className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-gradient-to-r from-[#02738A] to-[#0EA5E9] text-white text-base font-bold flex items-center justify-center gap-2 shadow-xl shadow-[#02738A]/30 hover:shadow-[#02738A]/50 hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer group"
-                style={{ fontFamily: "var(--hp-font-display)" }}
-              >
-                <span>{t.heroCta1}</span>
-                <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
-              </button>
-
-              <button
-                onClick={onScrollToHow}
-                className="w-full sm:w-auto px-7 py-3.5 rounded-2xl bg-white/[0.05] hover:bg-white/[0.08] text-white text-base font-semibold border border-white/10 backdrop-blur-sm transition-all cursor-pointer hover:border-white/20"
-              >
-                {t.heroCta2}
-              </button>
-            </div>
-
-            {/* Trust and Non-diagnostic disclaimer line */}
-            <div className="pt-2 flex items-center justify-center lg:justify-start gap-2 text-xs text-[#64748B]">
-              <ShieldCheck className="w-4 h-4 text-[#10B981] flex-shrink-0" />
-              <span>{t.heroDisclaimer}</span>
-            </div>
-          </div>
-
-          {/* Right Column: Animated Voice Waveform & Life Memory Demonstration Visual */}
-          <div className="lg:col-span-5 relative">
-            <div className="relative mx-auto max-w-md lg:max-w-none rounded-3xl bg-gradient-to-b from-white/[0.08] to-white/[0.02] p-1 border border-white/15 backdrop-blur-xl shadow-2xl shadow-black/60">
-              {/* Inner Card Container */}
-              <div className="rounded-[22px] bg-[#111827]/90 p-5 sm:p-6 space-y-5">
-                {/* Visual Header */}
-                <div className="flex items-center justify-between pb-3 border-b border-white/10">
-                  <div className="flex items-center gap-2.5">
-                    <div className="w-8 h-8 rounded-full bg-[#02738A]/30 border border-[#0EA5E9]/40 flex items-center justify-center text-[#0EA5E9]">
-                      <Mic className="w-4 h-4" />
-                    </div>
-                    <div>
-                      <div className="text-xs font-bold text-white">
-                        Live Memory Verification
-                      </div>
-                      <div className="text-[10px] text-[#94A3B8]">
-                        Active Voice Session · Kannada/Hindi/English
-                      </div>
-                    </div>
-                  </div>
-
-                  <span className="px-2.5 py-1 rounded-full bg-[#10B981]/15 text-[#10B981] border border-[#10B981]/30 text-[11px] font-bold flex items-center gap-1">
-                    <Sparkles className="w-3 h-3" />
-                    {t.heroRecalledBadge}
-                  </span>
-                </div>
-
-                {/* Stored Family Fact Card */}
-                <div className="rounded-xl bg-white/[0.04] border border-white/[0.08] p-3 text-xs">
-                  <div className="text-[10px] font-semibold text-[#0EA5E9] uppercase tracking-wider mb-0.5">
-                    {t.heroFactLabel}
-                  </div>
-                  <div className="text-white font-medium flex items-center justify-between">
-                    <span>{t.heroFactValue}</span>
-                    <span className="text-[10px] text-[#64748B] bg-white/[0.05] px-2 py-0.5 rounded">
-                      Verified by Daughter
-                    </span>
-                  </div>
-                </div>
-
-                {/* Voice Query from App */}
-                <div className="flex items-start gap-3">
-                  <div className="w-7 h-7 rounded-full bg-[#0EA5E9]/20 text-[#0EA5E9] flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <Volume2 className="w-3.5 h-3.5" />
-                  </div>
-                  <div className="rounded-2xl rounded-tl-sm bg-white/[0.06] border border-white/10 p-3 text-xs text-[#E2E8F0] leading-relaxed flex-1">
-                    <span className="font-semibold text-[#0EA5E9] block text-[10px] mb-0.5">
-                      NeuroSense Voice Prompt:
-                    </span>
-                    &ldquo;{t.heroVoiceQuery}&rdquo;
-                  </div>
-                </div>
-
-                {/* Elder's Spoken Audio & Waveform Visualization */}
-                <div className="space-y-2">
-                  <div className="flex items-start gap-3 justify-end">
-                    <div className="rounded-2xl rounded-tr-sm bg-gradient-to-r from-[#02738A]/30 to-[#0EA5E9]/20 border border-[#0EA5E9]/40 p-3 text-xs text-white leading-relaxed max-w-[85%] text-left">
-                      <div className="flex items-center justify-between gap-2 mb-1">
-                        <span className="text-[10px] font-bold text-[#10B981] flex items-center gap-1">
-                          <CheckCircle2 className="w-3 h-3" />
-                          Elder&apos;s Voice Response (Audio)
-                        </span>
-                        <span className="text-[9px] text-[#94A3B8]">
-                          0:04s · SNR 26dB
-                        </span>
-                      </div>
-                      &ldquo;{t.heroElderSpeech}&rdquo;
-                    </div>
-                    <div className="w-7 h-7 rounded-full bg-[#10B981]/20 text-[#10B981] flex items-center justify-center flex-shrink-0 mt-0.5">
-                      <UserCheck className="w-3.5 h-3.5" />
-                    </div>
-                  </div>
-
-                  {/* Dynamic Animated Soundwave Equalizer */}
-                  <div className="rounded-xl bg-black/40 border border-white/10 px-4 py-2.5 flex items-center justify-between">
-                    <div className="flex items-center gap-1.5 h-7">
-                      {[
-                        18, 28, 44, 22, 58, 36, 48, 20, 38, 52, 24, 40, 60, 30,
-                        20,
-                      ].map((height, idx) => (
-                        <div
-                          key={idx}
-                          className="w-1 bg-gradient-to-t from-[#02738A] to-[#0EA5E9] rounded-full ns-hp-bar"
-                          style={{
-                            height: `${height}%`,
-                            animationDelay: `${idx * 0.08}s`,
-                          }}
-                        />
-                      ))}
-                    </div>
-                    <div className="text-[11px] font-semibold text-[#10B981] flex items-center gap-1">
-                      <span>Exact Match</span>
-                      <span className="text-[9px] px-1.5 py-0.5 rounded bg-[#10B981]/20">
-                        100%
-                      </span>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Staged Retrieval Step Pills */}
-                <div className="pt-2 flex items-center justify-between text-[11px] text-[#94A3B8] border-t border-white/10">
-                  <div className="flex items-center gap-1.5 text-[#10B981] font-semibold">
-                    <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
-                    <span>Free Recall: Success</span>
-                  </div>
-                  <div className="text-[#64748B]">
-                    Latency: 1.2s · Fluency: High
-                  </div>
+            {/* Conversation Grid */}
+            <div className="py-6 grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
+              {/* Question bubble (Family Verified Fact) */}
+              <div className="p-5 rounded-2xl bg-white border border-[rgba(32,1,16,0.06)] shadow-2xs space-y-2">
+                <span className="text-[11px] font-bold text-[#6E6268] uppercase tracking-wider block">
+                  Family Verified Prompt
+                </span>
+                <p className="text-[15px] font-medium text-[#200110]">
+                  {currentLang === "hi"
+                    ? "क्या आपको याद है आपके पोते का क्या नाम है?"
+                    : currentLang === "kn"
+                      ? "ನಿಮ್ಮ ಮೊಮ್ಮಗನ ಮುದ್ದಿನ ಹೆಸರು ಏನು ನೆನಪಿದೆಯೇ?"
+                      : "Can you tell me the name of your grandson who visits on Sundays?"}
+                </p>
+                <div className="pt-1 flex items-center gap-2 text-[12px] text-[#6E6268]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-indigo-500" />
+                  <span>{t.sampleFact}</span>
                 </div>
               </div>
+
+              {/* Spoken Response (Elder's Voice) */}
+              <div className="p-5 rounded-2xl bg-[#200110] text-[#FBFAF8] shadow-2xs space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] font-bold text-amber-200 uppercase tracking-wider block">
+                    Elder's Spoken Answer
+                  </span>
+                  {/* Waveform indicator */}
+                  <div className="flex items-center gap-0.5 h-3">
+                    <span className="w-1 h-2 bg-emerald-400 rounded-full animate-bounce" />
+                    <span className="w-1 h-3 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.15s]" />
+                    <span className="w-1 h-1.5 bg-emerald-400 rounded-full animate-bounce [animation-delay:0.3s]" />
+                  </div>
+                </div>
+                <p className="text-[15px] font-medium text-white/95">
+                  "{t.sampleAnswer}"
+                </p>
+                <div className="pt-1 flex items-center justify-between text-[12px]">
+                  <span className="text-emerald-400 font-semibold">
+                    {t.recalledStatus}
+                  </span>
+                  <span className="text-white/60">Confidence: 98%</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Bottom Disclaimer Banner */}
+            <div className="pt-4 border-t border-[rgba(32,1,16,0.06)] flex flex-col sm:flex-row items-center justify-between gap-3 text-center sm:text-left">
+              <span className="text-[12px] text-[#6E6268]">{t.disclaimer}</span>
+              <button
+                type="button"
+                onClick={() => setIsPlayingAudio(!isPlayingAudio)}
+                className="text-[12px] font-bold text-[#200110] hover:underline cursor-pointer flex items-center gap-1.5"
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <polygon points="5 3 19 12 5 21 5 3" />
+                </svg>
+                <span>
+                  {isPlayingAudio ? "Audio Playing..." : "Sample Voice Test"}
+                </span>
+              </button>
             </div>
           </div>
         </div>

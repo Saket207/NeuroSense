@@ -1,83 +1,79 @@
 import React, { useState } from "react"
-import { homepageI18n, type HomepageLang } from "./translations"
+import { LanguageCode } from "./translations"
 import HomepageNav from "./HomepageNav"
 import HeroSection from "./HeroSection"
-import ProblemSection from "./ProblemSection"
-import HowItWorksSection from "./HowItWorksSection"
-import LifeMemorySection from "./LifeMemorySection"
-import LanguagesSection from "./LanguagesSection"
-import AudienceSection from "./AudienceSection"
-import SampleReportSection from "./SampleReportSection"
-import PrivacySection from "./PrivacySection"
+import StatsRowSection from "./StatsRowSection"
+import ThreeCardsSection from "./ThreeCardsSection"
+import DarkTimelineSection from "./DarkTimelineSection"
+import MetricsGridSection from "./MetricsGridSection"
+import SplitFeatureSection from "./SplitFeatureSection"
+import MarqueeSection from "./MarqueeSection"
 import FAQSection from "./FAQSection"
-import CTASection from "./CTASection"
+import BannerSection from "./BannerSection"
 import FooterSection from "./FooterSection"
-import "./homepage.css"
+import styles from "./homepage.module.css"
 
 interface HomepageProps {
   onEnterApp: () => void
 }
 
+/**
+ * NeuroSense Homepage Container
+ * Faithfully reproducing the NexGo editorial healthcare design system observed in reference frames f_01.jpg - f_15.jpg:
+ * - High-contrast editorial serif typography (Newsreader / Lora / Noto Serif)
+ * - Warm off-white page background (#FBFAF8)
+ * - Soft warm grey-beige card surfaces (#F6F5F1)
+ * - Deep royal burgundy accent and timeline background (#200110)
+ * - Signature motion: character-by-character reveals, count-up numbers, interactive timeline, dual marquee.
+ * - Multilingual support (English, Hindi, Kannada).
+ */
 export default function Homepage({ onEnterApp }: HomepageProps) {
-  const [lang, setLang] = useState<HomepageLang>("en")
-  const t = homepageI18n[lang] || homepageI18n.en
-
-  const scrollToHow = () => {
-    const el = document.getElementById("how-it-works")
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" })
-    }
-  }
+  const [currentLang, setCurrentLang] = useState<LanguageCode>("en")
 
   return (
-    <div className="ns-hp antialiased selection:bg-[#0EA5E9]/30 selection:text-white">
-      {/* Sticky Navigation */}
+    <div className={styles.pageRoot}>
+      {/* 1. Sticky Navigation Bar */}
       <HomepageNav
-        t={t}
-        currentLang={lang}
-        onLangChange={setLang}
-        onStartScreening={onEnterApp}
+        currentLang={currentLang}
+        onSelectLang={setCurrentLang}
+        onEnterApp={onEnterApp}
       />
 
-      {/* Main Content Flow */}
       <main>
-        {/* Hero Section */}
-        <HeroSection
-          t={t}
-          onStartScreening={onEnterApp}
-          onScrollToHow={scrollToHow}
-        />
+        {/* 2. Editorial Hero (Pending Reference — Section 0.2) */}
+        <HeroSection currentLang={currentLang} onEnterApp={onEnterApp} />
 
-        {/* The Problem Section */}
-        <ProblemSection t={t} />
+        {/* 3. Stats Row Section (Reference Frame f_01) */}
+        <StatsRowSection currentLang={currentLang} />
 
-        {/* How It Works (4-Step Animated Stepper) */}
-        <HowItWorksSection t={t} />
+        {/* 4. Three Tall Feature Cards (Reference Frames f_01 & f_02) */}
+        <ThreeCardsSection currentLang={currentLang} />
 
-        {/* Hero Feature: Family-Verified Life Memory Check */}
-        <LifeMemorySection t={t} />
+        {/* 5. Deep Burgundy Interactive Timeline (Reference Frames f_03, f_04, f_05) */}
+        <DarkTimelineSection currentLang={currentLang} />
 
-        {/* Built for Every Voice (Languages) */}
-        <LanguagesSection t={t} />
+        {/* 6. Metrics Grid Section (Reference Frames f_06 & f_07) */}
+        <MetricsGridSection currentLang={currentLang} />
 
-        {/* For ASHA Health Workers and Families */}
-        <AudienceSection t={t} />
+        {/* 7. Split Feature with Floating Stat Cards (Reference Frames f_08 & f_09) */}
+        <SplitFeatureSection currentLang={currentLang} />
 
-        {/* Sample Explainable Clinical Report */}
-        <SampleReportSection t={t} />
+        {/* 8. Dual Infinite Marquee Rows (Reference Frames f_10 & f_11) */}
+        <MarqueeSection currentLang={currentLang} />
 
-        {/* Privacy, Consent & Clinical Boundaries */}
-        <PrivacySection t={t} />
+        {/* 9. FAQ Accordion Section (Reference Frames f_12 & f_13) */}
+        <FAQSection currentLang={currentLang} onEnterApp={onEnterApp} />
 
-        {/* Frequently Asked Questions Accordion */}
-        <FAQSection t={t} />
-
-        {/* Final Call to Action */}
-        <CTASection t={t} onStartScreening={onEnterApp} />
+        {/* 10. Ambient Pastel Banner (Reference Frame f_13) */}
+        <BannerSection />
       </main>
 
-      {/* Footer */}
-      <FooterSection t={t} onStartScreening={onEnterApp} />
+      {/* 11. Editorial Two-Column Footer (Reference Frames f_14 & f_15) */}
+      <FooterSection
+        currentLang={currentLang}
+        onSelectLang={setCurrentLang}
+        onEnterApp={onEnterApp}
+      />
     </div>
   )
 }
