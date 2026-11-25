@@ -1,0 +1,50 @@
+{
+  "fact_1": {
+    "stage": "free",
+    "spoken": "तारिक मियाँ."
+  },
+  "fact_2": {
+    "stage": "recognition",
+    "spoken": "ज़ोया."
+  },
+  "fact_3": {
+    "stage": "cued",
+    "spoken": "नसरीन बेगम."
+  },
+  "fact_4": {
+    "stage": "free",
+    "spoken": "लखनऊ."
+  },
+  "fact_5": {
+    "stage": "recognition",
+    "spoken": "उन्नीस सौ अड़सठ."
+  },
+  "fact_6": {
+    "stage": "recognition",
+    "spoken": "दुकानदार."
+  },
+  "fact_7": {
+    "stage": "free",
+    "spoken": "कुछ याद नहीं आ रहा है."
+  },
+  "fact_8": {
+    "stage": "cued",
+    "spoken": "ईद."
+  },
+  "fact_9": {
+    "stage": "free",
+    "spoken": "मालूम नहीं."
+  },
+  "fact_10": {
+    "stage": "free",
+    "spoken": "घंटाघर."
+  },
+  "fact_recent_1": {
+    "stage": "free",
+    "spoken": "कोई नहीं आया."
+  },
+  "fact_recent_2": {
+    "stage": "free",
+    "spoken": "कहीं नहीं गए."
+  }
+}

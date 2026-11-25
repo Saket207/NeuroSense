@@ -16,6 +16,7 @@
 
 - [Overview & Clinical Focus](#overview--clinical-focus)
 - [Key Features](#key-features)
+- [🎭 Demo Studio (Hackathon & Evaluation Harness)](#-demo-studio-hackathon--evaluation-harness)
 - [System Architecture](#system-architecture)
 - [Quantum-Classical Hybrid Model](#quantum-classical-hybrid-model)
 - [Repository Structure](#repository-structure)
@@ -59,6 +60,35 @@ Neurological disorders, including epilepsy, seizure events, and neurodegenerativ
 5. **Strict Patient vs. Doctor View Separation:**
    - Patient phone view is dedicated strictly to wellness routines, daily check-ins, and vocal exercises.
    - Doctor Clinical Dashboard is accessible exclusively through the clinician workstation interface.
+
+---
+
+## 🎭 Demo Studio (Hackathon & Evaluation Harness)
+
+NeuroSense includes a dedicated, zero-mock **Demo Studio** for rapid hackathon judging, clinical presentations, and verification.
+
+### Launching Demo Mode
+Open the application with the `?demo=1` query parameter or set `VITE_DEMO_MODE=true`:
+```
+http://localhost:8443/?demo=1
+```
+
+### Key Capabilities
+- **6 Realistic Fictional Personas:** Diverse demographics, regional languages (Kannada, Hindi, English), varying education levels (3 to 15 years), and cognitive trajectories (`lakshmi`, `ramesh`, `savitri`, `abdul`, `kamala`, `narayan`).
+- **Live Animated Autofill:** Visual step-by-step form completion into the Family Setup Wizard with human-like typing cadence, field highlighting, and adjustable speeds (`Natural`, `Fast`, `Instant`).
+- **Answer Source Selection:** In the voice session screen, choose between:
+  - `Demo Audio (Default)`: Streams realistic regional voice audio into Faster-Whisper and acoustic feature extractors.
+  - `Upload Audio`: Allows testing arbitrary external `.wav` / `.mp3` files.
+  - `Microphone`: Standard browser microphone recording.
+- **Pipeline Inspector:** Streaming diagnostic panel exposing live intermediate states:
+  - Raw Audio & SNR (dB)
+  - Faster-Whisper Multilingual ASR
+  - 5-Layer Life Memory Match Engine Decision (Exact, Alias, Numeric, Fuzzy, Semantic)
+  - Multi-stage retrieval credit (Free $\rightarrow$ Cued $\rightarrow$ Recognition)
+  - Acoustic Biometrics (Jitter, Shimmer, Pitch Variance, Spectral Centroid)
+  - Mathematical CSI Scoring formula with real numbers and SHA-256 configuration hash.
+- **What-If Counterfactual Lab:** Test how changing safety hazards, SNR noise, or schooling years alters outcomes in real time, run automated determinism checks, and export JSON run traces.
+- **Audio Overrides:** Place custom recordings in `demo/audio_override/<scenario_id>/<fact_id>_<stage>.wav` to override synthetic audio.
 
 ---
 

@@ -181,6 +181,17 @@ import {
 } from "./services/familySetupStorage"
 import type { FamilySetupRecord } from "./types/familySetup"
 
+const DemoStudioDrawer = React.lazy(() => import("./demo/DemoStudioDrawer"))
+
+const isDemoModeEnabled = (): boolean => {
+  if (typeof window === "undefined") return false
+  const params = new URLSearchParams(window.location.search)
+  return (
+    params.get("demo") === "1" ||
+    (import.meta as any).env?.VITE_DEMO_MODE === "true"
+  )
+}
+
 import { NoiseReading } from "./services/noiseCheck"
 
 import { MODEL_EVAL } from "./services/modelEval"
@@ -4067,6 +4078,8 @@ function NeuroSenseApp({
   const [screenHistory, setScreenHistory] = useState<Screen[]>([])
   const [activeFamilySetup, setActiveFamilySetup] =
     useState<FamilySetupRecord | null>(null)
+  const [inspectorState, setInspectorState] = useState<any | null>(null)
+  const [demoMode, setDemoMode] = useState<boolean>(() => isDemoModeEnabled())
 
   const restoredSession = useRef(loadSession()).current
 
@@ -10203,10 +10216,58 @@ function NeuroSenseApp({
                     "Elder",
                 )
               }
-              onComplete={(results, scoreData) => {
+              onComplete={async (results, scoreData) => {
                 console.log("Life Memory check completed:", results, scoreData)
+                try {
+                  const db = await getDB()
+                  const tx = db.transaction("screenings", "readwrite")
+                  const store = tx.objectStore("screenings")
+                  const recId = `screening_${Date.now()}`
+                  const pId =
+                    activeFamilySetup?.patientId ||
+                    patientProfile?.patientId ||
+                    "elder_1"
+                  const pName =
+                    activeFamilySetup?.elderProfile?.fullName ||
+                    patientProfile?.fullName ||
+                    "Elder"
+                  await store.put({
+                    id: recId,
+                    patientId: pId,
+                    patientName: pName,
+                    patientAge: activeFamilySetup?.elderProfile?.age || 72,
+                    language:
+                      activeFamilySetup?.elderProfile
+                        ?.preferredTestingLanguage as any || "en",
+                    assistedMode: false,
+                    durationSeconds: 120,
+                    audioQuality: "good" as any,
+                    tasks: [],
+                    biomarkers: {} as any,
+                    mlResult: {} as any,
+                    synced: true,
+                    createdAt: new Date().toISOString(),
+                    csi:
+                      scoreData.unifiedScreening?.csi ||
+                      Math.round(scoreData.score * 0.8 + 15),
+                    riskTier: scoreData.unifiedScreening?.risk_tier || "green",
+                    tierLabel:
+                      scoreData.unifiedScreening?.tier_label || "Low Concern",
+                    lifeMemoryScore: scoreData.score,
+                    namingScore: 85,
+                    speechScore: 78,
+                    informantScore: 20,
+                    confidence: Math.round(
+                      scoreData.unifiedScreening?.confidence || 88,
+                    ),
+                    results,
+                  })
+                } catch (e) {
+                  console.warn("Could not record screening session in DB:", e)
+                }
                 navigate("trends")
               }}
+              onInspectorUpdate={(state) => setInspectorState(state)}
               onCancel={() => navigate("home")}
             />
           </div>
@@ -10240,6 +10301,20 @@ function NeuroSenseApp({
       className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#031d25] via-[#02171e] to-[#010e13] p-0 sm:p-4 md:p-6"
       style={{ fontFamily: F.body }}
     >
+      {/* Demo Studio Drawer (Gated by ?demo=1 or demoMode toggle) */}
+      {demoMode && (
+        <React.Suspense fallback={null}>
+          <DemoStudioDrawer
+            onScenarioLoaded={(_scenarioMeta, profile) => {
+              setActiveFamilySetup(profile)
+              navigate("familySetup")
+            }}
+            onNavigateScreen={(scr) => navigate(scr as any)}
+            inspectorState={inspectorState}
+          />
+        </React.Suspense>
+      )}
+
       {/* Top / Floating Demo Navigation Bar on Desktop */}
       <div className="nv-demo-nav fixed top-3 sm:top-4 left-3 right-3 sm:left-4 sm:right-4 z-40 flex flex-wrap items-center justify-between gap-2 max-w-5xl mx-auto px-4 py-2 rounded-2xl bg-[#03222a]/90 border border-[#0d4f5e] backdrop-blur-md shadow-2xl">
         <div className="flex items-center gap-3">
@@ -10262,6 +10337,32 @@ function NeuroSenseApp({
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Quick Demo Studio Toggle */}
+          <button
+            onClick={() => {
+              const next = !demoMode
+              setDemoMode(next)
+              const url = new URL(window.location.href)
+              if (next) {
+                url.searchParams.set("demo", "1")
+              } else {
+                url.searchParams.delete("demo")
+              }
+              window.history.replaceState({}, "", url.toString())
+            }}
+            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer ${
+              demoMode
+                ? "bg-amber-500 text-slate-950 border border-amber-400 font-extrabold"
+                : "bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-slate-200 hover:text-white"
+            }`}
+            title="Toggle Demo Studio with 1-click Autofill"
+          >
+            <span>🎭</span>
+            <span>Demo Studio</span>
+            {demoMode && (
+              <span className="w-2 h-2 rounded-full bg-slate-950 animate-pulse" />
+            )}
+          </button>
           {/* Return to the current login and registration flow. */}
           <div className="relative">
             <div className="flex items-center rounded-xl bg-[#042a35] border border-[#0d4f5e] hover:border-[#38bdf8]/60 shadow-md transition-all">

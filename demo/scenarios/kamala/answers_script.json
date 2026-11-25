@@ -1,0 +1,50 @@
+{
+  "fact_1": {
+    "stage": "free",
+    "spoken": "ನನ್ನ ಮಗ ಪ್ರಸಾದ್."
+  },
+  "fact_2": {
+    "stage": "free",
+    "spoken": "ವರುಣ್, ಚಿಂಟು ಅಂತ ಕರೀತೀವಿ."
+  },
+  "fact_3": {
+    "stage": "free",
+    "spoken": "ವೆಂಕಟೇಶ್."
+  },
+  "fact_4": {
+    "stage": "free",
+    "spoken": "ಶಿವಮೊಗ್ಗ."
+  },
+  "fact_5": {
+    "stage": "free",
+    "spoken": "1978."
+  },
+  "fact_6": {
+    "stage": "free",
+    "spoken": "ಮನೆ ಕೆಲಸ ಗೃಹಿಣಿ."
+  },
+  "fact_7": {
+    "stage": "free",
+    "spoken": "ಬಿಸಿ ಬೇಳೆ ಬಾತ್."
+  },
+  "fact_8": {
+    "stage": "free",
+    "spoken": "ಗಣೇಶ ಹಬ್ಬ."
+  },
+  "fact_9": {
+    "stage": "cued",
+    "spoken": "ಸುಜಾತ."
+  },
+  "fact_10": {
+    "stage": "free",
+    "spoken": "ಗಾಂಧಿ ಸರ್ಕಲ್."
+  },
+  "fact_recent_1": {
+    "stage": "free",
+    "spoken": "ಮಂಜುಳಕ್ಕ ಬಂದಿದ್ದರು."
+  },
+  "fact_recent_2": {
+    "stage": "free",
+    "spoken": "ಇಸ್ಕಾನ್ ದೇವಸ್ಥಾನಕ್ಕೆ ಹೋಗಿದ್ವಿ."
+  }
+}

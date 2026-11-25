@@ -43,6 +43,55 @@ export default function FamilySetupWizard({
   const [saving, setSaving] = useState(false)
   const [statusMsg, setStatusMsg] = useState("")
 
+  // Quick Demo Autofill State
+  const [demoScenarioChoice, setDemoScenarioChoice] = useState("lakshmi")
+  const [isAutofillingDemo, setIsAutofillingDemo] = useState(false)
+
+  const handleQuickAutofill = async () => {
+    setIsAutofillingDemo(true)
+    try {
+      let data: any
+      try {
+        const res = await fetch(
+          `/demo/scenarios/${demoScenarioChoice}/profile.json`,
+        )
+        if (res.ok) data = await res.json()
+      } catch {}
+
+      if (!data) {
+        const fallbackRes = await fetch(
+          `http://localhost:8001/demo/scenarios/${demoScenarioChoice}/profile.json`,
+        )
+        data = await fallbackRes.json()
+      }
+
+      // Rebase recent events
+      const now = new Date()
+      data.lifeFacts = data.lifeFacts.map((fact: any) => {
+        if (fact.category === "recent_event" || fact.isRecentEvent) {
+          return {
+            ...fact,
+            eventDate: new Date(now.getTime() - 3 * 86400000)
+              .toISOString()
+              .slice(0, 10),
+          }
+        }
+        return fact
+      })
+
+      setSetup(data)
+      await saveFamilySetup(data)
+      setStatusMsg(
+        `Loaded ${data.elderProfile.fullName} scenario. All 5 steps filled!`,
+      )
+    } catch (e) {
+      console.warn("Could not autofill scenario:", e)
+      setStatusMsg("Failed to load demo scenario.")
+    } finally {
+      setIsAutofillingDemo(false)
+    }
+  }
+
   // Edit Fact Modal State
   const [editingFact, setEditingFact] = useState<LifeFactItem | null>(null)
   const [aliasInput, setAliasInput] = useState("")
@@ -212,6 +261,53 @@ export default function FamilySetupWizard({
 
       {/* Main Content Area */}
       <div className="p-5 flex-1 overflow-y-auto max-h-[65vh]">
+        {/* Quick Demo Autofill Bar */}
+        <div className="bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-200 rounded-2xl p-3 mb-4 flex flex-wrap items-center justify-between gap-2 shadow-sm">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">⚡</span>
+            <div>
+              <div className="text-xs font-bold text-amber-950 flex items-center gap-1.5">
+                <span>Demo Studio Autofill</span>
+                <span className="px-1.5 py-0.2 rounded bg-amber-200 text-amber-900 text-[10px]">
+                  Fills all 5 steps
+                </span>
+              </div>
+              <div className="text-[10px] text-amber-800">
+                Instantly fills Elder Profile, 12 Life Facts, 16 Questions, and
+                Health Checks.
+              </div>
+            </div>
+          </div>
+          <div className="flex items-center gap-2">
+            <select
+              value={demoScenarioChoice}
+              onChange={(e) => setDemoScenarioChoice(e.target.value)}
+              className="bg-white border border-amber-300 text-amber-950 text-xs rounded-lg px-2.5 py-1 font-medium cursor-pointer shadow-inner"
+            >
+              <option value="lakshmi">Lakshmi (Kannada • Normal)</option>
+              <option value="ramesh">Ramesh (Hindi • Rural/3y)</option>
+              <option value="savitri">
+                Savitri (English • Progressive MCI)
+              </option>
+              <option value="abdul">Abdul (Hindi • Decline+Hazard)</option>
+              <option value="kamala">
+                Kamala (Kannada • Low Ed/High Recall)
+              </option>
+              <option value="narayan">Narayan (Kannada • Noise Check)</option>
+            </select>
+            <button
+              type="button"
+              onClick={handleQuickAutofill}
+              disabled={isAutofillingDemo}
+              className="px-3.5 py-1.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 active:scale-95 text-slate-950 font-bold text-xs rounded-lg shadow-sm transition-all cursor-pointer disabled:opacity-50 flex items-center gap-1"
+            >
+              <span>
+                {isAutofillingDemo ? "Filling..." : "⚡ Autofill Everything"}
+              </span>
+            </button>
+          </div>
+        </div>
+
         {/* STEP 1: Elder Profile */}
         {currentStep === 1 && (
           <div className="space-y-4">

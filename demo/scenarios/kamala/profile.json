@@ -1,0 +1,431 @@
+{
+  "id": "setup_kamala_demo",
+  "patientId": "demo_kamala",
+  "version": 1,
+  "createdAt": "2026-11-25T01:28:57.758333",
+  "updatedAt": "2026-11-25T01:28:57.758333",
+  "elderProfile": {
+    "fullName": "Kamala Rao",
+    "age": 70,
+    "gender": "Female",
+    "languagesSpoken": [
+      "Kannada"
+    ],
+    "preferredTestingLanguage": "kn",
+    "dialectOrRegion": "Central Karnataka (Shivamogga)",
+    "schoolingYears": 8,
+    "literacyStatus": "can_read_write",
+    "informantName": "Chetan (Nephew)",
+    "informantRelationship": "Other Relative",
+    "informantMeetingFrequency": "rarely",
+    "livingArrangement": "with_family"
+  },
+  "lifeFacts": [
+    {
+      "id": "fact_1",
+      "factKey": "child_name",
+      "category": "people",
+      "questionText": "ನಿಮ್ಮ ಮಗನ ಹೆಸರೇನು?",
+      "defaultPrompt": {
+        "en": "Son?",
+        "hi": "बेटा?",
+        "kn": "ನಿಮ್ಮ ಮಗನ ಹೆಸರೇನು?"
+      },
+      "verifiedAnswer": "ಪ್ರಸಾದ್",
+      "acceptedAliases": [
+        "ಪ್ರಸನ್ನ"
+      ],
+      "cue": "ನಿಮ್ಮ ಮಗ.",
+      "distractors": [
+        "ರವೀಂದ್ರ",
+        "ರಾಜೇಶ್"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_2",
+      "factKey": "grandchild_name",
+      "category": "people",
+      "questionText": "ನಿಮ್ಮ ಮೊಮ್ಮಗನ ಹೆಸರೇನು?",
+      "defaultPrompt": {
+        "en": "Grandchild?",
+        "hi": "पोता?",
+        "kn": "ಮೊಮ್ಮಗ?"
+      },
+      "verifiedAnswer": "ವರುಣ್",
+      "acceptedAliases": [
+        "ಚಿಂಟು"
+      ],
+      "cue": "ಶಾಲೆಗೆ ಹೋಗುವ ಹುಡುಗ.",
+      "distractors": [
+        "ಚರಣ್",
+        "ದೀಪಕ್"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_3",
+      "factKey": "spouse_name",
+      "category": "people",
+      "questionText": "ನಿಮ್ಮ ಪತಿಯ ಹೆಸರೇನು?",
+      "defaultPrompt": {
+        "en": "Spouse?",
+        "hi": "पति?",
+        "kn": "ಪತಿ?"
+      },
+      "verifiedAnswer": "ವೆಂಕಟೇಶ್",
+      "acceptedAliases": [
+        "ವೆಂಕು"
+      ],
+      "cue": "ನಿಮ್ಮ ಪತಿ.",
+      "distractors": [
+        "ನರಸಿಂಹ",
+        "ಕೃಷ್ಣ"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_4",
+      "factKey": "native_village",
+      "category": "place",
+      "questionText": "ನಿಮ್ಮ ಹುಟ್ಟೂರು ಯಾವುದು?",
+      "defaultPrompt": {
+        "en": "Hometown?",
+        "hi": "गाँव?",
+        "kn": "ಹುಟ್ಟೂರು?"
+      },
+      "verifiedAnswer": "ಶಿವಮೊಗ್ಗ",
+      "acceptedAliases": [
+        "ಶಿಮೊಗ"
+      ],
+      "cue": "ತುಂಗಾ ನದಿ ತೀರ.",
+      "distractors": [
+        "ಭದ್ರಾವತಿ",
+        "ಚಿಕ್ಕಮಗಳೂರು"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_5",
+      "factKey": "wedding_year",
+      "category": "history",
+      "isNumeric": true,
+      "questionText": "ನಿಮ್ಮ ಮದುವೆಯಾದ ವರ್ಷ ಯಾವುದು?",
+      "defaultPrompt": {
+        "en": "Wedding year?",
+        "hi": "शादी का साल?",
+        "kn": "ಮದುವೆ ವರ್ಷ?"
+      },
+      "verifiedAnswer": "1978",
+      "acceptedAliases": [
+        "78"
+      ],
+      "cue": "ಎಪ್ಪತ್ತರ ದಶಕದ ಕೊನೆ.",
+      "distractors": [
+        "1973",
+        "1983"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_6",
+      "factKey": "former_occupation",
+      "category": "history",
+      "questionText": "ನೀವು ಮಾಡಿದ ಮುಖ್ಯ ಕೆಲಸ ಯಾವುದು?",
+      "defaultPrompt": {
+        "en": "Work?",
+        "hi": "काम?",
+        "kn": "ಕೆಲಸ?"
+      },
+      "verifiedAnswer": "ಮನೆ ಕೆಲಸ",
+      "acceptedAliases": [
+        "ಗೃಹಿಣಿ"
+      ],
+      "cue": "ಮನೆಯನ್ನು ನೋಡಿಕೊಳ್ಳುತ್ತಿದ್ದಿರಿ.",
+      "distractors": [
+        "ಶಿಕ್ಷಕಿ",
+        "ಉದ್ಯೋಗಿ"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_7",
+      "factKey": "favourite_food",
+      "category": "preference",
+      "questionText": "ನಿಮಗೆ ಅತ್ಯಂತ ಇಷ್ಟವಾದ ಊಟ ಯಾವುದು?",
+      "defaultPrompt": {
+        "en": "Food?",
+        "hi": "खाना?",
+        "kn": "ಊಟ?"
+      },
+      "verifiedAnswer": "ಬಿಸಿ ಬೇಳೆ ಬಾತ್",
+      "acceptedAliases": [
+        "ಹುಳಿಅನ್ನ"
+      ],
+      "cue": "ತರಕಾರಿ ಬೇಳೆ ಅನ್ನ.",
+      "distractors": [
+        "ಚಿತ್ರಾನ್ನ",
+        "ಪುಳಿಯೋಗರೆ"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_8",
+      "factKey": "family_festival",
+      "category": "preference",
+      "questionText": "ಮನೆಯಲ್ಲಿ ಸಂಭ್ರಮದಿಂದ ಆಚರಿಸುವ ಹಬ್ಬ ಯಾವುದು?",
+      "defaultPrompt": {
+        "en": "Festival?",
+        "hi": "त्यौहार?",
+        "kn": "ಹಬ್ಬ?"
+      },
+      "verifiedAnswer": "ಗಣೇಶ ಚತುರ್ಥಿ",
+      "acceptedAliases": [
+        "ಗಣೇಶ ಹಬ್ಬ"
+      ],
+      "cue": "ಮೋದಕ ಮಾಡುವ ಹಬ್ಬ.",
+      "distractors": [
+        "ಯುಗಾದಿ",
+        "ದೀಪಾವಳಿ"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_9",
+      "factKey": "close_friend",
+      "category": "people",
+      "questionText": "ನಿಮ್ಮ ಆಪ್ತ ಸ್ನೇಹಿತೆಯ ಹೆಸರೇನು?",
+      "defaultPrompt": {
+        "en": "Friend?",
+        "hi": "सहेली?",
+        "kn": "ಸ್ನೇಹಿತೆ?"
+      },
+      "verifiedAnswer": "ಸುಜಾತ",
+      "acceptedAliases": [
+        "ಸುಜಾತಾ"
+      ],
+      "cue": "ಬಾಲ್ಯದ ಸ್ನೇಹಿತೆ.",
+      "distractors": [
+        "ಕಮಲಾ",
+        "ಪ್ರೇಮ"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_10",
+      "factKey": "nearby_landmark",
+      "category": "place",
+      "questionText": "ಮನೆಯ ಹತ್ತಿರವಿರುವ ಗುರುತು ಯಾವುದು?",
+      "defaultPrompt": {
+        "en": "Landmark?",
+        "hi": "जगह?",
+        "kn": "ಜಾಗ?"
+      },
+      "verifiedAnswer": "ಗಾಂಧಿ ಸರ್ಕಲ್",
+      "acceptedAliases": [
+        "ಗಾಂಧಿ ವೃತ್ತ"
+      ],
+      "cue": "ಮುಖ್ಯ ವೃತ್ತ.",
+      "distractors": [
+        "ಬಸ್ ಸ್ಟ್ಯಾಂಡ್",
+        "ಪೋಸ್ಟ್ ಆಫೀಸ್"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_recent_1",
+      "factKey": "recent_visitor",
+      "category": "recent_event",
+      "isRecentEvent": true,
+      "eventDate": "2026-11-22",
+      "questionText": "ಕಳೆದ ವಾರ ಮನೆಗೆ ಯಾರು ಬಂದಿದ್ದರು?",
+      "defaultPrompt": {
+        "en": "Visitor?",
+        "hi": "आने वाले?",
+        "kn": "ಬಂದವರು?"
+      },
+      "verifiedAnswer": "ಮಂಜುಳ",
+      "acceptedAliases": [
+        "ಮಂಜು"
+      ],
+      "cue": "ನಿಮ್ಮ ಅಕ್ಕ.",
+      "distractors": [
+        "ಲತಾ",
+        "ಗೌರಿ"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_recent_2",
+      "factKey": "recent_outing",
+      "category": "recent_event",
+      "isRecentEvent": true,
+      "eventDate": "2026-11-19",
+      "questionText": "ಕಳೆದ ವಾರ ನಾವು ಎಲ್ಲಿಗೆ ಹೋಗಿದ್ದೆವು?",
+      "defaultPrompt": {
+        "en": "Outing?",
+        "hi": "कहाँ गए?",
+        "kn": "ಹೋದ ಜಾಗ?"
+      },
+      "verifiedAnswer": "ಇಸ್ಕಾನ್ ದೇವಾಲಯ",
+      "acceptedAliases": [
+        "ಇಸ್ಕಾನ್"
+      ],
+      "cue": "ಕೃಷ್ಣನ ದೊಡ್ಡ ದೇವಸ್ಥಾನ.",
+      "distractors": [
+        "ಲಾಲ್‌ಬಾಗ್",
+        "ಮಾರುಕಟ್ಟೆ"
+      ],
+      "isSensitive": false
+    }
+  ],
+  "dailyLifeQuestionnaire": [
+    {
+      "id": "item_1",
+      "domain": "memory",
+      "isSafetyItem": false,
+      "questionText": "Repeats stories",
+      "frequency": "often",
+      "onset": "over_3_years"
+    },
+    {
+      "id": "item_2",
+      "domain": "memory",
+      "isSafetyItem": false,
+      "questionText": "Forgets recent events",
+      "frequency": "often",
+      "onset": "over_3_years"
+    },
+    {
+      "id": "item_3",
+      "domain": "memory",
+      "isSafetyItem": false,
+      "questionText": "Misplaces items",
+      "frequency": "often",
+      "onset": "over_3_years"
+    },
+    {
+      "id": "item_4",
+      "domain": "orientation",
+      "isSafetyItem": true,
+      "questionText": "Gets lost",
+      "frequency": "rarely",
+      "onset": "over_3_years"
+    },
+    {
+      "id": "item_5",
+      "domain": "orientation",
+      "isSafetyItem": false,
+      "questionText": "Confused about dates",
+      "frequency": "often",
+      "onset": "over_3_years"
+    },
+    {
+      "id": "item_6",
+      "domain": "daily_tasks_money",
+      "isSafetyItem": false,
+      "questionText": "Money difficulties",
+      "frequency": "often",
+      "onset": "over_3_years"
+    },
+    {
+      "id": "item_7",
+      "domain": "daily_tasks_money",
+      "isSafetyItem": true,
+      "questionText": "Forgets medication",
+      "frequency": "often",
+      "onset": "over_3_years"
+    },
+    {
+      "id": "item_8",
+      "domain": "language",
+      "isSafetyItem": false,
+      "questionText": "Word finding problems",
+      "frequency": "often",
+      "onset": "over_3_years"
+    },
+    {
+      "id": "item_9",
+      "domain": "language",
+      "isSafetyItem": false,
+      "questionText": "Following conversations",
+      "frequency": "often",
+      "onset": "over_3_years"
+    },
+    {
+      "id": "item_10",
+      "domain": "memory",
+      "isSafetyItem": false,
+      "questionText": "Forgets names",
+      "frequency": "often",
+      "onset": "over_3_years"
+    },
+    {
+      "id": "item_11",
+      "domain": "daily_tasks_money",
+      "isSafetyItem": false,
+      "questionText": "Routine task struggle",
+      "frequency": "often",
+      "onset": "over_3_years"
+    },
+    {
+      "id": "item_12",
+      "domain": "safety",
+      "isSafetyItem": true,
+      "questionText": "Leaves stove on",
+      "frequency": "never",
+      "onset": "not_sure"
+    },
+    {
+      "id": "item_13",
+      "domain": "behaviour_mood",
+      "isSafetyItem": false,
+      "questionText": "Mood changes",
+      "frequency": "often",
+      "onset": "over_3_years"
+    },
+    {
+      "id": "item_14",
+      "domain": "behaviour_mood",
+      "isSafetyItem": false,
+      "questionText": "Lost interest in hobbies",
+      "frequency": "often",
+      "onset": "over_3_years"
+    },
+    {
+      "id": "item_15",
+      "domain": "safety",
+      "isSafetyItem": true,
+      "questionText": "Impaired judgment",
+      "frequency": "never",
+      "onset": "not_sure"
+    },
+    {
+      "id": "item_16",
+      "domain": "safety",
+      "isSafetyItem": true,
+      "questionText": "Night wandering",
+      "frequency": "never",
+      "onset": "not_sure"
+    }
+  ],
+  "confounders": {
+    "hearingDifficulty": false,
+    "hasHearingAid": false,
+    "visionDifficulty": false,
+    "poorSleepRecently": false,
+    "recentBereavement": false,
+    "recentIllnessOrHospitalStay": false,
+    "sedatingMedicines": false,
+    "alcoholUse": false,
+    "todayStateTired": false,
+    "todayStateUnwellOrAnxious": false
+  },
+  "consent": {
+    "informantConsentGiven": true,
+    "informantConsentTimestamp": "2026-11-25T01:28:57.758333",
+    "informantConsentSignatureOrName": "Chetan",
+    "elderSpokenAssentGiven": true,
+    "elderAssentTimestamp": "2026-11-25T01:28:57.758333"
+  }
+}

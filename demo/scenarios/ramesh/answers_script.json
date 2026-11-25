@@ -1,0 +1,50 @@
+{
+  "fact_1": {
+    "stage": "free",
+    "spoken": "हमार बिटिया सुनीता."
+  },
+  "fact_2": {
+    "stage": "free",
+    "spoken": "नाती अमित."
+  },
+  "fact_3": {
+    "stage": "free",
+    "spoken": "कांती, हमारी घरवाली."
+  },
+  "fact_4": {
+    "stage": "free",
+    "spoken": "हम सीतापुर गाँव के हैं जी."
+  },
+  "fact_5": {
+    "stage": "free",
+    "spoken": "शादी 1978 में भई रही."
+  },
+  "fact_6": {
+    "stage": "free",
+    "spoken": "जिंदगी भर खेती किसानी करे हैं."
+  },
+  "fact_7": {
+    "stage": "free",
+    "spoken": "गरम जलेबी बहुत नीक लागत है."
+  },
+  "fact_8": {
+    "stage": "free",
+    "spoken": "होली मनाते हैं सब मिलके."
+  },
+  "fact_9": {
+    "stage": "cued",
+    "spoken": "रामफल भाई."
+  },
+  "fact_10": {
+    "stage": "free",
+    "spoken": "पुरानी चुंगी."
+  },
+  "fact_recent_1": {
+    "stage": "free",
+    "spoken": "पंकज आवा रहा."
+  },
+  "fact_recent_2": {
+    "stage": "free",
+    "spoken": "गंगा घाट गए रहे."
+  }
+}

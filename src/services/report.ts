@@ -287,6 +287,7 @@ export function generateUnifiedCSIReport(data: {
     code?: string
   }>
   safetyAlertMessage?: string
+  isDemo?: boolean
 }): void {
   const dateFormatted = new Date().toLocaleString("en-IN", {
     dateStyle: "long",
@@ -453,6 +454,14 @@ export function generateUnifiedCSIReport(data: {
     <div class="disclaimer-box">
       <strong>Clinical Safety Notice:</strong> This is a screening aid, not a diagnosis. Only a doctor can diagnose. Many factors such as tiredness, hearing loss, low mood, or medication can affect results.
     </div>
+
+    ${
+      data.isDemo
+        ? `<div style="margin-top: 16px; padding: 10px 14px; border-radius: 8px; background: #fef3c7; border: 1px solid #f59e0b; color: #92400e; font-size: 11px; text-align: center; font-weight: 600;">
+            ⚠️ DEMO EVALUATION: Generated from a fictional demo scenario for evaluation purposes.
+          </div>`
+        : ""
+    }
 
     <button class="print-btn" onclick="window.print()">Print or Save as PDF</button>
   </div>

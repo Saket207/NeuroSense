@@ -923,6 +923,36 @@ def get_model_information():
     return quantum_model_interface.get_metadata()
 
 
+@app.get("/api/scoring-config-hash")
+def get_scoring_config_hash():
+    """Returns SHA-256 hash and metadata of scoring_config.json."""
+    import hashlib
+    config_path = Path(__file__).resolve().parent / "scoring_config.json"
+    if not config_path.exists():
+        return {"sha256": "unknown", "version": "1.0.0"}
+    content = config_path.read_bytes()
+    sha256 = hashlib.sha256(content).hexdigest()
+    try:
+        data = json.loads(content.decode("utf-8"))
+        version = data.get("version", "1.0.0")
+    except Exception:
+        version = "1.0.0"
+    return {"sha256": sha256, "version": version}
+
+
+# Static mounts for demo studio files when demo directory exists
+_demo_audio_dir = Path(__file__).resolve().parent.parent / "demo" / "audio"
+if _demo_audio_dir.exists():
+    from fastapi.staticfiles import StaticFiles
+    app.mount("/demo/audio", StaticFiles(directory=str(_demo_audio_dir)), name="demo_audio")
+
+_demo_scenarios_dir = Path(__file__).resolve().parent.parent / "demo" / "scenarios"
+if _demo_scenarios_dir.exists():
+    from fastapi.staticfiles import StaticFiles
+    app.mount("/demo/scenarios", StaticFiles(directory=str(_demo_scenarios_dir)), name="demo_scenarios")
+
+
+
 if __name__ == "__main__":
     import uvicorn
     # Default to port 8001 to align with frontend audioRecorder configuration

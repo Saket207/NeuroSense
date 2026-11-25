@@ -1,0 +1,434 @@
+{
+  "id": "setup_abdul_demo",
+  "patientId": "demo_abdul",
+  "version": 1,
+  "createdAt": "2026-11-25T01:28:57.758333",
+  "updatedAt": "2026-11-25T01:28:57.758333",
+  "elderProfile": {
+    "fullName": "Abdul Rahim",
+    "age": 79,
+    "gender": "Male",
+    "languagesSpoken": [
+      "Hindi",
+      "Urdu"
+    ],
+    "preferredTestingLanguage": "hi",
+    "dialectOrRegion": "Lucknow / Old City",
+    "schoolingYears": 5,
+    "literacyStatus": "can_read_only",
+    "informantName": "Tariq (Son)",
+    "informantRelationship": "Child",
+    "informantMeetingFrequency": "daily",
+    "livingArrangement": "with_family"
+  },
+  "lifeFacts": [
+    {
+      "id": "fact_1",
+      "factKey": "child_name",
+      "category": "people",
+      "questionText": "आपके बेटे का क्या नाम है?",
+      "defaultPrompt": {
+        "en": "Child?",
+        "hi": "आपके बेटे का क्या नाम है?",
+        "kn": "ಮಗ?"
+      },
+      "verifiedAnswer": "तारिक",
+      "acceptedAliases": [
+        "तारिक मियाँ"
+      ],
+      "cue": "आपका बड़ा बेटा.",
+      "distractors": [
+        "असद",
+        "इरफ़ान"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_2",
+      "factKey": "grandchild_name",
+      "category": "people",
+      "questionText": "आपकी पोती का क्या नाम है?",
+      "defaultPrompt": {
+        "en": "Grandchild?",
+        "hi": "आपकी पोती का क्या नाम है?",
+        "kn": "ಮೊಮ್ಮಗಳು?"
+      },
+      "verifiedAnswer": "ज़ोया",
+      "acceptedAliases": [
+        "गुड्डी"
+      ],
+      "cue": "छोटी बच्ची.",
+      "distractors": [
+        "फ़ातिमा",
+        "ज़ीनत"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_3",
+      "factKey": "spouse_name",
+      "category": "people",
+      "questionText": "आपकी बीवी का क्या नाम है?",
+      "defaultPrompt": {
+        "en": "Spouse?",
+        "hi": "आपकी बीवी का क्या नाम है?",
+        "kn": "ಪತ್ನಿ?"
+      },
+      "verifiedAnswer": "नसरीन",
+      "acceptedAliases": [
+        "नसरीन बेगम"
+      ],
+      "cue": "आपकी बेगम.",
+      "distractors": [
+        "रज़िया",
+        "शकीला"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_4",
+      "factKey": "native_village",
+      "category": "place",
+      "questionText": "आपका पैतृक शहर कौन सा है?",
+      "defaultPrompt": {
+        "en": "Native city?",
+        "hi": "आपका पैतृक शहर कौन सा है?",
+        "kn": "ಊರು?"
+      },
+      "verifiedAnswer": "लखनऊ",
+      "acceptedAliases": [
+        "पुराना लखनऊ"
+      ],
+      "cue": "नवाबों का शहर.",
+      "distractors": [
+        "कानपुर",
+        "फैज़ाबाद"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_5",
+      "factKey": "wedding_year",
+      "category": "history",
+      "isNumeric": true,
+      "questionText": "शादी किस साल में हुई थी?",
+      "defaultPrompt": {
+        "en": "Wedding year?",
+        "hi": "शादी किस साल में हुई थी?",
+        "kn": "ಮದುವೆ ವರ್ಷ?"
+      },
+      "verifiedAnswer": "1968",
+      "acceptedAliases": [
+        "68"
+      ],
+      "cue": "बहुत पुरानी बात है.",
+      "distractors": [
+        "1962",
+        "1975"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_6",
+      "factKey": "former_occupation",
+      "category": "history",
+      "questionText": "आप क्या काम करते थे?",
+      "defaultPrompt": {
+        "en": "Work?",
+        "hi": "आप क्या काम करते थे?",
+        "kn": "ಕೆಲಸ?"
+      },
+      "verifiedAnswer": "दुकानदार",
+      "acceptedAliases": [
+        "दुकान",
+        "कपड़े की दुकान"
+      ],
+      "cue": "अमीनबाद में दुकान थी.",
+      "distractors": [
+        "मास्टरजी",
+        "मुंशी"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_7",
+      "factKey": "favourite_food",
+      "category": "preference",
+      "questionText": "आपका सबसे पसंदीदा खाना क्या है?",
+      "defaultPrompt": {
+        "en": "Food?",
+        "hi": "आपका सबसे पसंदीदा खाना क्या है?",
+        "kn": "ಊಟ?"
+      },
+      "verifiedAnswer": "बिरयानी",
+      "acceptedAliases": [
+        "गोश्त बिरयानी"
+      ],
+      "cue": "चावल और गोश्त का पकवान.",
+      "distractors": [
+        "निहारी",
+        "कबाब"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_8",
+      "factKey": "family_festival",
+      "category": "preference",
+      "questionText": "घर में सबसे बड़ा त्यौहार कौन सा है?",
+      "defaultPrompt": {
+        "en": "Festival?",
+        "hi": "घर में सबसे बड़ा त्यौहार कौन सा है?",
+        "kn": "ಹಬ್ಬ?"
+      },
+      "verifiedAnswer": "ईद",
+      "acceptedAliases": [
+        "ईद उल फितर",
+        "बड़ी ईद"
+      ],
+      "cue": "सेवइयों वाला त्यौहार.",
+      "distractors": [
+        "बकरीद",
+        "मोहर्रम"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_9",
+      "factKey": "close_friend",
+      "category": "people",
+      "questionText": "आपके पुराने दोस्त का क्या नाम है?",
+      "defaultPrompt": {
+        "en": "Friend?",
+        "hi": "आपके पुराने दोस्त का क्या नाम है?",
+        "kn": "ಸ್ನೇಹಿತ?"
+      },
+      "verifiedAnswer": "बशीर",
+      "acceptedAliases": [
+        "बशीर चाचा"
+      ],
+      "cue": "साथ में नमाज़ पढ़ते थे.",
+      "distractors": [
+        "कासिम",
+        "रशीद"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_10",
+      "factKey": "nearby_landmark",
+      "category": "place",
+      "questionText": "घर के पास मशहूर जगह कौन सी है?",
+      "defaultPrompt": {
+        "en": "Landmark?",
+        "hi": "घर के पास मशहूर जगह कौन सी है?",
+        "kn": "ಜಾಗ?"
+      },
+      "verifiedAnswer": "घंटाघर",
+      "acceptedAliases": [
+        "क्लॉक टॉवर"
+      ],
+      "cue": "बड़ी घड़ी वाला मीनार.",
+      "distractors": [
+        "रूमी दरवाज़ा",
+        "इमामबाड़ा"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_recent_1",
+      "factKey": "recent_visitor",
+      "category": "recent_event",
+      "isRecentEvent": true,
+      "eventDate": "2026-11-22",
+      "questionText": "पिछले इतवार कौन मिलने आया था?",
+      "defaultPrompt": {
+        "en": "Recent visitor?",
+        "hi": "पिछले इतवार कौन मिलने आया था?",
+        "kn": "ಬಂದವರು?"
+      },
+      "verifiedAnswer": "इरफ़ान",
+      "acceptedAliases": [
+        "इरफ़ान भाई"
+      ],
+      "cue": "कानपुर से आए थे.",
+      "distractors": [
+        "अकबर",
+        "शब्बीर"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_recent_2",
+      "factKey": "recent_outing",
+      "category": "recent_event",
+      "isRecentEvent": true,
+      "eventDate": "2026-11-19",
+      "questionText": "पिछले हफ्ते हम कहाँ गए थे?",
+      "defaultPrompt": {
+        "en": "Outing?",
+        "hi": "पिछले हफ्ते हम कहाँ गए थे?",
+        "kn": "ಹೋದ ಜಾಗ?"
+      },
+      "verifiedAnswer": "हज़रतगंज",
+      "acceptedAliases": [
+        "गंज"
+      ],
+      "cue": "शाम को बाज़ार गए थे.",
+      "distractors": [
+        "चौक",
+        "आलमबाग"
+      ],
+      "isSensitive": false
+    }
+  ],
+  "dailyLifeQuestionnaire": [
+    {
+      "id": "item_1",
+      "domain": "memory",
+      "isSafetyItem": false,
+      "questionText": "Repeats stories",
+      "frequency": "often",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_2",
+      "domain": "memory",
+      "isSafetyItem": false,
+      "questionText": "Forgets recent events",
+      "frequency": "often",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_3",
+      "domain": "memory",
+      "isSafetyItem": false,
+      "questionText": "Misplaces things",
+      "frequency": "often",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_4",
+      "domain": "orientation",
+      "isSafetyItem": true,
+      "questionText": "Gets lost outside",
+      "frequency": "sometimes",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_5",
+      "domain": "orientation",
+      "isSafetyItem": false,
+      "questionText": "Confused about dates",
+      "frequency": "often",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_6",
+      "domain": "daily_tasks_money",
+      "isSafetyItem": false,
+      "questionText": "Money handling errors",
+      "frequency": "often",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_7",
+      "domain": "daily_tasks_money",
+      "isSafetyItem": true,
+      "questionText": "Medication errors",
+      "frequency": "often",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_8",
+      "domain": "language",
+      "isSafetyItem": false,
+      "questionText": "Word-finding struggles",
+      "frequency": "often",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_9",
+      "domain": "language",
+      "isSafetyItem": false,
+      "questionText": "Following stories",
+      "frequency": "often",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_10",
+      "domain": "memory",
+      "isSafetyItem": false,
+      "questionText": "Forgets family names",
+      "frequency": "sometimes",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_11",
+      "domain": "daily_tasks_money",
+      "isSafetyItem": false,
+      "questionText": "Struggles with routine tasks",
+      "frequency": "often",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_12",
+      "domain": "safety",
+      "isSafetyItem": true,
+      "questionText": "Leaves stove unattended",
+      "frequency": "often",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_13",
+      "domain": "behaviour_mood",
+      "isSafetyItem": false,
+      "questionText": "Mood changes",
+      "frequency": "sometimes",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_14",
+      "domain": "behaviour_mood",
+      "isSafetyItem": false,
+      "questionText": "Lost interest in hobbies",
+      "frequency": "often",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_15",
+      "domain": "safety",
+      "isSafetyItem": true,
+      "questionText": "Impaired judgment",
+      "frequency": "sometimes",
+      "onset": "under_6_months"
+    },
+    {
+      "id": "item_16",
+      "domain": "safety",
+      "isSafetyItem": true,
+      "questionText": "Nocturnal confusion",
+      "frequency": "sometimes",
+      "onset": "under_6_months"
+    }
+  ],
+  "confounders": {
+    "hearingDifficulty": false,
+    "hasHearingAid": false,
+    "visionDifficulty": false,
+    "poorSleepRecently": false,
+    "recentBereavement": false,
+    "recentIllnessOrHospitalStay": false,
+    "sedatingMedicines": false,
+    "alcoholUse": false,
+    "todayStateTired": false,
+    "todayStateUnwellOrAnxious": false
+  },
+  "consent": {
+    "informantConsentGiven": true,
+    "informantConsentTimestamp": "2026-11-25T01:28:57.758333",
+    "informantConsentSignatureOrName": "Tariq Rahim",
+    "elderSpokenAssentGiven": true,
+    "elderAssentTimestamp": "2026-11-25T01:28:57.758333"
+  }
+}

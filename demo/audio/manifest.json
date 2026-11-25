@@ -1,0 +1,522 @@
+{
+  "generated_at": "2026-11-25T01:31:13.781732",
+  "tts_engine": "gTTS (Google Text-To-Speech) via PyAV resampler (16kHz mono WAV)",
+  "scenarios": {
+    "lakshmi": [
+      {
+        "fact_id": "fact_1",
+        "stage": "free",
+        "spoken_text": "ನನ್ನ ಮಗ ರಮೇಶ.",
+        "file_path": "demo/audio/lakshmi/current/fact_1_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_2",
+        "stage": "free",
+        "spoken_text": "ಅನು, ನನ್ನ ಮುದ್ದಾದ ಮೊಮ್ಮಗಳು ಅನನ್ಯ.",
+        "file_path": "demo/audio/lakshmi/current/fact_2_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_3",
+        "stage": "free",
+        "spoken_text": "ಶ್ರೀನಿವಾಸನ್.",
+        "file_path": "demo/audio/lakshmi/current/fact_3_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_4",
+        "stage": "free",
+        "spoken_text": "ನಾವು ಹುಟ್ಟಿದ್ದು ಮೈಸೂರಿನಲ್ಲಿ.",
+        "file_path": "demo/audio/lakshmi/current/fact_4_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_5",
+        "stage": "free",
+        "spoken_text": "1974 ರಲ್ಲಿ ಮದುವೆ ಆಯಿತು.",
+        "file_path": "demo/audio/lakshmi/current/fact_5_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_6",
+        "stage": "free",
+        "spoken_text": "ನಾನು ಶಾಲಾ ಶಿಕ್ಷಕಿ ಆಗಿದ್ದೆ.",
+        "file_path": "demo/audio/lakshmi/current/fact_6_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_7",
+        "stage": "free",
+        "spoken_text": "ಮೈಸೂರ್ ಪಾಕ್ ನಂಗೆ ತುಂಬಾ ಇಷ್ಟ.",
+        "file_path": "demo/audio/lakshmi/current/fact_7_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_8",
+        "stage": "free",
+        "spoken_text": "ಯುಗಾದಿ ಹಬ್ಬ ಸಂಭ್ರಮದಿಂದ ಮಾಡ್ತೀವಿ.",
+        "file_path": "demo/audio/lakshmi/current/fact_8_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_9",
+        "stage": "free",
+        "spoken_text": "ಶಾಂತಮ್ಮ, ನಮ್ಮ ಪಕ್ಕದ ಮನೆ ಶಾಂತ.",
+        "file_path": "demo/audio/lakshmi/current/fact_9_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_10",
+        "stage": "cued",
+        "spoken_text": "ಚಾಮುಂಡಿ ಸರ್ಕಲ್.",
+        "file_path": "demo/audio/lakshmi/current/fact_10_cued.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_recent_1",
+        "stage": "free",
+        "spoken_text": "ರೋಹನ್ ಬಂದಿದ್ದ ನಮ್ಮ ಮನೆಗೆ.",
+        "file_path": "demo/audio/lakshmi/current/fact_recent_1_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_recent_2",
+        "stage": "free",
+        "spoken_text": "ಕೆ ಆರ್ ಎಸ್ ಗೆ ಹೋಗಿದ್ವಿ ಡ್ಯಾಮ್ ನೋಡೋಕೆ.",
+        "file_path": "demo/audio/lakshmi/current/fact_recent_2_free.wav",
+        "source": "gtts_synthetic"
+      }
+    ],
+    "ramesh": [
+      {
+        "fact_id": "fact_1",
+        "stage": "free",
+        "spoken_text": "हमार बिटिया सुनीता.",
+        "file_path": "demo/audio/ramesh/current/fact_1_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_2",
+        "stage": "free",
+        "spoken_text": "नाती अमित.",
+        "file_path": "demo/audio/ramesh/current/fact_2_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_3",
+        "stage": "free",
+        "spoken_text": "कांती, हमारी घरवाली.",
+        "file_path": "demo/audio/ramesh/current/fact_3_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_4",
+        "stage": "free",
+        "spoken_text": "हम सीतापुर गाँव के हैं जी.",
+        "file_path": "demo/audio/ramesh/current/fact_4_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_5",
+        "stage": "free",
+        "spoken_text": "शादी 1978 में भई रही.",
+        "file_path": "demo/audio/ramesh/current/fact_5_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_6",
+        "stage": "free",
+        "spoken_text": "जिंदगी भर खेती किसानी करे हैं.",
+        "file_path": "demo/audio/ramesh/current/fact_6_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_7",
+        "stage": "free",
+        "spoken_text": "गरम जलेबी बहुत नीक लागत है.",
+        "file_path": "demo/audio/ramesh/current/fact_7_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_8",
+        "stage": "free",
+        "spoken_text": "होली मनाते हैं सब मिलके.",
+        "file_path": "demo/audio/ramesh/current/fact_8_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_9",
+        "stage": "cued",
+        "spoken_text": "रामफल भाई.",
+        "file_path": "demo/audio/ramesh/current/fact_9_cued.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_10",
+        "stage": "free",
+        "spoken_text": "पुरानी चुंगी.",
+        "file_path": "demo/audio/ramesh/current/fact_10_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_recent_1",
+        "stage": "free",
+        "spoken_text": "पंकज आवा रहा.",
+        "file_path": "demo/audio/ramesh/current/fact_recent_1_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_recent_2",
+        "stage": "free",
+        "spoken_text": "गंगा घाट गए रहे.",
+        "file_path": "demo/audio/ramesh/current/fact_recent_2_free.wav",
+        "source": "gtts_synthetic"
+      }
+    ],
+    "savitri": [
+      {
+        "fact_id": "fact_1",
+        "stage": "free",
+        "spoken_text": "Deepa, my daughter.",
+        "file_path": "demo/audio/savitri/current/fact_1_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_2",
+        "stage": "free",
+        "spoken_text": "Karan.",
+        "file_path": "demo/audio/savitri/current/fact_2_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_3",
+        "stage": "free",
+        "spoken_text": "Madhavan.",
+        "file_path": "demo/audio/savitri/current/fact_3_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_4",
+        "stage": "free",
+        "spoken_text": "I was born in Kottayam.",
+        "file_path": "demo/audio/savitri/current/fact_4_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_5",
+        "stage": "cued",
+        "spoken_text": "Nineteen seventy two.",
+        "file_path": "demo/audio/savitri/current/fact_5_cued.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_6",
+        "stage": "cued",
+        "spoken_text": "I worked as a Nurse.",
+        "file_path": "demo/audio/savitri/current/fact_6_cued.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_7",
+        "stage": "free",
+        "spoken_text": "Appam and stew.",
+        "file_path": "demo/audio/savitri/current/fact_7_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_8",
+        "stage": "cued",
+        "spoken_text": "Onam.",
+        "file_path": "demo/audio/savitri/current/fact_8_cued.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_9",
+        "stage": "recognition",
+        "spoken_text": "Mary.",
+        "file_path": "demo/audio/savitri/current/fact_9_recognition.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_10",
+        "stage": "free",
+        "spoken_text": "St Jude Church.",
+        "file_path": "demo/audio/savitri/current/fact_10_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_recent_1",
+        "stage": "cued",
+        "spoken_text": "Sunil came.",
+        "file_path": "demo/audio/savitri/current/fact_recent_1_cued.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_recent_2",
+        "stage": "recognition",
+        "spoken_text": "Lalbagh.",
+        "file_path": "demo/audio/savitri/current/fact_recent_2_recognition.wav",
+        "source": "gtts_synthetic"
+      }
+    ],
+    "abdul": [
+      {
+        "fact_id": "fact_1",
+        "stage": "free",
+        "spoken_text": "तारिक मियाँ.",
+        "file_path": "demo/audio/abdul/current/fact_1_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_2",
+        "stage": "recognition",
+        "spoken_text": "ज़ोया.",
+        "file_path": "demo/audio/abdul/current/fact_2_recognition.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_3",
+        "stage": "cued",
+        "spoken_text": "नसरीन बेगम.",
+        "file_path": "demo/audio/abdul/current/fact_3_cued.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_4",
+        "stage": "free",
+        "spoken_text": "लखनऊ.",
+        "file_path": "demo/audio/abdul/current/fact_4_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_5",
+        "stage": "recognition",
+        "spoken_text": "उन्नीस सौ अड़सठ.",
+        "file_path": "demo/audio/abdul/current/fact_5_recognition.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_6",
+        "stage": "recognition",
+        "spoken_text": "दुकानदार.",
+        "file_path": "demo/audio/abdul/current/fact_6_recognition.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_7",
+        "stage": "free",
+        "spoken_text": "कुछ याद नहीं आ रहा है.",
+        "file_path": "demo/audio/abdul/current/fact_7_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_8",
+        "stage": "cued",
+        "spoken_text": "ईद.",
+        "file_path": "demo/audio/abdul/current/fact_8_cued.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_9",
+        "stage": "free",
+        "spoken_text": "मालूम नहीं.",
+        "file_path": "demo/audio/abdul/current/fact_9_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_10",
+        "stage": "free",
+        "spoken_text": "घंटाघर.",
+        "file_path": "demo/audio/abdul/current/fact_10_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_recent_1",
+        "stage": "free",
+        "spoken_text": "कोई नहीं आया.",
+        "file_path": "demo/audio/abdul/current/fact_recent_1_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_recent_2",
+        "stage": "free",
+        "spoken_text": "कहीं नहीं गए.",
+        "file_path": "demo/audio/abdul/current/fact_recent_2_free.wav",
+        "source": "gtts_synthetic"
+      }
+    ],
+    "kamala": [
+      {
+        "fact_id": "fact_1",
+        "stage": "free",
+        "spoken_text": "ನನ್ನ ಮಗ ಪ್ರಸಾದ್.",
+        "file_path": "demo/audio/kamala/current/fact_1_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_2",
+        "stage": "free",
+        "spoken_text": "ವರುಣ್, ಚಿಂಟು ಅಂತ ಕರೀತೀವಿ.",
+        "file_path": "demo/audio/kamala/current/fact_2_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_3",
+        "stage": "free",
+        "spoken_text": "ವೆಂಕಟೇಶ್.",
+        "file_path": "demo/audio/kamala/current/fact_3_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_4",
+        "stage": "free",
+        "spoken_text": "ಶಿವಮೊಗ್ಗ.",
+        "file_path": "demo/audio/kamala/current/fact_4_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_5",
+        "stage": "free",
+        "spoken_text": "1978.",
+        "file_path": "demo/audio/kamala/current/fact_5_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_6",
+        "stage": "free",
+        "spoken_text": "ಮನೆ ಕೆಲಸ ಗೃಹಿಣಿ.",
+        "file_path": "demo/audio/kamala/current/fact_6_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_7",
+        "stage": "free",
+        "spoken_text": "ಬಿಸಿ ಬೇಳೆ ಬಾತ್.",
+        "file_path": "demo/audio/kamala/current/fact_7_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_8",
+        "stage": "free",
+        "spoken_text": "ಗಣೇಶ ಹಬ್ಬ.",
+        "file_path": "demo/audio/kamala/current/fact_8_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_9",
+        "stage": "cued",
+        "spoken_text": "ಸುಜಾತ.",
+        "file_path": "demo/audio/kamala/current/fact_9_cued.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_10",
+        "stage": "free",
+        "spoken_text": "ಗಾಂಧಿ ಸರ್ಕಲ್.",
+        "file_path": "demo/audio/kamala/current/fact_10_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_recent_1",
+        "stage": "free",
+        "spoken_text": "ಮಂಜುಳಕ್ಕ ಬಂದಿದ್ದರು.",
+        "file_path": "demo/audio/kamala/current/fact_recent_1_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_recent_2",
+        "stage": "free",
+        "spoken_text": "ಇಸ್ಕಾನ್ ದೇವಸ್ಥಾನಕ್ಕೆ ಹೋಗಿದ್ವಿ.",
+        "file_path": "demo/audio/kamala/current/fact_recent_2_free.wav",
+        "source": "gtts_synthetic"
+      }
+    ],
+    "narayan": [
+      {
+        "fact_id": "fact_1",
+        "stage": "free",
+        "spoken_text": "ಏನು? ಕೇಳಿಸಲಿಲ್ಲ... ಶಶಿ.",
+        "file_path": "demo/audio/narayan/current/fact_1_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_2",
+        "stage": "cued",
+        "spoken_text": "ದೀಪಕ್.",
+        "file_path": "demo/audio/narayan/current/fact_2_cued.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_3",
+        "stage": "free",
+        "spoken_text": "ಗಿರಿಜಮ್ಮ.",
+        "file_path": "demo/audio/narayan/current/fact_3_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_4",
+        "stage": "free",
+        "spoken_text": "ಧಾರವಾಡ.",
+        "file_path": "demo/audio/narayan/current/fact_4_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_5",
+        "stage": "recognition",
+        "spoken_text": "1973.",
+        "file_path": "demo/audio/narayan/current/fact_5_recognition.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_6",
+        "stage": "free",
+        "spoken_text": "ಕಚೇರಿಯಲ್ಲಿ ಕ್ಲರ್ಕ್ ಕೆಲಸ.",
+        "file_path": "demo/audio/narayan/current/fact_6_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_7",
+        "stage": "free",
+        "spoken_text": "ಧಾರವಾಡ ಪೇಡ.",
+        "file_path": "demo/audio/narayan/current/fact_7_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_8",
+        "stage": "cued",
+        "spoken_text": "ದೀಪಾವಳಿ.",
+        "file_path": "demo/audio/narayan/current/fact_8_cued.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_9",
+        "stage": "free",
+        "spoken_text": "ಯಾರು ಅಂತ ನೆನಪಿಲ್ಲ... ಜೋಶಿ ಇರಬಹುದು.",
+        "file_path": "demo/audio/narayan/current/fact_9_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_10",
+        "stage": "free",
+        "spoken_text": "ರೈಲ್ವೆ ಗೇಟ್.",
+        "file_path": "demo/audio/narayan/current/fact_10_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_recent_1",
+        "stage": "free",
+        "spoken_text": "ಯಾರೂ ಬರಲಿಲ್ಲ ಅನ್ನಿಸುತ್ತೆ.",
+        "file_path": "demo/audio/narayan/current/fact_recent_1_free.wav",
+        "source": "gtts_synthetic"
+      },
+      {
+        "fact_id": "fact_recent_2",
+        "stage": "cued",
+        "spoken_text": "ಮಾರ್ಕೆಟ್.",
+        "file_path": "demo/audio/narayan/current/fact_recent_2_cued.wav",
+        "source": "gtts_synthetic"
+      }
+    ]
+  }
+}

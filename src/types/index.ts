@@ -180,6 +180,19 @@ export interface ScreeningSession {
   synced: boolean
 
   notes?: string
+
+  /** Unified Life Memory & CSI fields */
+  csi?: number
+  riskTier?: string
+  tierLabel?: string
+  lifeMemoryScore?: number
+  namingScore?: number
+  speechScore?: number
+  informantScore?: number
+  confidence?: number
+  results?: any[]
+  isDemo?: boolean
+  tag?: string
 }
 
 export interface OfflineSyncItem {

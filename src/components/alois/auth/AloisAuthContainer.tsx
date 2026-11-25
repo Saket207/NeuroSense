@@ -203,16 +203,22 @@ export default function AloisAuthContainer({
 
     setIsBusy(true)
     try {
-      const response = await fetch(
-        `${getApiBaseUrl()}/api/auth/caretaker/login`,
-        {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 8000)
+
+      let response: Response
+      try {
+        response = await fetch(`${getApiBaseUrl()}/api/auth/caretaker/login`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
+          signal: controller.signal,
           body: JSON.stringify({
             pin: cleanPin,
           }),
-        },
-      )
+        })
+      } finally {
+        clearTimeout(timeoutId)
+      }
 
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}))
@@ -248,8 +254,15 @@ export default function AloisAuthContainer({
 
       completeAuthentication(authUser)
     } catch (err: unknown) {
-      const msg =
-        err instanceof Error ? err.message : "Caretaker authentication failed."
+      let msg = "Caretaker authentication failed."
+      if (err instanceof Error) {
+        if (err.name === "AbortError") {
+          msg =
+            "Connection timed out. Please verify the backend server is running on port 8001."
+        } else {
+          msg = err.message
+        }
+      }
       setAuthError(msg)
     } finally {
       setIsBusy(false)

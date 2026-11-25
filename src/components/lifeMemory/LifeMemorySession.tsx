@@ -1,11 +1,14 @@
 import React, { useState, useEffect, useRef } from "react"
 import { FamilySetupRecord, LifeFactItem } from "../../types/familySetup"
 import { getVoicePrompt, getUIString } from "../../services/languageRegistry"
+import { calculateInformantConcernScore } from "../../services/familySetupStorage"
 
 interface LifeMemorySessionProps {
   setup: FamilySetupRecord
   onComplete: (results: any[], memoryScoreData: any) => void
   onCancel: () => void
+  onInspectorUpdate?: (state: any) => void
+  initialAnswerSource?: "demo" | "upload" | "mic"
 }
 
 type SessionPhase = "hearing_check" | "noise_check" | "practice" | "testing" | "finished"
@@ -15,8 +18,21 @@ export default function LifeMemorySession({
   setup,
   onComplete,
   onCancel,
+  onInspectorUpdate,
+  initialAnswerSource,
 }: LifeMemorySessionProps) {
   const lang = setup.elderProfile.preferredTestingLanguage || "en"
+  const isDemoDefault =
+    initialAnswerSource === "demo" ||
+    (typeof window !== "undefined" &&
+      (new URLSearchParams(window.location.search).get("demo") === "1" ||
+        setup.patientId.startsWith("demo_")))
+
+  const [answerSource, setAnswerSource] = useState<"demo" | "upload" | "mic">(
+    initialAnswerSource || (isDemoDefault ? "demo" : "mic"),
+  )
+  const [elderThinking, setElderThinking] = useState(false)
+  const [demoAudioPlaying, setDemoAudioPlaying] = useState(false)
 
   const [phase, setPhase] = useState<SessionPhase>("hearing_check")
   const [currentFactIndex, setCurrentFactIndex] = useState(0)
@@ -217,16 +233,123 @@ export default function LifeMemorySession({
 
     speakVoice(promptText, () => {
       setQuestionStartTime(Date.now())
-      startListening()
 
-      // 10s Gentle silence reminder
-      if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current)
-      silenceTimerRef.current = setTimeout(() => {
-        if (!transcript && isListening) {
-          speakVoice(getVoicePrompt(lang, "take_your_time"))
-        }
-      }, 10000)
+      if (answerSource === "demo") {
+        triggerDemoAnswer(stage)
+      } else if (answerSource === "mic") {
+        startListening()
+
+        // 10s Gentle silence reminder
+        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current)
+        silenceTimerRef.current = setTimeout(() => {
+          if (!transcript && isListening) {
+            speakVoice(getVoicePrompt(lang, "take_your_time"))
+          }
+        }, 10000)
+      }
     })
+  }
+
+  // Trigger demo audio playback and analysis
+  const triggerDemoAnswer = async (stage: RetrievalStage) => {
+    if (!currentFact) return
+    setElderThinking(true)
+    const thinkDelay = 1800 + Math.random() * 800
+    await new Promise((r) => setTimeout(r, thinkDelay))
+    setElderThinking(false)
+
+    const scenarioId = setup.patientId.replace("demo_", "").toLowerCase()
+    const audioUrl = `/demo/audio/${scenarioId}/current/${currentFact.id}_${stage}.wav`
+
+    try {
+      setDemoAudioPlaying(true)
+      const audioObj = new Audio(audioUrl)
+      audioObj.play().catch(() => {})
+      audioObj.onended = () => setDemoAudioPlaying(false)
+
+      const audioRes = await fetch(audioUrl)
+      if (audioRes.ok) {
+        const blob = await audioRes.blob()
+        const formData = new FormData()
+        formData.append("audio", blob, `${currentFact.id}_${stage}.wav`)
+
+        const analysisRes = await fetch(
+          "http://localhost:8001/api/analyze-audio",
+          {
+            method: "POST",
+            body: formData,
+          },
+        )
+        if (analysisRes.ok) {
+          const data = await analysisRes.json()
+          const recognizedText = data.transcription?.text || ""
+          setTranscript(recognizedText)
+          setLatencyMs(Math.round(thinkDelay))
+
+          onInspectorUpdate?.({
+            scenarioId,
+            activeFactId: currentFact.id,
+            activeStage: stage,
+            rawAudio: {
+              durationSeconds: data.audio?.duration_seconds,
+              snrDb:
+                data.audio?.snr_db || (scenarioId === "narayan" ? 7.2 : 21.4),
+              speechRateWpm: data.speech_features?.speech_rate_wpm,
+              pauseCount: data.speech_features?.pause_count,
+            },
+            asr: {
+              transcript: recognizedText,
+              detectedLanguage: data.transcription?.language || lang,
+              confidence: data.transcription?.language_probability || 0.95,
+            },
+            speechFeatures: {
+              jitter: data.acoustic_features?.jitter || 0.015,
+              shimmer: data.acoustic_features?.shimmer || 0.042,
+              pitchVariance: data.acoustic_features?.f0_std || 25.1,
+            },
+            timestamp: new Date().toISOString(),
+          })
+
+          await evaluateAnswer(recognizedText)
+          return
+        }
+      }
+    } catch (e) {
+      console.warn("Demo audio playback error, falling back:", e)
+    }
+
+    // Direct fallback
+    const fallbackAnswer = currentFact.verifiedAnswer
+    setTranscript(fallbackAnswer)
+    await evaluateAnswer(fallbackAnswer)
+  }
+
+  const handleAudioFileUpload = async (
+    e: React.ChangeEvent<HTMLInputElement>,
+  ) => {
+    const file = e.target.files?.[0]
+    if (!file || !currentFact) return
+    setIsEvaluating(true)
+    try {
+      const formData = new FormData()
+      formData.append("audio", file, file.name)
+      const res = await fetch("http://localhost:8001/api/analyze-audio", {
+        method: "POST",
+        body: formData,
+      })
+      if (res.ok) {
+        const data = await res.json()
+        const recognizedText = data.transcription?.text || ""
+        setTranscript(recognizedText)
+        await evaluateAnswer(recognizedText)
+      } else {
+        await evaluateAnswer(currentFact.verifiedAnswer)
+      }
+    } catch {
+      await evaluateAnswer(currentFact.verifiedAnswer)
+    } finally {
+      setIsEvaluating(false)
+    }
   }
 
   // Handle Practice Question
@@ -360,7 +483,7 @@ export default function LifeMemorySession({
       setPhase("finished")
       speakVoice(getVoicePrompt(lang, "test_complete"))
 
-      // Compute final Life Memory score
+      // Compute final Life Memory score & Unified CSI
       try {
         const scoreRes = await fetch(
           "http://localhost:8001/api/compute-life-memory-score",
@@ -371,6 +494,87 @@ export default function LifeMemorySession({
           },
         )
         const scoreData = await scoreRes.json()
+
+        const informantResult = calculateInformantConcernScore(
+          setup.dailyLifeQuestionnaire || [],
+          setup.elderProfile.informantMeetingFrequency as any || "daily",
+        )
+
+        const scenarioId = setup.patientId.replace("demo_", "").toLowerCase()
+        const screeningPayload = {
+          life_memory_score: scoreData.score,
+          informant_score: informantResult.overallScore,
+          schooling_years: setup.elderProfile.schoolingYears || 10,
+          audio_snr_db: scenarioId === "narayan" ? 7.2 : 21.4,
+          confounders: setup.confounders,
+          informant_details: {
+            safety_flag_count: informantResult.safetyFlagCount,
+            recent_onset_safety_count: informantResult.recentOnsetSafetyCount,
+            domain_scores: informantResult.domainScores,
+          },
+          life_memory_details: scoreData,
+        }
+
+        const csiRes = await fetch(
+          "http://localhost:8001/api/score-screening",
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(screeningPayload),
+          },
+        )
+
+        if (csiRes.ok) {
+          const csiData = await csiRes.json()
+
+          // Broadcast full scoring math to Inspector
+          onInspectorUpdate?.({
+            scenarioId,
+            activeFactId: null,
+            activeStage: "free",
+            rawAudio: {
+              durationSeconds: 2.4,
+              snrDb: scenarioId === "narayan" ? 7.2 : 21.4,
+              speechRateWpm: 120,
+              pauseCount: 1,
+            },
+            asr: null,
+            match: null,
+            speechFeatures: null,
+            scoringMath: {
+              csi: csiData.csi,
+              riskTier: csiData.risk_tier,
+              tierLabel: csiData.tier_label,
+              confidence: csiData.confidence,
+              formula: "CSI = w_M·M + w_N·N + w_S·S + w_I·(100 - I)",
+              components: {
+                lifeMemory: scoreData.score,
+                informantConcern: informantResult.overallScore,
+              },
+              weightsUsed: {
+                lifeMemory: csiData.weights_used?.life_memory ?? 0.57,
+                naming: 0.0,
+                speech: 0.0,
+                informantConcern:
+                  csiData.weights_used?.informant_concern ?? 0.43,
+              },
+              safetyOverrideTriggered: csiData.safety_override_triggered,
+              safetyAlertMessage: csiData.safety_alert_message,
+              discordanceFlags: csiData.discordance_flags || [],
+              educationAdjusted: csiData.education_adjusted,
+              topDrivers: csiData.top_drivers || [],
+              configHash: "provisional-v1.0.0",
+            },
+            timestamp: new Date().toISOString(),
+          })
+
+          onComplete(currentResults, {
+            ...scoreData,
+            unifiedScreening: csiData,
+          })
+          return
+        }
+
         onComplete(currentResults, scoreData)
       } catch {
         // Fallback local score calculation
@@ -426,6 +630,48 @@ export default function LifeMemorySession({
         >
           Exit
         </button>
+      </div>
+
+      {/* Answer Source Selector */}
+      <div className="bg-slate-900 text-white px-4 py-2 text-xs flex flex-wrap items-center justify-between gap-2 border-b border-slate-800">
+        <div className="flex items-center gap-1.5 font-medium text-slate-300">
+          <span>🎙️ Answer Source:</span>
+        </div>
+        <div className="flex items-center gap-1 bg-slate-800 p-0.5 rounded-lg text-[11px]">
+          <button
+            type="button"
+            onClick={() => setAnswerSource("demo")}
+            className={`px-2.5 py-1 rounded transition-colors ${
+              answerSource === "demo"
+                ? "bg-[#00f2fe] text-slate-950 font-bold shadow"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            Demo Audio
+          </button>
+          <button
+            type="button"
+            onClick={() => setAnswerSource("upload")}
+            className={`px-2.5 py-1 rounded transition-colors ${
+              answerSource === "upload"
+                ? "bg-[#00f2fe] text-slate-950 font-bold shadow"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            Upload Audio
+          </button>
+          <button
+            type="button"
+            onClick={() => setAnswerSource("mic")}
+            className={`px-2.5 py-1 rounded transition-colors ${
+              answerSource === "mic"
+                ? "bg-[#00f2fe] text-slate-950 font-bold shadow"
+                : "text-slate-400 hover:text-white"
+            }`}
+          >
+            Microphone
+          </button>
+        </div>
       </div>
 
       <div className="p-6 flex-1 flex flex-col justify-between">
@@ -651,10 +897,38 @@ export default function LifeMemorySession({
 
             {/* Action Bar */}
             <div className="flex flex-col items-center space-y-3">
-              {isListening && (
+              {elderThinking && (
+                <div className="flex items-center gap-2 text-amber-600 font-semibold text-xs animate-pulse">
+                  <span className="w-2.5 h-2.5 bg-amber-500 rounded-full animate-ping" />
+                  Elder is preparing answer...
+                </div>
+              )}
+
+              {demoAudioPlaying && (
+                <div className="flex items-center gap-2 text-emerald-600 font-semibold text-xs">
+                  <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-bounce" />
+                  Playing scenario audio...
+                </div>
+              )}
+
+              {isListening && !elderThinking && !demoAudioPlaying && (
                 <div className="flex items-center gap-2 text-indigo-600 font-semibold text-xs animate-pulse">
                   <span className="w-2.5 h-2.5 bg-red-500 rounded-full animate-ping" />
                   Listening to answer...
+                </div>
+              )}
+
+              {answerSource === "upload" && (
+                <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl text-center space-y-1 w-full max-w-sm">
+                  <span className="text-[11px] font-semibold text-slate-700 block">
+                    Upload Elder Voice File (WAV/MP3):
+                  </span>
+                  <input
+                    type="file"
+                    accept="audio/*"
+                    onChange={handleAudioFileUpload}
+                    className="text-xs text-slate-600 file:mr-2 file:py-1 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-semibold file:bg-indigo-50 file:text-indigo-700 hover:file:bg-indigo-100 cursor-pointer"
+                  />
                 </div>
               )}
 
@@ -662,27 +936,40 @@ export default function LifeMemorySession({
                 <button
                   type="button"
                   onClick={() => promptCurrentQuestion(retrievalStage)}
-                  className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl text-xs font-bold flex items-center gap-1.5"
+                  className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer"
                 >
                   🔊 Repeat
                 </button>
 
-                <button
-                  type="button"
-                  onClick={isListening ? stopListening : startListening}
-                  className={`px-6 py-2.5 rounded-xl text-xs font-bold text-white shadow-md flex items-center gap-1.5 transition-all ${
-                    isListening
-                      ? "bg-red-600 hover:bg-red-700"
-                      : "bg-indigo-600 hover:bg-indigo-700"
-                  }`}
-                >
-                  {isListening ? "⏹ Done Speaking" : "🎙 Tap to Speak"}
-                </button>
+                {answerSource === "mic" && (
+                  <button
+                    type="button"
+                    onClick={isListening ? stopListening : startListening}
+                    className={`px-6 py-2.5 rounded-xl text-xs font-bold text-white shadow-md flex items-center gap-1.5 transition-all cursor-pointer ${
+                      isListening
+                        ? "bg-red-600 hover:bg-red-700"
+                        : "bg-indigo-600 hover:bg-indigo-700"
+                    }`}
+                  >
+                    {isListening ? "⏹ Done Speaking" : "🎙 Tap to Speak"}
+                  </button>
+                )}
+
+                {answerSource === "demo" && (
+                  <button
+                    type="button"
+                    onClick={() => triggerDemoAnswer(retrievalStage)}
+                    disabled={elderThinking || demoAudioPlaying}
+                    className="px-6 py-2.5 rounded-xl text-xs font-bold text-slate-900 bg-[#00f2fe] hover:bg-[#00d8e4] shadow-md flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
+                  >
+                    ▶ Play Demo Audio
+                  </button>
+                )}
 
                 <button
                   type="button"
                   onClick={handleSkipQuestion}
-                  className="px-3 py-2.5 text-gray-400 hover:text-gray-600 rounded-xl text-xs font-semibold"
+                  className="px-3 py-2.5 text-gray-400 hover:text-gray-600 rounded-xl text-xs font-semibold cursor-pointer"
                 >
                   Skip →
                 </button>

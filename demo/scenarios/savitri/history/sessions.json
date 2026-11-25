@@ -1,0 +1,181 @@
+[
+  {
+    "id": "session_savitri_6m_ago",
+    "patientId": "demo_savitri",
+    "patientName": "Savitri Nair",
+    "createdAt": "2026-05-28T20:06:17.956580+00:00",
+    "isDemo": true,
+    "tag": "Earlier session (demo, backdated)",
+    "csi": 90.6,
+    "riskTier": "green",
+    "tierLabel": "No concerning signs found in this screening",
+    "confidence": 75.0,
+    "lifeMemoryScore": 95.83,
+    "informantScore": 16.37,
+    "components": {
+      "life_memory": 95.83,
+      "naming": null,
+      "speech_acoustic": null,
+      "informant_concern": 16.37
+    },
+    "weightsUsed": {
+      "life_memory": 0.5714,
+      "informant_daily_report": 0.4286
+    },
+    "topDrivers": [
+      "Strong personal memory recall for family and life history.",
+      "Family observed steady day-to-day independence."
+    ],
+    "answers": [
+      {
+        "fact_id": "fact_1",
+        "stage": "free",
+        "answer": "Deepa, my daughter"
+      },
+      {
+        "fact_id": "fact_2",
+        "stage": "free",
+        "answer": "Karan, my grandson"
+      },
+      {
+        "fact_id": "fact_3",
+        "stage": "free",
+        "answer": "Madhavan, my late husband"
+      },
+      {
+        "fact_id": "fact_4",
+        "stage": "free",
+        "answer": "Kottayam in Kerala"
+      },
+      {
+        "fact_id": "fact_5",
+        "stage": "free",
+        "answer": "1972"
+      },
+      {
+        "fact_id": "fact_6",
+        "stage": "free",
+        "answer": "Nurse at General Hospital"
+      },
+      {
+        "fact_id": "fact_7",
+        "stage": "free",
+        "answer": "Appam and vegetable stew"
+      },
+      {
+        "fact_id": "fact_8",
+        "stage": "free",
+        "answer": "Onam festival"
+      },
+      {
+        "fact_id": "fact_9",
+        "stage": "cued",
+        "answer": "Mary, my neighbor"
+      },
+      {
+        "fact_id": "fact_10",
+        "stage": "free",
+        "answer": "St Jude Church"
+      },
+      {
+        "fact_id": "fact_recent_1",
+        "stage": "free",
+        "answer": "Sunil visited us"
+      },
+      {
+        "fact_id": "fact_recent_2",
+        "stage": "free",
+        "answer": "Lalbagh botanical garden"
+      }
+    ]
+  },
+  {
+    "id": "session_savitri_3m_ago",
+    "patientId": "demo_savitri",
+    "patientName": "Savitri Nair",
+    "createdAt": "2026-08-26T20:06:17.956580+00:00",
+    "isDemo": true,
+    "tag": "Earlier session (demo, backdated)",
+    "csi": 63.94,
+    "riskTier": "amber",
+    "tierLabel": "Signs worth a clinical check",
+    "confidence": 75.0,
+    "lifeMemoryScore": 72.92,
+    "informantScore": 48.03,
+    "components": {
+      "life_memory": 72.92,
+      "naming": null,
+      "speech_acoustic": null,
+      "informant_concern": 48.03
+    },
+    "weightsUsed": {
+      "life_memory": 0.5714,
+      "informant_daily_report": 0.4286
+    },
+    "topDrivers": [
+      "Recalled some personal facts but required hints or option choices."
+    ],
+    "answers": [
+      {
+        "fact_id": "fact_1",
+        "stage": "free",
+        "answer": "Deepa"
+      },
+      {
+        "fact_id": "fact_2",
+        "stage": "free",
+        "answer": "Karan"
+      },
+      {
+        "fact_id": "fact_3",
+        "stage": "free",
+        "answer": "Madhavan"
+      },
+      {
+        "fact_id": "fact_4",
+        "stage": "free",
+        "answer": "Kottayam"
+      },
+      {
+        "fact_id": "fact_5",
+        "stage": "cued",
+        "answer": "1972"
+      },
+      {
+        "fact_id": "fact_6",
+        "stage": "cued",
+        "answer": "Nurse"
+      },
+      {
+        "fact_id": "fact_7",
+        "stage": "free",
+        "answer": "Appam"
+      },
+      {
+        "fact_id": "fact_8",
+        "stage": "cued",
+        "answer": "Onam"
+      },
+      {
+        "fact_id": "fact_9",
+        "stage": "cued",
+        "answer": "Mary"
+      },
+      {
+        "fact_id": "fact_10",
+        "stage": "free",
+        "answer": "St Jude Church"
+      },
+      {
+        "fact_id": "fact_recent_1",
+        "stage": "cued",
+        "answer": "Sunil"
+      },
+      {
+        "fact_id": "fact_recent_2",
+        "stage": "recognition",
+        "answer": "Lalbagh"
+      }
+    ]
+  }
+]
