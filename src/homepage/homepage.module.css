@@ -1,0 +1,182 @@
+/* ==========================================================================
+   NeuroSense Homepage — Scoped Editorial Styles matching NexGo Ground Truth
+   ========================================================================== */
+
+.pageRoot {
+  --hp-bg: #FBFAF8;
+  --hp-surface: #F6F5F1;
+  --hp-dark: #200110;
+  --hp-dark-text: #FFFFFF;
+  --hp-accent-yellow: #F4F08A;
+  --hp-text-primary: #200110;
+  --hp-text-muted: #6E6268;
+  --hp-border-light: rgba(32, 1, 16, 0.08);
+  --hp-border-dark: rgba(255, 255, 255, 0.12);
+  
+  background-color: var(--hp-bg);
+  color: var(--hp-text-primary);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  overflow-x: hidden;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Serif font classes */
+.fontSerif {
+  font-family: 'Newsreader', 'Lora', Georgia, 'Times New Roman', serif;
+}
+
+.fontSerifHi {
+  font-family: 'Noto Serif Devanagari', 'Newsreader', serif;
+}
+
+.fontSerifKn {
+  font-family: 'Noto Serif Kannada', 'Newsreader', serif;
+}
+
+/* Max content container width matching NexGo ~1260px */
+.container {
+  width: 100%;
+  max-width: 1260px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: 24px;
+  padding-right: 24px;
+}
+
+@media (min-width: 768px) {
+  .container {
+    padding-left: 40px;
+    padding-right: 40px;
+  }
+}
+
+@media (min-width: 1280px) {
+  .container {
+    padding-left: 48px;
+    padding-right: 48px;
+  }
+}
+
+/* Section vertical spacing */
+.sectionSpacing {
+  padding-top: 100px;
+  padding-bottom: 100px;
+}
+
+@media (min-width: 768px) {
+  .sectionSpacing {
+    padding-top: 140px;
+    padding-bottom: 140px;
+  }
+}
+
+/* Soft card surface */
+.cardSurface {
+  background-color: var(--hp-surface);
+  border-radius: 24px;
+  border: 1px solid var(--hp-border-light);
+}
+
+/* Dark section */
+.darkSection {
+  background-color: var(--hp-dark);
+  color: var(--hp-dark-text);
+  border-top: 1px solid var(--hp-dark);
+  border-bottom: 1px solid var(--hp-dark);
+}
+
+/* Pill Badge */
+.pillBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background-color: rgba(32, 1, 16, 0.04);
+  border: 1px solid var(--hp-border-light);
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--hp-text-muted);
+}
+
+.pillBadgeDark {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 14px;
+  border-radius: 9999px;
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--hp-border-dark);
+  font-size: 13px;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* Marquee infinite scroll */
+.marqueeContainer {
+  display: flex;
+  overflow: hidden;
+  user-select: none;
+  gap: 20px;
+  width: 100%;
+}
+
+.marqueeRowLeft {
+  display: flex;
+  flex-shrink: 0;
+  gap: 20px;
+  align-items: center;
+  animation: scrollLeft 35s linear infinite;
+}
+
+.marqueeRowRight {
+  display: flex;
+  flex-shrink: 0;
+  gap: 20px;
+  align-items: center;
+  animation: scrollRight 38s linear infinite;
+}
+
+.marqueeContainer:hover .marqueeRowLeft,
+.marqueeContainer:hover .marqueeRowRight {
+  animation-play-state: paused;
+}
+
+@keyframes scrollLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - 20px));
+  }
+}
+
+@keyframes scrollRight {
+  from {
+    transform: translateX(calc(-100% - 20px));
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+/* Floating White Stat Card */
+.floatingWhiteCard {
+  background-color: #FFFFFF;
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(32, 1, 16, 0.08);
+  border: 1px solid rgba(32, 1, 16, 0.04);
+  padding: 24px 28px;
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .marqueeRowLeft,
+  .marqueeRowRight {
+    animation: none;
+  }
+}
