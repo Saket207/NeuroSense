@@ -29,6 +29,11 @@ import { AloisTab } from "./types"
 
 import UploadVoiceModal from "../UploadVoiceModal"
 
+import TiltCard from "../../motion/TiltCard"
+import ScoreRingCountUp from "../../motion/ScoreRingCountUp"
+import ScrollTextReveal from "../../motion/ScrollTextReveal"
+import StoryThread from "../../motion/StoryThread"
+
 interface AloisHomeDashboardProps {
   patientName: string
 
@@ -89,6 +94,8 @@ export default function AloisHomeDashboard({
 
   const [isDraggingOverCard, setIsDraggingOverCard] = useState(false)
 
+  const scrollContainerRef = useRef<HTMLDivElement>(null)
+
   // Loaded here rather than passed down: the card is the only consumer, and it
 
   // has to re-read after a check-in without the whole shell re-rendering.
@@ -124,7 +131,10 @@ export default function AloisHomeDashboard({
     : null
 
   return (
-    <div className="flex-1 overflow-y-auto bg-[#F7F5F0] text-[#1A1A1A] select-none pb-8">
+    <div
+      ref={scrollContainerRef}
+      className="flex-1 overflow-y-auto bg-[#F7F5F0] text-[#1A1A1A] select-none pb-8 relative scroll-smooth"
+    >
       {/* ─── 1. Home Nav Bar (Lisso Editorial Style) ───────────── */}
       <header className="h-[76px] px-4 flex items-center justify-between bg-[#F7F5F0]/90 border-b border-black/[0.05] sticky top-0 z-20 backdrop-blur-md">
         <div className="flex items-center gap-3">
@@ -176,41 +186,17 @@ export default function AloisHomeDashboard({
         </div>
       </header>
 
-      <div className="px-4 pt-5 space-y-5 max-w-[375px] mx-auto">
-        {/* ─── Hero Metric Display (Lisso "85%" Design Element) ──────────── */}
-        <section className="bg-white rounded-[28px] border border-black/[0.04] p-5 shadow-[0_6px_20px_rgba(0,0,0,0.03)] relative overflow-hidden">
-          <div className="flex items-start justify-between">
-            <div>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#78716A] block">
-                Primary Biomarker Index
-              </span>
-              <div className="flex items-baseline gap-1 mt-1">
-                <span className="text-5xl font-light text-[#1A1A1A] tracking-tight">
-                  {confidencePct !== null ? `${confidencePct}%` : "88%"}
-                </span>
-              </div>
-              <p className="text-[11px] font-medium text-[#78716A] mt-0.5">
-                Latest Screening Score
-              </p>
-            </div>
+      <div className="px-4 pt-5 space-y-5 max-w-[375px] mx-auto relative z-10">
+        {/* Animated Story Thread Line (Linked to Phone Scroll) */}
+        <StoryThread scrollContainerRef={scrollContainerRef} />
 
-            <div className="flex flex-col items-end gap-1.5">
-              <span
-                className={`text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs ${
-                  isNormal
-                    ? "bg-emerald-50 text-emerald-800 border border-emerald-200/60"
-                    : "bg-amber-50 text-amber-800 border border-amber-200/60"
-                }`}
-              >
-                <Check className="w-3 h-3" />
-                {isNormal ? "Low Risk" : "Elevated Risk"}
-              </span>
-              <span className="text-[10px] text-[#8C867E]">
-                Model evaluated
-              </span>
-            </div>
-          </div>
-        </section>
+        {/* ─── Hero Metric Display (Synchronized Count-Up + 3D Arc Ring) ─── */}
+        <ScoreRingCountUp
+          score={confidencePct}
+          isNormal={isNormal}
+          label="Primary Biomarker Index"
+          sublabel="Latest Screening Score"
+        />
 
         {/* ─── 2. MAIN: Screening Cards ────────────────────── */}
         <section className="space-y-3.5">
@@ -226,8 +212,8 @@ export default function AloisHomeDashboard({
             </span>
           </div>
 
-          {/* Family-Verified Life Memory Check (Zero Literacy Bias) */}
-          <div
+          {/* Family-Verified Life Memory Check (3D Tilt Card) */}
+          <TiltCard
             onClick={onStartLifeMemoryCheck || onStartVoiceCheck}
             className="w-full rounded-[28px] bg-white border border-black/[0.05] text-[#1A1A1A] p-5 relative overflow-hidden shadow-[0_6px_20px_rgba(0,0,0,0.03)] cursor-pointer active:scale-[0.99] transition-all group hover:border-black/20"
           >
@@ -245,10 +231,11 @@ export default function AloisHomeDashboard({
                 >
                   Family Life Memory Check
                 </h3>
-                <p className="text-[12px] text-[#78716A] mt-1 leading-snug">
-                  Zero-literacy screening based on family-verified life facts
-                  and daily habits.
-                </p>
+                <ScrollTextReveal
+                  scrollContainerRef={scrollContainerRef}
+                  text="Zero-literacy screening based on family-verified life facts and daily habits."
+                  className="text-[12px] text-[#78716A] mt-1 leading-snug"
+                />
               </div>
             </div>
 
@@ -270,16 +257,17 @@ export default function AloisHomeDashboard({
                   e.stopPropagation()
                   onStartLifeMemoryCheck?.()
                 }}
-                className="px-4 py-1.5 rounded-full bg-[#1A1A1A] hover:bg-black text-white text-[12px] font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
+                className="group/btn relative overflow-hidden px-4 py-1.5 rounded-full bg-[#1A1A1A] hover:bg-black text-white text-[12px] font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
               >
+                <span className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
                 <span>Setup & Start</span>
-                <ChevronRight className="w-3.5 h-3.5" />
+                <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
               </button>
             </div>
-          </div>
+          </TiltCard>
 
-          {/* Neurological Biomarker Check Card */}
-          <div
+          {/* Neurological Biomarker Check Card (3D Tilt + Flowing Wave) */}
+          <TiltCard
             onClick={onStartVoiceCheck}
             onDragOver={(e) => {
               e.preventDefault()
@@ -307,18 +295,18 @@ export default function AloisHomeDashboard({
                 : "border-black/[0.05] hover:border-black/20"
             }`}
           >
-            {/* Ambient subtle acoustic waveform decoration */}
-            <div className="absolute right-0 top-0 bottom-0 w-36 opacity-[0.06] pointer-events-none">
+            {/* Ambient Flowing Acoustic Waveform Animation */}
+            <div className="absolute right-0 top-0 bottom-0 w-36 opacity-[0.08] pointer-events-none overflow-hidden">
               <svg
                 viewBox="0 0 200 120"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                className="w-full h-full"
+                className="w-[280px] h-full animate-pulse"
               >
                 <path
-                  d="M0 60 C40 20, 80 100, 120 60 C160 20, 200 100, 240 60"
+                  d="M0 60 C40 20, 80 100, 120 60 C160 20, 200 100, 240 60 C280 20, 320 100, 360 60"
                   stroke="#1A1A1A"
-                  strokeWidth="8"
+                  strokeWidth="6"
                   fill="none"
                 />
               </svg>
@@ -339,10 +327,11 @@ export default function AloisHomeDashboard({
                 >
                   Neurological Biomarker Check
                 </h3>
-                <p className="text-[12px] text-[#78716A] mt-1 leading-snug">
-                  Clinical screening for neurological biomarkers, motor speech
-                  stability, and seizure risk patterns.
-                </p>
+                <ScrollTextReveal
+                  scrollContainerRef={scrollContainerRef}
+                  text="Clinical screening for neurological biomarkers, motor speech stability, and seizure risk patterns."
+                  className="text-[12px] text-[#78716A] mt-1 leading-snug"
+                />
               </div>
             </div>
 
@@ -367,18 +356,23 @@ export default function AloisHomeDashboard({
                   e.stopPropagation()
                   onStartVoiceCheck()
                 }}
-                className="px-4 py-1.5 rounded-full bg-[#1A1A1A] hover:bg-black text-white text-[12px] font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
+                className="group/btn relative overflow-hidden px-4 py-1.5 rounded-full bg-[#1A1A1A] hover:bg-black text-white text-[12px] font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
               >
-                <Mic className="w-3.5 h-3.5" />
+                <span className="absolute inset-0 -translate-x-full group-hover/btn:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
+                <span className="relative flex items-center justify-center">
+                  <span className="absolute -inset-1 rounded-full bg-blue-400/30 animate-ping pointer-events-none" />
+                  <Mic className="w-3.5 h-3.5" />
+                </span>
                 <span>Start Check</span>
-                <ChevronRight className="w-3.5 h-3.5" />
+                <ChevronRight className="w-3.5 h-3.5 group-hover/btn:translate-x-0.5 transition-transform" />
               </button>
             </div>
-          </div>
+          </TiltCard>
 
           {/* Quick status banner if previous session exists (Lisso Divided Row) */}
           {latestSession && (
-            <div
+            <TiltCard
+              maxTilt={3}
               onClick={onViewReport}
               className="w-full rounded-2xl bg-white border border-black/[0.05] p-3.5 flex items-center justify-between shadow-2xs cursor-pointer hover:border-black/20 transition-colors"
             >
@@ -399,7 +393,7 @@ export default function AloisHomeDashboard({
                 </div>
               </div>
               <ChevronRight className="w-4 h-4 text-[#8C867E]" />
-            </div>
+            </TiltCard>
           )}
         </section>
 
@@ -414,17 +408,18 @@ export default function AloisHomeDashboard({
             </h2>
 
             {trend && trend.streak > 0 && (
-              <span className="text-[11px] font-bold text-[#1A1A1A] bg-[#F5CE57]/50 px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-[#F5CE57]">
-                <Flame className="w-3.5 h-3.5 text-orange-600" />
+              <span className="text-[11px] font-bold text-[#1A1A1A] bg-[#F5CE57]/50 px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-[#F5CE57] shadow-2xs">
+                <Flame className="w-3.5 h-3.5 text-orange-600 animate-bounce" />
                 {trend.streak} day{trend.streak === 1 ? "" : "s"} streak
               </span>
             )}
           </div>
 
-          {/* Mustard-Yellow Highlight Card */}
-          <div
+          {/* Mustard-Yellow Highlight Card (3D Tilt + Warm Gradient Drift) */}
+          <TiltCard
+            maxTilt={5}
             onClick={() => onSelectTab("dailyCheckIn")}
-            className="w-full rounded-[28px] bg-[#F5CE57] text-[#1A1A1A] p-5 relative overflow-hidden shadow-[0_8px_24px_rgba(245,206,87,0.22)] cursor-pointer hover:bg-[#EFC54E] active:scale-[0.99] transition-all group"
+            className="w-full rounded-[28px] bg-gradient-to-br from-[#F5CE57] via-[#F3C84A] to-[#EFBD3A] text-[#1A1A1A] p-5 relative overflow-hidden shadow-[0_8px_24px_rgba(245,206,87,0.25)] cursor-pointer hover:brightness-105 active:scale-[0.99] transition-all group"
           >
             <div className="flex items-center gap-3.5">
               <div
@@ -459,11 +454,11 @@ export default function AloisHomeDashboard({
                 </p>
               </div>
 
-              <div className="w-8 h-8 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center group-hover:translate-x-0.5 transition-transform shrink-0 shadow-xs">
                 <ChevronRight className="w-4 h-4" />
               </div>
             </div>
-          </div>
+          </TiltCard>
 
           {/* What the check-in asks, or what it found once it is done. */}
           {doneToday ? (

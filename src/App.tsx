@@ -190,6 +190,8 @@ const DemoStudioDrawer = React.lazy(() => import("./demo/DemoStudioDrawer"))
 
 const Homepage = React.lazy(() => import("./homepage/Homepage"))
 
+const MemoryOrbScene = React.lazy(() => import("./scene3d/MemoryOrbScene"))
+
 const isDemoModeEnabled = (): boolean => {
   if (typeof window === "undefined") return false
 
@@ -4153,6 +4155,8 @@ function NeuroSenseApp({
 
   const [fullScreenMode, setFullScreenMode] = useState<boolean>(false)
 
+  const [pointerParallax, setPointerParallax] = useState({ x: 0, y: 0 })
+
   const [showApkModal, setShowApkModal] = useState<boolean>(false)
 
   const [showRecordingUploadModal, setShowRecordingUploadModal] =
@@ -4481,23 +4485,26 @@ function NeuroSenseApp({
     }
   }
 
-  const navigate = useCallback((s: Screen, options?: { replace?: boolean }) => {
-    stopSpeech()
+  const navigate = useCallback(
+    (s: Screen, options?: { replace?: boolean }) => {
+      stopSpeech()
 
-    setScreen((current) => {
-      if (current !== s && !options?.replace) {
-        setScreenHistory((prev) => [...prev, current])
+      setScreen((current) => {
+        if (current !== s && !options?.replace) {
+          setScreenHistory((prev) => [...prev, current])
 
-        try {
-          window.history.pushState({ screen: s }, "", "")
-        } catch {
-          // ignore in environments without history API
+          try {
+            window.history.pushState({ screen: s }, "", "")
+          } catch {
+            // ignore in environments without history API
+          }
         }
-      }
 
-      return s
-    })
-  }, [])
+        return s
+      })
+    },
+    [],
+  )
 
   const goBack = useCallback(() => {
     stopSpeech()
@@ -10382,18 +10389,94 @@ function NeuroSenseApp({
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-start pt-20 sm:pt-24 pb-10 px-0 sm:px-4 md:px-6 relative overflow-x-hidden bg-[#ECE8E1]"
+      className="min-h-screen flex flex-col items-center justify-start relative overflow-x-hidden bg-gradient-to-b from-[#1C0212] via-[#12000B] to-[#0A0006] selection:bg-[#F5CE57] selection:text-black"
       style={{ fontFamily: F.body }}
+      onMouseMove={(e) => {
+        const x = (e.clientX / window.innerWidth - 0.5) * 2
+
+        const y = (e.clientY / window.innerHeight - 0.5) * 2
+
+        setPointerParallax({ x, y })
+      }}
     >
-      {/* Organic Dunes Background Shapes (matching Lisso reference design) */}
+      {/* ─── 1. Deep Aubergine Backdrop with Glowing Aurora & Particles ─── */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {/* Soft dune contour gradient 1 */}
-        <div className="absolute -top-[20%] -right-[15%] w-[900px] h-[900px] rounded-full bg-gradient-to-br from-[#E3DDD1]/80 via-[#DDD5C5]/50 to-transparent blur-3xl opacity-70" />
-        {/* Soft dune contour gradient 2 */}
-        <div className="absolute top-[35%] -left-[20%] w-[850px] h-[850px] rounded-full bg-gradient-to-tr from-[#E6E0D5]/70 via-[#DDD6C8]/40 to-transparent blur-3xl opacity-60" />
-        {/* Warm bottom ground accent */}
-        <div className="absolute -bottom-[10%] right-[10%] w-[700px] h-[700px] rounded-full bg-gradient-to-t from-[#DDD6C8]/60 via-[#E8E2D6]/30 to-transparent blur-2xl opacity-50" />
+        {/* Glowing Aurora Blob 1 - Warm Gold/Amber */}
+        <div
+          className="absolute -top-[15%] -right-[10%] w-[750px] h-[750px] rounded-full bg-gradient-to-br from-[#F5CE57]/20 via-[#E11D48]/15 to-transparent blur-3xl opacity-75 animate-pulse"
+          style={{
+            transform: `translate3d(${pointerParallax.x * -15}px, ${pointerParallax.y * -15}px, 0)`,
+
+            transition: "transform 0.4s ease-out",
+          }}
+        />
+        {/* Glowing Aurora Blob 2 - Deep Violet/Aubergine */}
+        <div
+          className="absolute top-[30%] -left-[15%] w-[800px] h-[800px] rounded-full bg-gradient-to-tr from-[#9333EA]/20 via-[#C026D3]/15 to-transparent blur-3xl opacity-65"
+          style={{
+            transform: `translate3d(${pointerParallax.x * 20}px, ${pointerParallax.y * 20}px, 0)`,
+
+            transition: "transform 0.4s ease-out",
+          }}
+        />
+        {/* Glowing Aurora Blob 3 - Rose Warm Glow */}
+        <div
+          className="absolute -bottom-[10%] right-[15%] w-[650px] h-[650px] rounded-full bg-gradient-to-t from-[#F5CE57]/15 via-[#F43F5E]/10 to-transparent blur-2xl opacity-60"
+          style={{
+            transform: `translate3d(${pointerParallax.x * -10}px, ${pointerParallax.y * -10}px, 0)`,
+
+            transition: "transform 0.4s ease-out",
+          }}
+        />
+
+        {/* Floating Ambient Dust Particles */}
+        <div className="absolute inset-0 opacity-40">
+          {[
+            { top: "15%", left: "12%", size: 3, delay: "0s" },
+
+            { top: "28%", left: "86%", size: 4, delay: "1.4s" },
+
+            { top: "48%", left: "18%", size: 2, delay: "2.8s" },
+
+            { top: "66%", left: "78%", size: 3, delay: "0.9s" },
+
+            { top: "82%", left: "28%", size: 4, delay: "3.1s" },
+
+            { top: "12%", left: "62%", size: 2, delay: "4s" },
+
+            { top: "88%", left: "82%", size: 3, delay: "1.6s" },
+          ].map((p, idx) => (
+            <div
+              key={idx}
+              className="absolute rounded-full bg-[#F5CE57] animate-ping"
+              style={{
+                top: p.top,
+
+                left: p.left,
+
+                width: p.size,
+
+                height: p.size,
+
+                animationDuration: "4s",
+
+                animationDelay: p.delay,
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Subtle Vignette Overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.65)_100%)] pointer-events-none" />
       </div>
+
+      {/* Lazy-Loaded Procedural 3D Memory Orb Scene (Three.js) */}
+      <React.Suspense fallback={null}>
+        <MemoryOrbScene
+          parallaxX={pointerParallax.x}
+          parallaxY={pointerParallax.y}
+        />
+      </React.Suspense>
 
       {/* Demo Studio Drawer (Gated by ?demo=1 or demoMode toggle) */}
       {demoMode && (
@@ -10410,267 +10493,277 @@ function NeuroSenseApp({
         </React.Suspense>
       )}
 
-      {/* Top / Floating Demo Navigation Bar on Desktop (Lisso Floating Pill Design) */}
-      <div className="nv-demo-nav fixed top-3 sm:top-4 left-3 right-3 sm:left-4 sm:right-4 z-40 flex flex-wrap items-center justify-between gap-2 max-w-5xl mx-auto px-4 py-2.5 rounded-full bg-white/95 border border-black/[0.08] backdrop-blur-md shadow-[0_10px_35px_rgba(0,0,0,0.06)]">
-        <div className="flex items-center gap-3">
-          <img
-            src="/logo.jpeg"
-            alt="NeuroSense Logo"
-            className="w-8 h-8 rounded-full shadow-xs object-contain border border-black/[0.08]"
-          />
-          <div>
-            <div
-              className="text-xs font-bold text-[#1A1A1A] tracking-wide"
-              style={{ fontFamily: F.display }}
-            >
-              NeuroSense
-            </div>
-            <div className="text-[10px] text-[#78716A] font-medium">
-              AI Seizure & Neurological Monitoring
+      {/* ─── Dedicated Sticky Floating Toolbar - Guaranteed ZERO Phone Overlap ─── */}
+      <header className="w-full flex justify-center sticky top-0 z-40 pt-3 sm:pt-4 pb-2 px-3 sm:px-4 shrink-0 pointer-events-none">
+        <div className="nv-demo-nav pointer-events-auto flex flex-wrap items-center justify-between gap-2 w-full max-w-5xl px-4 py-2.5 rounded-full bg-white/95 border border-white/20 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.45)] transition-all">
+          <div className="flex items-center gap-3">
+            <img
+              src="/logo.jpeg"
+              alt="NeuroSense Logo"
+              className="w-8 h-8 rounded-full shadow-xs object-contain border border-black/[0.08]"
+            />
+            <div>
+              <div
+                className="text-xs font-bold text-[#1A1A1A] tracking-wide"
+                style={{ fontFamily: F.display }}
+              >
+                NeuroSense
+              </div>
+              <div className="text-[10px] text-[#78716A] font-medium">
+                AI Seizure & Neurological Monitoring
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          {/* Home / About (Returns to the new public editorial Homepage) */}
-          {onOpenHomepage && (
-            <button
-              onClick={onOpenHomepage}
-              className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] cursor-pointer"
-              title="Go to Homepage / About"
-            >
-              <HomeIcon className="w-3.5 h-3.5 text-[#544F49]" />
-              <span>Home / About</span>
-            </button>
-          )}
-
-          {/* Quick Demo Studio Toggle */}
-          <button
-            onClick={() => {
-              const next = !demoMode
-
-              setDemoMode(next)
-
-              const url = new URL(window.location.href)
-
-              if (next) {
-                url.searchParams.set("demo", "1")
-              } else {
-                url.searchParams.delete("demo")
-              }
-
-              window.history.replaceState({}, "", url.toString())
-            }}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer ${
-              demoMode
-                ? "bg-[#F5CE57] text-[#1A1A1A] border border-[#E5BE45] font-extrabold shadow-sm"
-                : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
-            }`}
-            title="Toggle Demo Studio with 1-click Autofill"
-          >
-            <span>🎭</span>
-            <span>Demo Studio</span>
-            {demoMode && (
-              <span className="w-2 h-2 rounded-full bg-[#1A1A1A] animate-pulse" />
+          <div className="flex items-center gap-1.5 sm:gap-2">
+            {/* Home / About (Returns to the new public editorial Homepage) */}
+            {onOpenHomepage && (
+              <button
+                onClick={onOpenHomepage}
+                className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] cursor-pointer"
+                title="Go to Homepage / About"
+              >
+                <HomeIcon className="w-3.5 h-3.5 text-[#544F49]" />
+                <span>Home / About</span>
+              </button>
             )}
-          </button>
-          {/* Return to the current login and registration flow. */}
-          <div className="relative">
-            <div className="flex items-center rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:border-black/20 shadow-2xs transition-all">
-              <button
-                onClick={onLogout}
-                title="Return to the login and registration flow"
-                className="px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 text-[#2C2925] hover:text-black active:scale-95 transition-all"
-              >
-                <RotateCcw className="w-3.5 h-3.5 text-[#544F49]" />
-                <span>Start from Beginning</span>
-              </button>
-              <button
-                onClick={() => setShowRestartMenu(!showRestartMenu)}
-                title="Choose start point"
-                className="px-1.5 py-1.5 border-l border-black/[0.08] text-[#78716A] hover:text-black hover:bg-[#EAE4D9] rounded-r-full transition-colors"
-              >
-                <ChevronDown className="w-3 h-3" />
-              </button>
-            </div>
 
-            {showRestartMenu && (
-              <>
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setShowRestartMenu(false)}
-                />
-                <div className="absolute left-0 sm:right-0 sm:left-auto top-full mt-2 w-64 rounded-2xl bg-white border border-black/[0.08] shadow-2xl p-1.5 z-50 animate-fade-in text-xs space-y-1">
-                  {onOpenHomepage && (
+            {/* Quick Demo Studio Toggle */}
+            <button
+              onClick={() => {
+                const next = !demoMode
+
+                setDemoMode(next)
+
+                const url = new URL(window.location.href)
+
+                if (next) {
+                  url.searchParams.set("demo", "1")
+                } else {
+                  url.searchParams.delete("demo")
+                }
+
+                window.history.replaceState({}, "", url.toString())
+              }}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer ${
+                demoMode
+                  ? "bg-[#F5CE57] text-[#1A1A1A] border border-[#E5BE45] font-extrabold shadow-sm"
+                  : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
+              }`}
+              title="Toggle Demo Studio with 1-click Autofill"
+            >
+              <span>🎭</span>
+              <span>Demo Studio</span>
+              {demoMode && (
+                <span className="w-2 h-2 rounded-full bg-[#1A1A1A] animate-pulse" />
+              )}
+            </button>
+
+            {/* Return to the current login and registration flow. */}
+            <div className="relative">
+              <div className="flex items-center rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:border-black/20 shadow-2xs transition-all">
+                <button
+                  onClick={onLogout}
+                  title="Return to the login and registration flow"
+                  className="px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 text-[#2C2925] hover:text-black active:scale-95 transition-all"
+                >
+                  <RotateCcw className="w-3.5 h-3.5 text-[#544F49]" />
+                  <span>Start from Beginning</span>
+                </button>
+                <button
+                  onClick={() => setShowRestartMenu(!showRestartMenu)}
+                  title="Choose start point"
+                  className="px-1.5 py-1.5 border-l border-black/[0.08] text-[#78716A] hover:text-black hover:bg-[#EAE4D9] rounded-r-full transition-colors"
+                >
+                  <ChevronDown className="w-3 h-3" />
+                </button>
+              </div>
+
+              {showRestartMenu && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowRestartMenu(false)}
+                  />
+                  <div className="absolute left-0 sm:right-0 sm:left-auto top-full mt-2 w-64 rounded-2xl bg-white border border-black/[0.08] shadow-2xl p-1.5 z-50 animate-fade-in text-xs space-y-1">
+                    {onOpenHomepage && (
+                      <button
+                        onClick={() => {
+                          setShowRestartMenu(false)
+
+                          onOpenHomepage()
+                        }}
+                        className="w-full px-3 py-2 rounded-xl text-left hover:bg-[#F5F2EB] text-[#2C2925] hover:text-black transition-colors flex items-center gap-2.5 cursor-pointer"
+                      >
+                        <HomeIcon className="w-4 h-4 text-[#1A1A1A] shrink-0" />
+                        <div>
+                          <div className="font-bold text-[#1A1A1A]">
+                            Homepage / About
+                          </div>
+                          <div className="text-[10px] text-[#78716A]">
+                            View the editorial homepage & product intro
+                          </div>
+                        </div>
+                      </button>
+                    )}
                     <button
-                      onClick={() => {
-                        setShowRestartMenu(false)
-                        onOpenHomepage()
-                      }}
-                      className="w-full px-3 py-2 rounded-xl text-left hover:bg-[#F5F2EB] text-[#2C2925] hover:text-black transition-colors flex items-center gap-2.5 cursor-pointer"
+                      onClick={onLogout}
+                      className="w-full px-3 py-2 rounded-xl text-left hover:bg-[#F5F2EB] text-[#2C2925] hover:text-black transition-colors flex items-center gap-2.5"
                     >
-                      <HomeIcon className="w-4 h-4 text-[#1A1A1A] shrink-0" />
+                      <Sparkles className="w-4 h-4 text-[#1A1A1A] shrink-0" />
                       <div>
                         <div className="font-bold text-[#1A1A1A]">
-                          Homepage / About
+                          Login / Registration
                         </div>
                         <div className="text-[10px] text-[#78716A]">
-                          View the editorial homepage & product intro
+                          Return to the current Alois sign-in flow
                         </div>
                       </div>
                     </button>
-                  )}
-                  <button
-                    onClick={onLogout}
-                    className="w-full px-3 py-2 rounded-xl text-left hover:bg-[#F5F2EB] text-[#2C2925] hover:text-black transition-colors flex items-center gap-2.5"
-                  >
-                    <Sparkles className="w-4 h-4 text-[#1A1A1A] shrink-0" />
-                    <div>
-                      <div className="font-bold text-[#1A1A1A]">
-                        Login / Registration
-                      </div>
-                      <div className="text-[10px] text-[#78716A]">
-                        Return to the current Alois sign-in flow
-                      </div>
-                    </div>
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+                  </div>
+                </>
+              )}
+            </div>
 
-          {screen !== "home" && (
+            {screen !== "home" && (
+              <button
+                onClick={goBack}
+                className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
+                title="Go back one level to the previous screen"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 text-[#544F49]" />
+                <span>Back</span>
+              </button>
+            )}
+
             <button
-              onClick={goBack}
-              className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
-              title="Go back one level to the previous screen"
+              onClick={() => navigate("home")}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all ${
+                screen !== "doctorDash" &&
+                screen !== "doctorPatient" &&
+                screen !== "cognitiveGamesHub"
+                  ? "bg-[#1A1A1A] text-white hover:bg-black shadow-sm"
+                  : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
+              }`}
             >
-              <ArrowLeft className="w-3.5 h-3.5 text-[#544F49]" />
-              <span>Back</span>
+              <User className="w-3.5 h-3.5" />
+              <span>Patient View</span>
             </button>
+
+            <button
+              onClick={() => navigate("cognitiveGamesHub")}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all ${
+                screen === "cognitiveGamesHub"
+                  ? "bg-teal-800 text-white shadow-sm ring-2 ring-teal-600/30"
+                  : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
+              }`}
+            >
+              <Brain className="w-3.5 h-3.5 text-teal-600" />
+              <span>Cognitive Games</span>
+            </button>
+
+            <button
+              onClick={() => setIsOffline(!isOffline)}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-colors ${
+                isOffline
+                  ? "bg-amber-600 text-white"
+                  : "bg-[#F3EFE8] border border-black/[0.06] text-[#2C2925] hover:bg-[#EAE4D9]"
+              }`}
+            >
+              {isOffline ? (
+                <WifiOff className="w-3.5 h-3.5" />
+              ) : (
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <Wifi className="w-3.5 h-3.5" />
+                </span>
+              )}
+              <span>{isOffline ? "Offline Mode" : "Online"}</span>
+            </button>
+
+            <button
+              onClick={() =>
+                requireCaregiver("open the clinician view", () =>
+                  navigate("doctorDash"),
+                )
+              }
+              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all ${
+                screen === "doctorDash" || screen === "doctorPatient"
+                  ? "bg-[#1A1A1A] text-white hover:bg-black shadow-sm"
+                  : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
+              }`}
+            >
+              <Stethoscope className="w-3.5 h-3.5 text-[#544F49]" />
+              <span>Doctor View</span>
+            </button>
+
+            <button
+              onClick={onLogout}
+              className="px-3 py-1.5 rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:bg-rose-50 hover:border-rose-300 text-[#78716A] hover:text-rose-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
+              title="Sign out and return to Figma Login Screen"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>Sign Out</span>
+            </button>
+
+            <button
+              onClick={() => setFullScreenMode(!fullScreenMode)}
+              className="px-2.5 py-1.5 rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] text-xs font-bold hidden sm:flex items-center gap-1"
+            >
+              {fullScreenMode ? (
+                <Minimize2 className="w-3.5 h-3.5" />
+              ) : (
+                <Maximize2 className="w-3.5 h-3.5" />
+              )}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* ─── Main Content Flow: Phone starts below toolbar with zero overlap ─── */}
+      <main className="flex-1 flex flex-col items-center justify-start w-full relative z-10 px-0 sm:px-4 pt-1 sm:pt-2 pb-12">
+        {/* Main Container: Native 100% on actual mobile vs polished mockup on desktop */}
+        <div
+          className={`nv-app-shell relative flex flex-col overflow-hidden bg-white transition-all duration-300 z-10 ${
+            fullScreenMode
+              ? "w-full max-w-2xl h-[90vh] rounded-3xl border border-white/10 shadow-[0_25px_80px_rgba(0,0,0,0.85)]"
+              : "w-full max-w-[390px] h-[844px] max-h-[calc(100vh-6.5rem)] rounded-none sm:rounded-[48px] border-0 sm:border-[8px] border-[#2A091E] shadow-[0_25px_80px_rgba(0,0,0,0.7),0_0_50px_rgba(245,206,87,0.06)]"
+          }`}
+        >
+          {/* Dynamic Island on Mockup (Hidden on fullScreenMode and mobile viewports) */}
+          {!fullScreenMode && (
+            <div className="hidden sm:flex absolute top-2.5 left-1/2 -translate-x-1/2 z-50 w-28 h-7 rounded-full bg-[#1A1815] border border-white/10 items-center justify-between px-3 pointer-events-none shadow-inner">
+              <div className="w-2.5 h-2.5 rounded-full bg-[#2A2724]" />
+              <div className="w-2 h-2 rounded-full bg-[#F5CE57]/40" />
+            </div>
           )}
 
-          <button
-            onClick={() => navigate("home")}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all ${
-              screen !== "doctorDash" &&
-              screen !== "doctorPatient" &&
-              screen !== "cognitiveGamesHub"
-                ? "bg-[#1A1A1A] text-white hover:bg-black shadow-sm"
-                : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
-            }`}
+          {/* Render Active Screen */}
+          <div
+            lang={lang}
+            className="flex-1 flex flex-col h-full min-h-0 overflow-hidden bg-gradient-to-b from-[#fbfdfd] via-[#f3f9fb] to-[#eaf5f8]"
           >
-            <User className="w-3.5 h-3.5" />
-            <span>Patient View</span>
-          </button>
-
-          <button
-            onClick={() => navigate("cognitiveGamesHub")}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all ${
-              screen === "cognitiveGamesHub"
-                ? "bg-teal-800 text-white shadow-sm ring-2 ring-teal-600/30"
-                : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
-            }`}
-          >
-            <Brain className="w-3.5 h-3.5 text-teal-600" />
-            <span>Cognitive Games</span>
-          </button>
-
-          <button
-            onClick={() => setIsOffline(!isOffline)}
-            className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-colors ${
-              isOffline
-                ? "bg-amber-600 text-white"
-                : "bg-[#F3EFE8] border border-black/[0.06] text-[#2C2925] hover:bg-[#EAE4D9]"
-            }`}
-          >
-            {isOffline ? (
-              <WifiOff className="w-3.5 h-3.5" />
-            ) : (
-              <Wifi className="w-3.5 h-3.5" />
-            )}
-            <span>{isOffline ? "Offline Mode" : "Online"}</span>
-          </button>
-
-          <button
-            onClick={() =>
-              requireCaregiver("open the clinician view", () =>
-                navigate("doctorDash"),
-              )
-            }
-            className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all ${
-              screen === "doctorDash" || screen === "doctorPatient"
-                ? "bg-[#1A1A1A] text-white hover:bg-black shadow-sm"
-                : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
-            }`}
-          >
-            <Stethoscope className="w-3.5 h-3.5 text-[#544F49]" />
-            <span>Doctor View</span>
-          </button>
-
-          <button
-            onClick={onLogout}
-            className="px-3 py-1.5 rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:bg-rose-50 hover:border-rose-300 text-[#78716A] hover:text-rose-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
-            title="Sign out and return to Figma Login Screen"
-          >
-            <Lock className="w-3.5 h-3.5" />
-            <span>Sign Out</span>
-          </button>
-
-          <button
-            onClick={() => setFullScreenMode(!fullScreenMode)}
-            className="px-2.5 py-1.5 rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] text-xs font-bold hidden sm:flex items-center gap-1"
-          >
-            {fullScreenMode ? (
-              <Minimize2 className="w-3.5 h-3.5" />
-            ) : (
-              <Maximize2 className="w-3.5 h-3.5" />
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Main Container: Native 100% on actual mobile vs polished mockup on desktop */}
-      <div
-        className={`nv-app-shell relative flex flex-col overflow-hidden bg-white transition-all duration-300 z-10 ${
-          fullScreenMode
-            ? "w-full max-w-2xl h-[90vh] rounded-3xl border border-black/[0.1] shadow-2xl mt-4 sm:mt-6"
-            : "w-full max-w-[390px] h-[844px] max-h-[calc(100vh-6.5rem)] rounded-none sm:rounded-[48px] border-0 sm:border-[8px] border-[#221F1B] shadow-[0_25px_70px_rgba(30,20,10,0.18)] mt-2 sm:mt-4"
-        }`}
-      >
-        {/* Dynamic Island on Mockup (Hidden on fullScreenMode and mobile viewports) */}
-        {!fullScreenMode && (
-          <div className="hidden sm:flex absolute top-2.5 left-1/2 -translate-x-1/2 z-50 w-28 h-7 rounded-full bg-[#1A1815] border border-white/10 items-center justify-between px-3 pointer-events-none shadow-inner">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#2A2724]" />
-            <div className="w-2 h-2 rounded-full bg-[#F5CE57]/40" />
+            {renderScreen()}
           </div>
-        )}
 
-        {/* Render Active Screen */}
-        <div
-          lang={lang}
-          className="flex-1 flex flex-col h-full min-h-0 overflow-hidden bg-gradient-to-b from-[#fbfdfd] via-[#f3f9fb] to-[#eaf5f8]"
-        >
-          {renderScreen()}
-        </div>
-
-        {/* Caregiver gate for destructive or outbound actions. Inside the phone
+          {/* Caregiver gate for destructive or outbound actions. Inside the phone
             frame so it overlays the device, not the desktop chrome. */}
-        {pendingGatedAction && (
-          <CaregiverGate
-            action={pendingGatedAction.label}
-            onUnlocked={() => {
-              const action = pendingGatedAction
+          {pendingGatedAction && (
+            <CaregiverGate
+              action={pendingGatedAction.label}
+              onUnlocked={() => {
+                const action = pendingGatedAction
 
-              setPendingGatedAction(null)
+                setPendingGatedAction(null)
 
-              action.run()
-            }}
-            onCancel={() => setPendingGatedAction(null)}
-            fontFamily={F.display}
-          />
-        )}
-      </div>
+                action.run()
+              }}
+              onCancel={() => setPendingGatedAction(null)}
+              fontFamily={F.display}
+            />
+          )}
+        </div>
+      </main>
 
       {/* APK & PWA Download Modal */}
       <ApkDownloadModal
@@ -11038,6 +11131,7 @@ export default function App() {
         fontFamily={F.display}
         onBackToHome={() => {
           setShowLanding(true)
+
           if (typeof window !== "undefined") {
             window.location.hash = "home"
           }
@@ -11069,6 +11163,7 @@ export default function App() {
       onLogout={handleLogout}
       onOpenHomepage={() => {
         setShowLanding(true)
+
         if (typeof window !== "undefined") {
           window.location.hash = "home"
         }

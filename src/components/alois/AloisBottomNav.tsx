@@ -1,5 +1,5 @@
 import React from "react"
-
+import { motion } from "framer-motion"
 import { Home, Activity, User, Brain } from "lucide-react"
 
 import { AloisTab } from "./types"
@@ -87,11 +87,21 @@ export default function AloisBottomNav({
             className="flex-1 min-h-[48px] flex flex-col items-center justify-center relative h-full focus:outline-hidden transition-all duration-200 cursor-pointer"
           >
             {isActive ? (
-              <div className="flex flex-col items-center -mt-2 animate-fade-in">
-                {/* Active Raised Charcoal Pill: Lisso Visual Style */}
-                <div className="w-12 h-[34px] rounded-full bg-[#1A1A1A] text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.18)] transition-transform duration-200 hover:scale-105 active:scale-95">
-                  {tab.icon}
-                </div>
+              <div className="flex flex-col items-center -mt-2">
+                {/* Active Raised Charcoal Pill with Framer Motion Spring Layout Slide */}
+                <motion.div
+                  layoutId="activeNavPill"
+                  transition={{ type: "spring", stiffness: 450, damping: 32 }}
+                  className="w-12 h-[34px] rounded-full bg-[#1A1A1A] text-white flex items-center justify-center shadow-[0_4px_12px_rgba(0,0,0,0.18)]"
+                >
+                  <motion.div
+                    initial={{ scale: 0.8 }}
+                    animate={{ scale: 1 }}
+                    transition={{ type: "spring", stiffness: 500, damping: 25 }}
+                  >
+                    {tab.icon}
+                  </motion.div>
+                </motion.div>
                 {/* Active Label: 11px Bold #1A1A1A */}
                 <span
                   style={{ fontFamily }}
