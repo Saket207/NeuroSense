@@ -88,8 +88,8 @@ export default function RealPhoneFrame({
         <div
           className={`nv-app-shell relative flex flex-col w-full bg-[#141210] transition-all duration-300 ease-out z-10 ${
             isExpanded
-              ? "h-[88vh] max-h-[920px] rounded-[32px] sm:border-[8px] border-[#2A2724] shadow-[0_30px_90px_rgba(0,0,0,0.85),0_0_50px_rgba(245,206,87,0.06)]"
-              : "h-[890px] max-h-[calc(100vh-5.5rem)] rounded-none sm:rounded-[54px] border-0 sm:border-[10px] border-[#23201D] shadow-[0_25px_80px_rgba(0,0,0,0.75),0_10px_30px_rgba(0,0,0,0.5),0_0_60px_rgba(245,206,87,0.06)]"
+              ? "h-[85vh] max-h-[880px] rounded-[32px] sm:border-[8px] border-[#2A2724] shadow-[0_30px_90px_rgba(0,0,0,0.85),0_0_50px_rgba(245,206,87,0.06)]"
+              : "h-[870px] max-h-[calc(100vh-6.75rem)] rounded-none sm:rounded-[54px] border-0 sm:border-[10px] border-[#23201D] shadow-[0_25px_80px_rgba(0,0,0,0.75),0_10px_30px_rgba(0,0,0,0.5),0_0_60px_rgba(245,206,87,0.06)]"
           }`}
           style={{
             // Titanium Outer Specular Highlight Rim

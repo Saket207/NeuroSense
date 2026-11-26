@@ -10135,9 +10135,12 @@ function NeuroSenseApp({
       )}
 
       {/* ─── Dedicated Sticky Floating Toolbar - Guaranteed ZERO Phone Overlap ─── */}
-      <header className="w-full flex justify-center sticky top-0 z-40 pt-[calc(env(safe-area-inset-top,0px)+12px)] pb-2 px-2 sm:px-4 shrink-0 pointer-events-none">
+      <header
+        className="w-full flex justify-center sticky top-0 z-40 pb-2 px-2 sm:px-4 shrink-0 pointer-events-none"
+        style={{ paddingTop: "max(12px, env(safe-area-inset-top, 12px))" }}
+      >
         <div className="nv-demo-nav pointer-events-auto flex items-center justify-between gap-2 sm:gap-3 w-full max-w-[calc(100vw-1rem)] sm:max-w-6xl px-3 sm:px-4 py-2 rounded-2xl sm:rounded-full bg-white/95 border border-white/20 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.45)] transition-all">
-          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+          <div className="flex items-center gap-2 sm:gap-2.5 shrink-0">
             <img
               src="/logo.jpeg"
               alt="NeuroSense Logo"
@@ -10150,18 +10153,18 @@ function NeuroSenseApp({
               >
                 NeuroSense
               </div>
-              <div className="text-[10px] text-[#78716A] font-medium truncate max-w-[150px] md:max-w-none">
+              <div className="text-[10px] text-[#78716A] font-medium truncate max-w-[140px] md:max-w-none">
                 AI Seizure & Neurological Monitoring
               </div>
             </div>
           </div>
 
-          <div className="min-w-0 flex-1 flex items-center justify-end gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5">
+          <div className="min-w-0 flex-1 flex items-center justify-start gap-1 sm:gap-1.5 overflow-x-auto no-scrollbar py-0.5">
             {/* Home / About (Returns to the new public editorial Homepage) */}
             {onOpenHomepage && (
               <button
                 onClick={onOpenHomepage}
-                className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] cursor-pointer shrink-0"
+                className="px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] cursor-pointer shrink-0"
                 title="Go to Homepage / About"
               >
                 <HomeIcon className="w-3.5 h-3.5 text-[#544F49]" />
@@ -10186,7 +10189,7 @@ function NeuroSenseApp({
 
                 window.history.replaceState({}, "", url.toString())
               }}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0 ${
+              className={`px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0 ${
                 demoMode
                   ? "bg-[#F5CE57] text-[#1A1A1A] border border-[#E5BE45] font-extrabold shadow-sm"
                   : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
@@ -10206,7 +10209,7 @@ function NeuroSenseApp({
                 <button
                   onClick={onLogout}
                   title="Return to the login and registration flow"
-                  className="px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 text-[#2C2925] hover:text-black active:scale-95 transition-all shrink-0"
+                  className="px-2.5 sm:px-3 py-1.5 text-[11px] sm:text-xs font-bold flex items-center gap-1.5 text-[#2C2925] hover:text-black active:scale-95 transition-all shrink-0"
                 >
                   <RotateCcw className="w-3.5 h-3.5 text-[#544F49]" />
                   <span>Start from Beginning</span>
@@ -10269,7 +10272,7 @@ function NeuroSenseApp({
             {screen !== "home" && (
               <button
                 onClick={goBack}
-                className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] shrink-0"
+                className="px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] shrink-0"
                 title="Go back one level to the previous screen"
               >
                 <ArrowLeft className="w-3.5 h-3.5 text-[#544F49]" />
@@ -10279,7 +10282,7 @@ function NeuroSenseApp({
 
             <button
               onClick={() => navigate("home")}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all shrink-0 ${
+              className={`px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all shrink-0 ${
                 screen !== "doctorDash" &&
                 screen !== "doctorPatient" &&
                 screen !== "cognitiveGamesHub"
@@ -10293,7 +10296,7 @@ function NeuroSenseApp({
 
             <button
               onClick={() => navigate("cognitiveGamesHub")}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all shrink-0 ${
+              className={`px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all shrink-0 ${
                 screen === "cognitiveGamesHub"
                   ? "bg-teal-800 text-white shadow-sm ring-2 ring-teal-600/30"
                   : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
@@ -10305,7 +10308,7 @@ function NeuroSenseApp({
 
             <button
               onClick={() => setIsOffline(!isOffline)}
-              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-colors shrink-0 ${
+              className={`px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-bold flex items-center gap-1.5 transition-colors shrink-0 ${
                 isOffline
                   ? "bg-amber-600 text-white"
                   : "bg-[#F3EFE8] border border-black/[0.06] text-[#2C2925] hover:bg-[#EAE4D9]"
@@ -10328,7 +10331,7 @@ function NeuroSenseApp({
                   navigate("doctorDash"),
                 )
               }
-              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all shrink-0 ${
+              className={`px-2.5 sm:px-3 py-1.5 rounded-full text-[11px] sm:text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all shrink-0 ${
                 screen === "doctorDash" || screen === "doctorPatient"
                   ? "bg-[#1A1A1A] text-white hover:bg-black shadow-sm"
                   : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
@@ -10340,7 +10343,7 @@ function NeuroSenseApp({
 
             <button
               onClick={onLogout}
-              className="px-3 py-1.5 rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:bg-rose-50 hover:border-rose-300 text-[#78716A] hover:text-rose-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all shrink-0"
+              className="px-2.5 sm:px-3 py-1.5 rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:bg-rose-50 hover:border-rose-300 text-[#78716A] hover:text-rose-700 text-[11px] sm:text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all shrink-0"
               title="Sign out and return to Figma Login Screen"
             >
               <Lock className="w-3.5 h-3.5" />
@@ -10349,7 +10352,7 @@ function NeuroSenseApp({
 
             <button
               onClick={() => setFullScreenMode(!fullScreenMode)}
-              className="px-2.5 py-1.5 rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] text-xs font-bold hidden sm:flex items-center gap-1 shrink-0"
+              className="px-2.5 py-1.5 rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] text-[11px] sm:text-xs font-bold hidden sm:flex items-center gap-1 shrink-0"
             >
               {fullScreenMode ? (
                 <Minimize2 className="w-3.5 h-3.5" />
@@ -10362,7 +10365,7 @@ function NeuroSenseApp({
       </header>
 
       {/* ─── Main Content Flow: Phone starts below toolbar with zero overlap ─── */}
-      <main className="flex-1 flex flex-col items-center justify-start w-full relative z-10 px-0 sm:px-4 pt-1 sm:pt-2 pb-12">
+      <main className="flex-1 flex flex-col items-center justify-start w-full relative z-10 px-0 sm:px-4 pt-3 sm:pt-5 pb-12">
         {/* Realistic Flagship Phone Frame / Tablet Container */}
         <RealPhoneFrame
           isExpanded={fullScreenMode}
