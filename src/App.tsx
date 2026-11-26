@@ -10650,7 +10650,7 @@ function NeuroSenseApp({
           className={`nv-app-shell relative flex flex-col overflow-hidden bg-white transition-all duration-300 z-10 ${
             fullScreenMode
               ? "w-full max-w-2xl h-[90vh] rounded-3xl border border-white/10 shadow-[0_25px_80px_rgba(0,0,0,0.85)]"
-              : "w-full max-w-[390px] h-[844px] max-h-[calc(100vh-6.5rem)] rounded-none sm:rounded-[48px] border-0 sm:border-[8px] border-[#2A091E] shadow-[0_25px_80px_rgba(0,0,0,0.7),0_0_50px_rgba(245,206,87,0.06)]"
+              : "w-full max-w-[428px] h-[885px] max-h-[calc(100vh-5.5rem)] rounded-none sm:rounded-[52px] border-0 sm:border-[8px] border-[#2A091E] shadow-[0_25px_80px_rgba(0,0,0,0.7),0_0_50px_rgba(245,206,87,0.06)]"
           }`}
         >
           {/* Dynamic Island on Mockup (Hidden on fullScreenMode and mobile viewports) */}

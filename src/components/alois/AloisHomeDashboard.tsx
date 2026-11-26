@@ -190,7 +190,7 @@ export default function AloisHomeDashboard({
         </div>
       </header>
 
-      <div className="px-4 pt-5 space-y-5 max-w-[375px] mx-auto relative z-10">
+      <div className="px-4 pt-5 space-y-5 max-w-[400px] mx-auto relative z-10">
         {/* Animated Story Thread Line (Linked to Phone Scroll) */}
         <StoryThread scrollContainerRef={scrollContainerRef} />
 
