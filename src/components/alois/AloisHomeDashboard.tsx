@@ -124,31 +124,42 @@ export default function AloisHomeDashboard({
     : null
 
   return (
-    <div className="flex-1 overflow-y-auto bg-[#F4F4F4] text-[#161616] select-none">
-      {/* ─── 1. Home Nav Bar (Figma node 888:32886: 375 x 72pt) ───────────── */}
-      <header className="h-[72px] px-4 flex items-center justify-between bg-[#F4F4F4] border-b border-[#E0E0E0] sticky top-0 z-20">
-        <div>
-          <span
-            style={{ fontFamily }}
-            className="text-[14px] font-medium text-[#525252] block leading-none"
-          >
-            Hello,
-          </span>
-          <h1
-            style={{ fontFamily }}
-            className="text-[22px] font-bold text-[#161616] tracking-tight leading-tight mt-0.5"
-          >
-            {patientName || "Jerrold Harrington"}
-          </h1>
+    <div className="flex-1 overflow-y-auto bg-[#F7F5F0] text-[#1A1A1A] select-none pb-8">
+      {/* ─── 1. Home Nav Bar (Lisso Editorial Style) ───────────── */}
+      <header className="h-[76px] px-4 flex items-center justify-between bg-[#F7F5F0]/90 border-b border-black/[0.05] sticky top-0 z-20 backdrop-blur-md">
+        <div className="flex items-center gap-3">
+          {/* User circular avatar with initial */}
+          <div className="w-10 h-10 rounded-full bg-[#F5CE57] text-[#1A1A1A] font-bold text-base flex items-center justify-center shadow-2xs border border-black/[0.06] shrink-0">
+            {(patientName || "J").charAt(0).toUpperCase()}
+          </div>
+          <div>
+            <div className="flex items-center gap-1.5">
+              <span
+                style={{ fontFamily }}
+                className="text-[12px] font-medium text-[#78716A] leading-none"
+              >
+                Hi,
+              </span>
+              <span className="text-[10px] font-bold text-[#78716A] bg-black/[0.05] px-2 py-0.5 rounded-full">
+                Caretaker
+              </span>
+            </div>
+            <h1
+              style={{ fontFamily }}
+              className="text-[20px] font-bold text-[#1A1A1A] tracking-tight leading-tight mt-0.5"
+            >
+              {patientName || "Jerrold Harrington"}
+            </h1>
+          </div>
         </div>
 
-        <div className="flex items-center gap-2.5">
+        <div className="flex items-center gap-2">
           {/* Notifications */}
           <button
             type="button"
             onClick={() => onSelectTab("profile")}
             aria-label="Notifications"
-            className="w-9 h-9 rounded-full bg-white border border-[#E0E0E0] text-[#525252] flex items-center justify-center hover:text-[#161616] hover:border-slate-300 active:scale-95 transition-all"
+            className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
           >
             <Bell className="w-4 h-4" />
           </button>
@@ -158,64 +169,97 @@ export default function AloisHomeDashboard({
             type="button"
             onClick={() => onSelectTab("profile")}
             aria-label="Settings"
-            className="w-9 h-9 rounded-full bg-white border border-[#E0E0E0] text-[#525252] flex items-center justify-center hover:text-[#161616] hover:border-slate-300 active:scale-95 transition-all"
+            className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
           >
             <Settings className="w-4 h-4" />
           </button>
         </div>
       </header>
 
-      <div className="px-4 pt-6 space-y-6 max-w-[375px] mx-auto">
-        {/* ─── 2. MAIN: Cognitive Booster Hero Card ────────────────────── */}
-        <section className="space-y-2">
+      <div className="px-4 pt-5 space-y-5 max-w-[375px] mx-auto">
+        {/* ─── Hero Metric Display (Lisso "85%" Design Element) ──────────── */}
+        <section className="bg-white rounded-[28px] border border-black/[0.04] p-5 shadow-[0_6px_20px_rgba(0,0,0,0.03)] relative overflow-hidden">
+          <div className="flex items-start justify-between">
+            <div>
+              <span className="text-[10px] font-bold uppercase tracking-wider text-[#78716A] block">
+                Primary Biomarker Index
+              </span>
+              <div className="flex items-baseline gap-1 mt-1">
+                <span className="text-5xl font-light text-[#1A1A1A] tracking-tight">
+                  {confidencePct !== null ? `${confidencePct}%` : "88%"}
+                </span>
+              </div>
+              <p className="text-[11px] font-medium text-[#78716A] mt-0.5">
+                Latest Screening Score
+              </p>
+            </div>
+
+            <div className="flex flex-col items-end gap-1.5">
+              <span
+                className={`text-[11px] font-bold px-2.5 py-1 rounded-full flex items-center gap-1 shadow-2xs ${
+                  isNormal
+                    ? "bg-emerald-50 text-emerald-800 border border-emerald-200/60"
+                    : "bg-amber-50 text-amber-800 border border-amber-200/60"
+                }`}
+              >
+                <Check className="w-3 h-3" />
+                {isNormal ? "Low Risk" : "Elevated Risk"}
+              </span>
+              <span className="text-[10px] text-[#8C867E]">
+                Model evaluated
+              </span>
+            </div>
+          </div>
+        </section>
+
+        {/* ─── 2. MAIN: Screening Cards ────────────────────── */}
+        <section className="space-y-3.5">
           <div className="flex items-center justify-between px-1">
             <h2
               style={{ fontFamily }}
-              className="text-[14px] font-semibold text-[#525252] uppercase tracking-wider text-[11px]"
+              className="text-[11px] font-bold text-[#78716A] uppercase tracking-wider"
             >
               Primary Screening
             </h2>
-            {confidencePct !== null && (
-              <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full flex items-center gap-1">
-                <Check className="w-3 h-3" /> Latest Score: {confidencePct}%
-              </span>
-            )}
+            <span className="text-[11px] font-medium text-[#8C867E]">
+              Zero-bias voice
+            </span>
           </div>
 
           {/* Family-Verified Life Memory Check (Zero Literacy Bias) */}
           <div
             onClick={onStartLifeMemoryCheck || onStartVoiceCheck}
-            className="w-full rounded-2xl bg-gradient-to-br from-indigo-900 via-indigo-800 to-indigo-950 text-white p-5 relative overflow-hidden shadow-md cursor-pointer active:scale-[0.99] transition-all group border border-indigo-700/50"
+            className="w-full rounded-[28px] bg-white border border-black/[0.05] text-[#1A1A1A] p-5 relative overflow-hidden shadow-[0_6px_20px_rgba(0,0,0,0.03)] cursor-pointer active:scale-[0.99] transition-all group hover:border-black/20"
           >
             <div className="relative z-10 flex items-start gap-3.5">
-              <div className="w-[52px] h-[52px] rounded-2xl bg-indigo-500 text-white flex items-center justify-center shadow-md shrink-0 group-hover:scale-105 transition-transform">
+              <div className="w-[50px] h-[50px] rounded-2xl bg-[#F0EDF7] text-[#583D7A] flex items-center justify-center shadow-xs shrink-0 group-hover:scale-105 transition-transform">
                 <span className="text-2xl">📖</span>
               </div>
               <div className="flex-1 min-w-0">
-                <span className="text-[10px] font-bold uppercase tracking-wider text-indigo-300 bg-indigo-950/60 px-2 py-0.5 rounded-full border border-indigo-500/30">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#583D7A] bg-[#F0EDF7] px-2.5 py-0.5 rounded-full border border-[#DED6EB]">
                   Autobiographical Lived Memory
                 </span>
                 <h3
                   style={{ fontFamily }}
-                  className="text-[18px] font-bold text-white tracking-tight leading-tight mt-1"
+                  className="text-[17px] font-bold text-[#1A1A1A] tracking-tight leading-tight mt-1.5"
                 >
                   Family Life Memory Check
                 </h3>
-                <p className="text-[12px] text-indigo-200 mt-1 leading-snug">
+                <p className="text-[12px] text-[#78716A] mt-1 leading-snug">
                   Zero-literacy screening based on family-verified life facts
                   and daily habits.
                 </p>
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-indigo-700/50 flex items-center justify-between gap-2">
+            <div className="mt-4 pt-3.5 border-t border-black/[0.05] flex items-center justify-between gap-2">
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation()
                   onOpenTrends?.()
                 }}
-                className="px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-indigo-100 text-[11px] font-medium flex items-center gap-1 border border-white/10 transition-all cursor-pointer"
+                className="px-3 py-1.5 rounded-full bg-[#F3EFE8] hover:bg-[#EAE4D9] active:scale-95 text-[#2C2925] text-[11px] font-semibold flex items-center gap-1 border border-black/[0.04] transition-all cursor-pointer"
               >
                 <span>📈 View Trends</span>
               </button>
@@ -226,7 +270,7 @@ export default function AloisHomeDashboard({
                   e.stopPropagation()
                   onStartLifeMemoryCheck?.()
                 }}
-                className="px-3.5 py-1.5 rounded-xl bg-indigo-500 hover:bg-indigo-400 text-white text-[12px] font-bold flex items-center gap-1 shadow-sm active:scale-95 transition-all cursor-pointer"
+                className="px-4 py-1.5 rounded-full bg-[#1A1A1A] hover:bg-black text-white text-[12px] font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
               >
                 <span>Setup & Start</span>
                 <ChevronRight className="w-3.5 h-3.5" />
@@ -234,45 +278,37 @@ export default function AloisHomeDashboard({
             </div>
           </div>
 
+          {/* Neurological Biomarker Check Card */}
           <div
             onClick={onStartVoiceCheck}
             onDragOver={(e) => {
               e.preventDefault()
-
               e.stopPropagation()
-
               setIsDraggingOverCard(true)
             }}
             onDragLeave={(e) => {
               e.preventDefault()
-
               e.stopPropagation()
-
               setIsDraggingOverCard(false)
             }}
             onDrop={(e) => {
               e.preventDefault()
-
               e.stopPropagation()
-
               setIsDraggingOverCard(false)
-
               const file = e.dataTransfer.files?.[0]
-
               if (file) {
                 setDroppedFile(file)
-
                 setShowUploadModal(true)
               }
             }}
-            className={`w-full rounded-2xl text-white p-5 relative overflow-hidden shadow-[0_8px_20px_rgba(0,0,0,0.12)] cursor-pointer active:scale-[0.99] transition-all group ${
+            className={`w-full rounded-[28px] bg-white border text-[#1A1A1A] p-5 relative overflow-hidden shadow-[0_6px_20px_rgba(0,0,0,0.03)] cursor-pointer active:scale-[0.99] transition-all group ${
               isDraggingOverCard
-                ? "bg-[#252525] ring-2 ring-[#4589FF]"
-                : "bg-[#393939] hover:bg-[#2e2e2e]"
+                ? "border-blue-500 ring-2 ring-blue-500/20 bg-blue-50/20"
+                : "border-black/[0.05] hover:border-black/20"
             }`}
           >
-            {/* Ambient decorative waves */}
-            <div className="absolute right-0 top-0 bottom-0 w-48 opacity-10 pointer-events-none">
+            {/* Ambient subtle acoustic waveform decoration */}
+            <div className="absolute right-0 top-0 bottom-0 w-36 opacity-[0.06] pointer-events-none">
               <svg
                 viewBox="0 0 200 120"
                 fill="none"
@@ -281,29 +317,29 @@ export default function AloisHomeDashboard({
               >
                 <path
                   d="M0 60 C40 20, 80 100, 120 60 C160 20, 200 100, 240 60"
-                  stroke="#4589FF"
+                  stroke="#1A1A1A"
                   strokeWidth="8"
                   fill="none"
                 />
               </svg>
             </div>
 
-            <div className="relative z-10 flex items-start gap-4">
-              {/* Cognitive Icon Container: 58x58, #4589FF */}
-              <div className="w-[58px] h-[58px] rounded-2xl bg-[#4589FF] text-white flex items-center justify-center shadow-md shrink-0 group-hover:scale-105 transition-transform">
-                <Sparkles className="w-7 h-7 text-white" />
+            <div className="relative z-10 flex items-start gap-3.5">
+              <div className="w-[50px] h-[50px] rounded-2xl bg-[#EBF3FE] text-[#1D58A7] flex items-center justify-center shadow-xs shrink-0 group-hover:scale-105 transition-transform">
+                <Sparkles className="w-6 h-6 text-[#1D58A7]" />
               </div>
 
               <div className="flex-1 min-w-0">
-                <div className="flex items-center gap-2">
-                  <h3
-                    style={{ fontFamily }}
-                    className="text-[20px] font-bold text-white tracking-tight leading-tight"
-                  >
-                    Neurological Biomarker Check
-                  </h3>
-                </div>
-                <p className="text-[13px] text-[#C6C6C6] mt-1 leading-snug">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#1D58A7] bg-[#EBF3FE] px-2.5 py-0.5 rounded-full border border-[#D0E2FB]">
+                  Acoustic & Speech Analysis
+                </span>
+                <h3
+                  style={{ fontFamily }}
+                  className="text-[17px] font-bold text-[#1A1A1A] tracking-tight leading-tight mt-1.5"
+                >
+                  Neurological Biomarker Check
+                </h3>
+                <p className="text-[12px] text-[#78716A] mt-1 leading-snug">
                   Clinical screening for neurological biomarkers, motor speech
                   stability, and seizure risk patterns.
                 </p>
@@ -311,18 +347,17 @@ export default function AloisHomeDashboard({
             </div>
 
             {/* Action CTA Row */}
-            <div className="mt-5 pt-4 border-t border-[#525252] flex items-center justify-between gap-2">
+            <div className="mt-4 pt-3.5 border-t border-black/[0.05] flex items-center justify-between gap-2">
               <button
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation()
-
                   setShowUploadModal(true)
                 }}
-                className="px-3.5 py-2 rounded-xl bg-white/10 hover:bg-white/20 active:scale-95 text-[#F4F4F4] text-[12px] font-medium flex items-center gap-1.5 border border-white/15 transition-all cursor-pointer shadow-2xs"
+                className="px-3 py-1.5 rounded-full bg-[#F3EFE8] hover:bg-[#EAE4D9] active:scale-95 text-[#2C2925] text-[11px] font-semibold flex items-center gap-1.5 border border-black/[0.04] transition-all cursor-pointer"
                 title="Upload patient voice recording (.wav, .mp3, .m4a)"
               >
-                <Upload className="w-3.5 h-3.5 text-[#4589FF]" />
+                <Upload className="w-3.5 h-3.5 text-[#544F49]" />
                 <span>Upload Voice</span>
               </button>
 
@@ -330,33 +365,32 @@ export default function AloisHomeDashboard({
                 type="button"
                 onClick={(e) => {
                   e.stopPropagation()
-
                   onStartVoiceCheck()
                 }}
-                className="px-4 py-2 rounded-xl bg-[#0F62FE] hover:bg-[#0353e9] text-white text-[13px] font-semibold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
+                className="px-4 py-1.5 rounded-full bg-[#1A1A1A] hover:bg-black text-white text-[12px] font-bold flex items-center gap-1.5 shadow-sm active:scale-95 transition-all cursor-pointer"
               >
                 <Mic className="w-3.5 h-3.5" />
                 <span>Start Check</span>
-                <ChevronRight className="w-4 h-4" />
+                <ChevronRight className="w-3.5 h-3.5" />
               </button>
             </div>
           </div>
 
-          {/* Quick status banner if previous session exists */}
+          {/* Quick status banner if previous session exists (Lisso Divided Row) */}
           {latestSession && (
             <div
               onClick={onViewReport}
-              className="w-full rounded-xl bg-white border border-[#E0E0E0] p-3 flex items-center justify-between shadow-2xs cursor-pointer hover:border-blue-300 transition-colors"
+              className="w-full rounded-2xl bg-white border border-black/[0.05] p-3.5 flex items-center justify-between shadow-2xs cursor-pointer hover:border-black/20 transition-colors"
             >
-              <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-blue-50 text-[#0F62FE] flex items-center justify-center">
-                  <Activity className="w-4 h-4" />
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-[#F3EFE8] text-[#1A1A1A] flex items-center justify-center">
+                  <Activity className="w-4 h-4 text-[#1A1A1A]" />
                 </div>
                 <div>
-                  <div className="text-[12px] font-semibold text-[#161616]">
+                  <div className="text-[12px] font-bold text-[#1A1A1A]">
                     Recent Neurological Summary
                   </div>
-                  <div className="text-[11px] text-[#6F6F6F]">
+                  <div className="text-[11px] text-[#78716A]">
                     {isNormal
                       ? "Stable neurological pattern"
                       : "Elevated biomarker indicator"}{" "}
@@ -364,44 +398,40 @@ export default function AloisHomeDashboard({
                   </div>
                 </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-[#8D8D8D]" />
+              <ChevronRight className="w-4 h-4 text-[#8C867E]" />
             </div>
           )}
         </section>
 
-        {/* ─── 3. SECONDARY: Daily Check-in ──────────────────────────── */}
-        {/*
-          This slot used to hold a household-chore list. Chores belong in a
-          caregiving app; this one is for early detection, and the earliest
-          thing to change in Alzheimer's disease is memory for recent personal
-          events. So the daily slot asks about the person's actual day, and
-          reads it against their own earlier answers rather than a cut-off.
-        */}
-        <section className="space-y-3 pt-2">
+        {/* ─── 3. SECONDARY: Daily Check-in (Lisso Mustard Highlight Card) ── */}
+        <section className="space-y-3 pt-1">
           <div className="flex items-center justify-between px-1">
             <h2
               style={{ fontFamily }}
-              className="text-[14px] font-semibold text-[#525252] uppercase tracking-wider text-[11px]"
+              className="text-[11px] font-bold text-[#78716A] uppercase tracking-wider"
             >
               Every day
             </h2>
 
             {trend && trend.streak > 0 && (
-              <span className="text-[12px] font-semibold text-[#525252] flex items-center gap-1">
-                <Flame className="w-3.5 h-3.5 text-orange-500" />
-                {trend.streak} day{trend.streak === 1 ? "" : "s"} in a row
+              <span className="text-[11px] font-bold text-[#1A1A1A] bg-[#F5CE57]/50 px-2.5 py-0.5 rounded-full flex items-center gap-1 border border-[#F5CE57]">
+                <Flame className="w-3.5 h-3.5 text-orange-600" />
+                {trend.streak} day{trend.streak === 1 ? "" : "s"} streak
               </span>
             )}
           </div>
 
+          {/* Mustard-Yellow Highlight Card */}
           <div
             onClick={() => onSelectTab("dailyCheckIn")}
-            className="w-full rounded-2xl bg-[#393939] text-white p-4 relative overflow-hidden shadow-[0_6px_16px_rgba(0,0,0,0.08)] cursor-pointer hover:bg-[#2e2e2e] active:scale-[0.99] transition-all group"
+            className="w-full rounded-[28px] bg-[#F5CE57] text-[#1A1A1A] p-5 relative overflow-hidden shadow-[0_8px_24px_rgba(245,206,87,0.22)] cursor-pointer hover:bg-[#EFC54E] active:scale-[0.99] transition-all group"
           >
             <div className="flex items-center gap-3.5">
               <div
-                className={`w-[52px] h-[52px] rounded-xl flex items-center justify-center shadow-sm shrink-0 group-hover:scale-105 transition-transform ${
-                  doneToday ? "bg-[#42BE65]" : "bg-[#0F62FE]"
+                className={`w-[48px] h-[48px] rounded-2xl flex items-center justify-center shadow-xs shrink-0 group-hover:scale-105 transition-transform ${
+                  doneToday
+                    ? "bg-emerald-600 text-white"
+                    : "bg-[#1A1A1A] text-white"
                 }`}
               >
                 {doneToday ? (
@@ -412,21 +442,24 @@ export default function AloisHomeDashboard({
               </div>
 
               <div className="flex-1 min-w-0">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#1A1A1A]/70">
+                  Daily Habit Check
+                </span>
                 <h3
                   style={{ fontFamily }}
-                  className="text-[16px] font-semibold text-white tracking-tight"
+                  className="text-[17px] font-bold text-[#1A1A1A] tracking-tight leading-tight"
                 >
                   Daily check-in
                 </h3>
 
-                <p className="text-[12px] text-[#C6C6C6] mt-0.5">
+                <p className="text-[12px] text-[#423C35] mt-0.5 font-medium leading-snug">
                   {doneToday
                     ? "Done for today — thank you"
                     : "About a minute. Tell us about your day."}
                 </p>
               </div>
 
-              <div className="w-8 h-8 rounded-full bg-white/10 text-white flex items-center justify-center group-hover:bg-[#0F62FE] transition-colors shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center group-hover:scale-105 transition-transform shrink-0">
                 <ChevronRight className="w-4 h-4" />
               </div>
             </div>
@@ -434,9 +467,9 @@ export default function AloisHomeDashboard({
 
           {/* What the check-in asks, or what it found once it is done. */}
           {doneToday ? (
-            <div className="rounded-xl bg-white border border-[#E0E0E0] px-3.5 py-3 shadow-2xs space-y-1.5">
+            <div className="rounded-[22px] bg-white border border-black/[0.05] px-4 py-3.5 shadow-2xs space-y-1.5">
               <div className="flex items-center justify-between gap-2">
-                <span className="text-[13px] font-medium text-[#161616]">
+                <span className="text-[12px] font-semibold text-[#1A1A1A]">
                   {trend?.status === "building"
                     ? `Building your baseline · ${trend.needed} more day${
                         trend.needed === 1 ? "" : "s"
@@ -450,10 +483,10 @@ export default function AloisHomeDashboard({
 
                 {trend && trend.status !== "building" && (
                   <span
-                    className={`shrink-0 px-2 py-0.5 rounded-full text-[11px] font-bold ${
+                    className={`shrink-0 px-2 py-0.5 rounded-full text-[10px] font-bold ${
                       trend.status === "typical"
-                        ? "bg-emerald-50 text-emerald-700"
-                        : "bg-amber-50 text-amber-700"
+                        ? "bg-emerald-50 text-emerald-800 border border-emerald-200"
+                        : "bg-amber-50 text-amber-800 border border-amber-200"
                     }`}
                   >
                     {trend.recentMedian} vs {trend.baselineMedian}
@@ -461,7 +494,7 @@ export default function AloisHomeDashboard({
                 )}
               </div>
 
-              <p className="text-[11px] text-[#8D8D8D] leading-snug">
+              <p className="text-[11px] text-[#78716A] leading-snug">
                 Compared with your own earlier check-ins, never with other
                 people.
               </p>
@@ -471,44 +504,36 @@ export default function AloisHomeDashboard({
               {[
                 {
                   icon: CalendarClock,
-
                   title: "Two quick questions",
-
                   sub: "Day and month",
                 },
-
                 {
                   icon: Mic,
-
                   title: "Tell me about your day",
-
                   sub: "About 40 seconds",
                 },
-
                 {
                   icon: Users,
-
                   title: "One question for family",
-
                   sub: "Optional",
                 },
               ].map((row) => (
                 <div
                   key={row.title}
                   onClick={() => onSelectTab("dailyCheckIn")}
-                  className="w-full rounded-xl bg-white border border-[#E0E0E0] px-3.5 py-3 flex items-center justify-between shadow-2xs cursor-pointer hover:border-[#0F62FE] transition-colors"
+                  className="w-full rounded-2xl bg-white border border-black/[0.05] px-3.5 py-3 flex items-center justify-between shadow-2xs cursor-pointer hover:border-black/20 transition-colors"
                 >
                   <div className="flex items-center gap-3">
-                    <span className="w-7 h-7 rounded-lg bg-blue-50 text-[#0F62FE] flex items-center justify-center shrink-0">
+                    <span className="w-8 h-8 rounded-full bg-[#F3EFE8] text-[#1A1A1A] flex items-center justify-center shrink-0">
                       <row.icon className="w-3.5 h-3.5" />
                     </span>
 
-                    <span className="text-[13px] font-medium text-[#161616]">
+                    <span className="text-[12px] font-semibold text-[#1A1A1A]">
                       {row.title}
                     </span>
                   </div>
 
-                  <span className="text-[11px] text-[#8D8D8D] shrink-0">
+                  <span className="text-[11px] text-[#78716A] shrink-0 font-medium">
                     {row.sub}
                   </span>
                 </div>

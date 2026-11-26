@@ -136,7 +136,7 @@ export default function AloisContainer({
     useState<string>("kalvin-mathew")
 
   return (
-    <div className="flex-1 flex flex-col h-full bg-[#F4F4F4] relative overflow-hidden select-none">
+    <div className="flex-1 flex flex-col h-full bg-[#F7F5F0] relative overflow-hidden select-none">
       {/* ─── Main Content Viewports (Tabs) ────────────────────────────── */}
       <main className="flex-1 overflow-y-auto">
         {activeTab === "home" && (

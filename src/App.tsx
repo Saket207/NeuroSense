@@ -5882,7 +5882,7 @@ function NeuroSenseApp({
 
       case "home":
         return (
-          <div className="flex-1 flex flex-col h-full min-h-0 overflow-hidden bg-slate-50">
+          <div className="flex-1 flex flex-col h-full min-h-0 overflow-hidden bg-[#F7F5F0]">
             <StatusBar />
             <div className="flex-1 min-h-0 overflow-hidden">
               <AloisContainer
@@ -10382,9 +10382,19 @@ function NeuroSenseApp({
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#031d25] via-[#02171e] to-[#010e13] p-0 sm:p-4 md:p-6"
+      className="min-h-screen flex flex-col items-center justify-start pt-20 sm:pt-24 pb-10 px-0 sm:px-4 md:px-6 relative overflow-x-hidden bg-[#ECE8E1]"
       style={{ fontFamily: F.body }}
     >
+      {/* Organic Dunes Background Shapes (matching Lisso reference design) */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        {/* Soft dune contour gradient 1 */}
+        <div className="absolute -top-[20%] -right-[15%] w-[900px] h-[900px] rounded-full bg-gradient-to-br from-[#E3DDD1]/80 via-[#DDD5C5]/50 to-transparent blur-3xl opacity-70" />
+        {/* Soft dune contour gradient 2 */}
+        <div className="absolute top-[35%] -left-[20%] w-[850px] h-[850px] rounded-full bg-gradient-to-tr from-[#E6E0D5]/70 via-[#DDD6C8]/40 to-transparent blur-3xl opacity-60" />
+        {/* Warm bottom ground accent */}
+        <div className="absolute -bottom-[10%] right-[10%] w-[700px] h-[700px] rounded-full bg-gradient-to-t from-[#DDD6C8]/60 via-[#E8E2D6]/30 to-transparent blur-2xl opacity-50" />
+      </div>
+
       {/* Demo Studio Drawer (Gated by ?demo=1 or demoMode toggle) */}
       {demoMode && (
         <React.Suspense fallback={null}>
@@ -10400,36 +10410,36 @@ function NeuroSenseApp({
         </React.Suspense>
       )}
 
-      {/* Top / Floating Demo Navigation Bar on Desktop */}
-      <div className="nv-demo-nav fixed top-3 sm:top-4 left-3 right-3 sm:left-4 sm:right-4 z-40 flex flex-wrap items-center justify-between gap-2 max-w-5xl mx-auto px-4 py-2 rounded-2xl bg-[#03222a]/90 border border-[#0d4f5e] backdrop-blur-md shadow-2xl">
+      {/* Top / Floating Demo Navigation Bar on Desktop (Lisso Floating Pill Design) */}
+      <div className="nv-demo-nav fixed top-3 sm:top-4 left-3 right-3 sm:left-4 sm:right-4 z-40 flex flex-wrap items-center justify-between gap-2 max-w-5xl mx-auto px-4 py-2.5 rounded-full bg-white/95 border border-black/[0.08] backdrop-blur-md shadow-[0_10px_35px_rgba(0,0,0,0.06)]">
         <div className="flex items-center gap-3">
           <img
             src="/logo.jpeg"
             alt="NeuroSense Logo"
-            className="w-8 h-8 rounded-xl shadow-md object-contain border border-[#0e5666]"
+            className="w-8 h-8 rounded-full shadow-xs object-contain border border-black/[0.08]"
           />
           <div>
             <div
-              className="text-xs font-bold text-white tracking-wide"
+              className="text-xs font-bold text-[#1A1A1A] tracking-wide"
               style={{ fontFamily: F.display }}
             >
               NeuroSense
             </div>
-            <div className="text-[10px] text-[#38bdf8] font-medium">
+            <div className="text-[10px] text-[#78716A] font-medium">
               AI Seizure & Neurological Monitoring
             </div>
           </div>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2">
           {/* Home / About (Returns to the new public editorial Homepage) */}
           {onOpenHomepage && (
             <button
               onClick={onOpenHomepage}
-              className="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-[#38bdf8] hover:text-white cursor-pointer"
+              className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] cursor-pointer"
               title="Go to Homepage / About"
             >
-              <HomeIcon className="w-3.5 h-3.5 text-[#38bdf8]" />
+              <HomeIcon className="w-3.5 h-3.5 text-[#544F49]" />
               <span>Home / About</span>
             </button>
           )}
@@ -10451,34 +10461,34 @@ function NeuroSenseApp({
 
               window.history.replaceState({}, "", url.toString())
             }}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer ${
+            className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer ${
               demoMode
-                ? "bg-amber-500 text-slate-950 border border-amber-400 font-extrabold"
-                : "bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-slate-200 hover:text-white"
+                ? "bg-[#F5CE57] text-[#1A1A1A] border border-[#E5BE45] font-extrabold shadow-sm"
+                : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
             }`}
             title="Toggle Demo Studio with 1-click Autofill"
           >
             <span>🎭</span>
             <span>Demo Studio</span>
             {demoMode && (
-              <span className="w-2 h-2 rounded-full bg-slate-950 animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-[#1A1A1A] animate-pulse" />
             )}
           </button>
           {/* Return to the current login and registration flow. */}
           <div className="relative">
-            <div className="flex items-center rounded-xl bg-[#042a35] border border-[#0d4f5e] hover:border-[#38bdf8]/60 shadow-md transition-all">
+            <div className="flex items-center rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:border-black/20 shadow-2xs transition-all">
               <button
                 onClick={onLogout}
                 title="Return to the login and registration flow"
-                className="px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 text-slate-200 hover:text-white active:scale-95 transition-all"
+                className="px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 text-[#2C2925] hover:text-black active:scale-95 transition-all"
               >
-                <RotateCcw className="w-3.5 h-3.5 text-[#38bdf8]" />
+                <RotateCcw className="w-3.5 h-3.5 text-[#544F49]" />
                 <span>Start from Beginning</span>
               </button>
               <button
                 onClick={() => setShowRestartMenu(!showRestartMenu)}
                 title="Choose start point"
-                className="px-1.5 py-1.5 border-l border-[#0d4f5e] text-slate-400 hover:text-white hover:bg-[#073c4b] rounded-r-xl transition-colors"
+                className="px-1.5 py-1.5 border-l border-black/[0.08] text-[#78716A] hover:text-black hover:bg-[#EAE4D9] rounded-r-full transition-colors"
               >
                 <ChevronDown className="w-3 h-3" />
               </button>
@@ -10490,21 +10500,21 @@ function NeuroSenseApp({
                   className="fixed inset-0 z-40"
                   onClick={() => setShowRestartMenu(false)}
                 />
-                <div className="absolute left-0 sm:right-0 sm:left-auto top-full mt-2 w-64 rounded-2xl bg-[#03222a] border border-[#0d4f5e] shadow-2xl p-1.5 z-50 animate-fade-in text-xs space-y-1">
+                <div className="absolute left-0 sm:right-0 sm:left-auto top-full mt-2 w-64 rounded-2xl bg-white border border-black/[0.08] shadow-2xl p-1.5 z-50 animate-fade-in text-xs space-y-1">
                   {onOpenHomepage && (
                     <button
                       onClick={() => {
                         setShowRestartMenu(false)
                         onOpenHomepage()
                       }}
-                      className="w-full px-3 py-2 rounded-xl text-left hover:bg-[#073c4b] text-slate-200 hover:text-white transition-colors flex items-center gap-2.5 cursor-pointer"
+                      className="w-full px-3 py-2 rounded-xl text-left hover:bg-[#F5F2EB] text-[#2C2925] hover:text-black transition-colors flex items-center gap-2.5 cursor-pointer"
                     >
-                      <HomeIcon className="w-4 h-4 text-[#38bdf8] shrink-0" />
+                      <HomeIcon className="w-4 h-4 text-[#1A1A1A] shrink-0" />
                       <div>
-                        <div className="font-bold text-white">
+                        <div className="font-bold text-[#1A1A1A]">
                           Homepage / About
                         </div>
-                        <div className="text-[10px] text-slate-400">
+                        <div className="text-[10px] text-[#78716A]">
                           View the editorial homepage & product intro
                         </div>
                       </div>
@@ -10512,14 +10522,14 @@ function NeuroSenseApp({
                   )}
                   <button
                     onClick={onLogout}
-                    className="w-full px-3 py-2 rounded-xl text-left hover:bg-[#073c4b] text-slate-200 hover:text-white transition-colors flex items-center gap-2.5"
+                    className="w-full px-3 py-2 rounded-xl text-left hover:bg-[#F5F2EB] text-[#2C2925] hover:text-black transition-colors flex items-center gap-2.5"
                   >
-                    <Sparkles className="w-4 h-4 text-[#38bdf8] shrink-0" />
+                    <Sparkles className="w-4 h-4 text-[#1A1A1A] shrink-0" />
                     <div>
-                      <div className="font-bold text-white">
+                      <div className="font-bold text-[#1A1A1A]">
                         Login / Registration
                       </div>
-                      <div className="text-[10px] text-slate-400">
+                      <div className="text-[10px] text-[#78716A]">
                         Return to the current Alois sign-in flow
                       </div>
                     </div>
@@ -10532,22 +10542,22 @@ function NeuroSenseApp({
           {screen !== "home" && (
             <button
               onClick={goBack}
-              className="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-slate-200 hover:text-white"
+              className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
               title="Go back one level to the previous screen"
             >
-              <ArrowLeft className="w-3.5 h-3.5 text-[#38bdf8]" />
+              <ArrowLeft className="w-3.5 h-3.5 text-[#544F49]" />
               <span>Back</span>
             </button>
           )}
 
           <button
             onClick={() => navigate("home")}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all ${
+            className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all ${
               screen !== "doctorDash" &&
               screen !== "doctorPatient" &&
               screen !== "cognitiveGamesHub"
-                ? "bg-gradient-to-r from-[#02738a] to-[#015364] hover:from-[#02849f] hover:to-[#02738a] text-white"
-                : "bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-slate-200"
+                ? "bg-[#1A1A1A] text-white hover:bg-black shadow-sm"
+                : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
             }`}
           >
             <User className="w-3.5 h-3.5" />
@@ -10556,22 +10566,22 @@ function NeuroSenseApp({
 
           <button
             onClick={() => navigate("cognitiveGamesHub")}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all ${
+            className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all ${
               screen === "cognitiveGamesHub"
-                ? "bg-gradient-to-r from-[#0F766E] to-[#0D9488] text-white ring-2 ring-teal-400/40"
-                : "bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-slate-200"
+                ? "bg-teal-800 text-white shadow-sm ring-2 ring-teal-600/30"
+                : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
             }`}
           >
-            <Brain className="w-3.5 h-3.5 text-teal-300" />
+            <Brain className="w-3.5 h-3.5 text-teal-600" />
             <span>Cognitive Games</span>
           </button>
 
           <button
             onClick={() => setIsOffline(!isOffline)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors ${
+            className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-colors ${
               isOffline
                 ? "bg-amber-600 text-white"
-                : "bg-[#042a35] border border-[#0d4f5e] text-slate-200 hover:bg-[#073c4b]"
+                : "bg-[#F3EFE8] border border-black/[0.06] text-[#2C2925] hover:bg-[#EAE4D9]"
             }`}
           >
             {isOffline ? (
@@ -10588,19 +10598,19 @@ function NeuroSenseApp({
                 navigate("doctorDash"),
               )
             }
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all ${
+            className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all ${
               screen === "doctorDash" || screen === "doctorPatient"
-                ? "bg-gradient-to-r from-[#02738a] to-[#015364] hover:from-[#02849f] hover:to-[#02738a] text-white"
-                : "bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-slate-200"
+                ? "bg-[#1A1A1A] text-white hover:bg-black shadow-sm"
+                : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
             }`}
           >
-            <Stethoscope className="w-3.5 h-3.5 text-[#38bdf8]" />
+            <Stethoscope className="w-3.5 h-3.5 text-[#544F49]" />
             <span>Doctor View</span>
           </button>
 
           <button
             onClick={onLogout}
-            className="px-3 py-1.5 rounded-xl bg-[#042a35] border border-[#0d4f5e] hover:bg-rose-950/40 hover:border-rose-600/50 text-slate-300 hover:text-rose-200 text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
+            className="px-3 py-1.5 rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:bg-rose-50 hover:border-rose-300 text-[#78716A] hover:text-rose-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all"
             title="Sign out and return to Figma Login Screen"
           >
             <Lock className="w-3.5 h-3.5" />
@@ -10609,7 +10619,7 @@ function NeuroSenseApp({
 
           <button
             onClick={() => setFullScreenMode(!fullScreenMode)}
-            className="px-2.5 py-1.5 rounded-xl bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-slate-300 text-xs font-bold hidden sm:flex items-center gap-1"
+            className="px-2.5 py-1.5 rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] text-xs font-bold hidden sm:flex items-center gap-1"
           >
             {fullScreenMode ? (
               <Minimize2 className="w-3.5 h-3.5" />
@@ -10622,17 +10632,17 @@ function NeuroSenseApp({
 
       {/* Main Container: Native 100% on actual mobile vs polished mockup on desktop */}
       <div
-        className={`nv-app-shell relative flex flex-col overflow-hidden bg-white shadow-2xl transition-all duration-300 ${
+        className={`nv-app-shell relative flex flex-col overflow-hidden bg-white transition-all duration-300 z-10 ${
           fullScreenMode
-            ? "w-full max-w-2xl h-[92vh] rounded-3xl border border-[#0d4f5e] mt-16 sm:mt-20"
-            : "w-full max-w-[390px] h-[844px] max-h-[calc(100vh-5.5rem)] rounded-none sm:rounded-[48px] border-0 sm:border-[8px] border-[#07252f] shadow-[0_25px_80px_rgba(0,0,0,0.85),0_0_50px_rgba(2,115,138,0.15)] ring-1 ring-[#0d4f5e]/30 mt-16 sm:mt-20"
+            ? "w-full max-w-2xl h-[90vh] rounded-3xl border border-black/[0.1] shadow-2xl mt-4 sm:mt-6"
+            : "w-full max-w-[390px] h-[844px] max-h-[calc(100vh-6.5rem)] rounded-none sm:rounded-[48px] border-0 sm:border-[8px] border-[#221F1B] shadow-[0_25px_70px_rgba(30,20,10,0.18)] mt-2 sm:mt-4"
         }`}
       >
         {/* Dynamic Island on Mockup (Hidden on fullScreenMode and mobile viewports) */}
         {!fullScreenMode && (
-          <div className="hidden sm:flex absolute top-2.5 left-1/2 -translate-x-1/2 z-50 w-28 h-7 rounded-full bg-[#02151c] border border-white/10 items-center justify-between px-3 pointer-events-none shadow-inner">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#04232c]" />
-            <div className="w-2 h-2 rounded-full bg-[#02738a]/40" />
+          <div className="hidden sm:flex absolute top-2.5 left-1/2 -translate-x-1/2 z-50 w-28 h-7 rounded-full bg-[#1A1815] border border-white/10 items-center justify-between px-3 pointer-events-none shadow-inner">
+            <div className="w-2.5 h-2.5 rounded-full bg-[#2A2724]" />
+            <div className="w-2 h-2 rounded-full bg-[#F5CE57]/40" />
           </div>
         )}
 
