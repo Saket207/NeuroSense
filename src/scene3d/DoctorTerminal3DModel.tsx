@@ -45,23 +45,32 @@ export default function DoctorTerminal3DModel({
       return
     }
 
-    const width = container.clientWidth || 340
-    const height = container.clientHeight || 150
+    let scene: THREE.Scene
+    let camera: THREE.PerspectiveCamera
+    let renderer: THREE.WebGLRenderer
 
-    // 1. Scene, Camera, Renderer
-    const scene = new THREE.Scene()
-    const camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 50)
-    camera.position.set(0, 0, 7.5)
+    try {
+      const width = container.clientWidth || 340
+      const height = container.clientHeight || 150
 
-    const renderer = new THREE.WebGLRenderer({
-      alpha: true,
-      antialias: false,
-      powerPreference: "high-performance",
-    })
-    renderer.setSize(width, height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.0))
-    renderer.toneMapping = THREE.ACESFilmicToneMapping
-    container.appendChild(renderer.domElement)
+      // 1. Scene, Camera, Renderer
+      scene = new THREE.Scene()
+      camera = new THREE.PerspectiveCamera(40, width / height, 0.1, 50)
+      camera.position.set(0, 0, 7.5)
+
+      renderer = new THREE.WebGLRenderer({
+        alpha: true,
+        antialias: false,
+        powerPreference: "high-performance",
+      })
+      renderer.setSize(width, height)
+      renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.0))
+      renderer.toneMapping = THREE.ACESFilmicToneMapping
+      container.appendChild(renderer.domElement)
+    } catch {
+      setWebGLSupported(false)
+      return
+    }
 
     // 2. Clinical Lighting
     const ambientLight = new THREE.AmbientLight(0xffffff, 1.2)

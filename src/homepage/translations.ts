@@ -126,7 +126,7 @@ export interface HomepageContent {
     leftCardTitle: string
     leftCardDesc: string
     leftCardButton: string
-    items: Array<{ q: string; a: string }>
+    items: Array<{ q: string a: string }>
   }
   story: {
     chap1: string
