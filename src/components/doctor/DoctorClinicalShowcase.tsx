@@ -89,39 +89,41 @@ export default function DoctorClinicalShowcase({
       className="flex-1 overflow-y-auto bg-[#F7F5F0] text-[#1A1A1A] select-none pb-8 relative"
     >
       {/* ─── 1. Doctor Terminal Header (Lisso Editorial Style) ─── */}
-      <header className="h-[76px] px-4 flex items-center justify-between bg-[#F7F5F0]/95 border-b border-black/[0.05] sticky top-0 z-20">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[#1A1A1A] text-[#F5CE57] flex items-center justify-center shadow-2xs border border-black/[0.08] shrink-0 font-bold">
-            <Stethoscope className="w-5 h-5 text-[#F5CE57]" />
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#78716A] bg-black/[0.04] px-2 py-0.5 rounded-full">
-                Clinical Terminal
-              </span>
-              <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
-                v2.4 Pro
-              </span>
+      <header className="h-[76px] px-4 @[520px]:px-8 flex items-center justify-between bg-[#F7F5F0]/95 border-b border-black/[0.05] sticky top-0 z-20">
+        <div className="w-full max-w-none @[520px]:max-w-3xl @[900px]:max-w-5xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#1A1A1A] text-[#F5CE57] flex items-center justify-center shadow-2xs border border-black/[0.08] shrink-0 font-bold">
+              <Stethoscope className="w-5 h-5 text-[#F5CE57]" />
             </div>
-            <h1
-              style={{ fontFamily }}
-              className="text-[18px] font-bold text-[#1A1A1A] tracking-tight leading-tight mt-0.5"
-            >
-              Doctor Clinical Hub
-            </h1>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#78716A] bg-black/[0.04] px-2 py-0.5 rounded-full">
+                  Clinical Terminal
+                </span>
+                <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                  v2.4 Pro
+                </span>
+              </div>
+              <h1
+                style={{ fontFamily }}
+                className="text-[18px] font-bold text-[#1A1A1A] tracking-tight leading-tight mt-0.5"
+              >
+                Doctor Clinical Hub
+              </h1>
+            </div>
           </div>
-        </div>
 
-        <button
-          type="button"
-          onClick={onBack}
-          className="px-3.5 py-1.5 rounded-full bg-white border border-black/[0.08] text-xs font-bold text-[#1A1A1A] hover:bg-black hover:text-white active:scale-95 transition-all cursor-pointer shadow-2xs"
-        >
-          Exit Hub
-        </button>
+          <button
+            type="button"
+            onClick={onBack}
+            className="px-3.5 py-1.5 rounded-full bg-white border border-black/[0.08] text-xs font-bold text-[#1A1A1A] hover:bg-black hover:text-white active:scale-95 transition-all cursor-pointer shadow-2xs"
+          >
+            Exit Hub
+          </button>
+        </div>
       </header>
 
-      <div className="px-4 pt-4 space-y-4 w-full max-w-[400px] mx-auto">
+      <div className="px-4 @[520px]:px-8 @[900px]:px-12 pt-4 space-y-5 w-full max-w-none @[520px]:max-w-3xl @[900px]:max-w-5xl mx-auto">
         {/* ─── 2. Attending Neurologist Profile Card ─── */}
         <div className="rounded-[28px] bg-white border border-black/[0.05] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.03)] flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -649,84 +651,86 @@ export default function DoctorClinicalShowcase({
             </span>
           </div>
 
-          {filteredPatients.map((p) => {
-            const isElevated = p.risk === "elevated"
-            const isModerate = p.risk === "moderate"
+          <div className="grid grid-cols-1 @[520px]:grid-cols-2 gap-3">
+            {filteredPatients.map((p) => {
+              const isElevated = p.risk === "elevated"
+              const isModerate = p.risk === "moderate"
 
-            const badgeStyle = isElevated
-              ? "bg-rose-50 text-rose-700 border-rose-200"
-              : isModerate
-                ? "bg-sky-50 text-sky-700 border-sky-200"
-                : "bg-emerald-50 text-emerald-700 border-emerald-200"
+              const badgeStyle = isElevated
+                ? "bg-rose-50 text-rose-700 border-rose-200"
+                : isModerate
+                  ? "bg-sky-50 text-sky-700 border-sky-200"
+                  : "bg-emerald-50 text-emerald-700 border-emerald-200"
 
-            const borderAccent = isElevated
-              ? "border-l-4 border-l-rose-500"
-              : isModerate
-                ? "border-l-4 border-l-sky-500"
-                : "border-l-4 border-l-emerald-500"
+              const borderAccent = isElevated
+                ? "border-l-4 border-l-rose-500"
+                : isModerate
+                  ? "border-l-4 border-l-sky-500"
+                  : "border-l-4 border-l-emerald-500"
 
-            return (
-              <TiltCard
-                key={p.id}
-                maxTilt={3}
-                scale={1.012}
-                onClick={() => onSelectPatient(p.name)}
-                className={`p-4 rounded-[24px] bg-white border border-black/[0.05] ${borderAccent} shadow-[0_4px_16px_rgba(0,0,0,0.02)] hover:shadow-md cursor-pointer transition-all active:scale-[0.99] text-left space-y-2`}
-              >
-                {/* Header row */}
-                <div className="flex items-start justify-between gap-2">
-                  <div>
-                    <div className="flex items-center gap-2">
+              return (
+                <TiltCard
+                  key={p.id}
+                  maxTilt={3}
+                  scale={1.012}
+                  onClick={() => onSelectPatient(p.name)}
+                  className={`p-4 rounded-[24px] bg-white border border-black/[0.05] ${borderAccent} shadow-[0_4px_16px_rgba(0,0,0,0.02)] hover:shadow-md cursor-pointer transition-all active:scale-[0.99] text-left space-y-2`}
+                >
+                  {/* Header row */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="font-bold text-[15px] text-[#1A1A1A]"
+                          style={{ fontFamily }}
+                        >
+                          {p.name}, {p.age}y
+                        </span>
+                        <span className="text-[11px] font-medium text-[#78716A]">
+                          ({p.gender.charAt(0)})
+                        </span>
+                        <span className="px-2 py-0.2 rounded-full text-[10px] font-semibold bg-black/[0.04] text-[#78716A]">
+                          {p.lang}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#78716A] line-clamp-1 mt-0.5">
+                        {p.chiefComplaint}
+                      </p>
+                    </div>
+
+                    <div className="text-right shrink-0">
                       <span
-                        className="font-bold text-[15px] text-[#1A1A1A]"
-                        style={{ fontFamily }}
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${badgeStyle}`}
                       >
-                        {p.name}, {p.age}y
-                      </span>
-                      <span className="text-[11px] font-medium text-[#78716A]">
-                        ({p.gender.charAt(0)})
-                      </span>
-                      <span className="px-2 py-0.2 rounded-full text-[10px] font-semibold bg-black/[0.04] text-[#78716A]">
-                        {p.lang}
+                        {p.riskScore}%{" "}
+                        {p.risk === "elevated"
+                          ? "HIGH"
+                          : p.risk === "moderate"
+                            ? "MOD"
+                            : "LOW"}
                       </span>
                     </div>
-                    <p className="text-[11px] text-[#78716A] line-clamp-1 mt-0.5">
-                      {p.chiefComplaint}
-                    </p>
                   </div>
 
-                  <div className="text-right shrink-0">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${badgeStyle}`}
-                    >
-                      {p.riskScore}%{" "}
-                      {p.risk === "elevated"
-                        ? "HIGH"
-                        : p.risk === "moderate"
-                          ? "MOD"
-                          : "LOW"}
-                    </span>
-                  </div>
-                </div>
+                  {/* Bottom metrics row */}
+                  <div className="pt-2 border-t border-black/[0.05] flex items-center justify-between text-[11px] text-[#78716A]">
+                    <div className="flex items-center gap-3">
+                      <span className="flex items-center gap-1 font-semibold text-[#1A1A1A]">
+                        <Activity className="w-3.5 h-3.5 text-blue-600" />
+                        <span>{p.wpm} WPM</span>
+                      </span>
+                      <span>• {p.date}</span>
+                    </div>
 
-                {/* Bottom metrics row */}
-                <div className="pt-2 border-t border-black/[0.05] flex items-center justify-between text-[11px] text-[#78716A]">
-                  <div className="flex items-center gap-3">
-                    <span className="flex items-center gap-1 font-semibold text-[#1A1A1A]">
-                      <Activity className="w-3.5 h-3.5 text-blue-600" />
-                      <span>{p.wpm} WPM</span>
-                    </span>
-                    <span>• {p.date}</span>
+                    <div className="flex items-center gap-1 font-bold text-[#1A1A1A] group-hover:text-blue-600 transition-colors">
+                      <span>Deep Analysis</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </div>
                   </div>
-
-                  <div className="flex items-center gap-1 font-bold text-[#1A1A1A] group-hover:text-blue-600 transition-colors">
-                    <span>Deep Analysis</span>
-                    <ChevronRight className="w-3.5 h-3.5" />
-                  </div>
-                </div>
-              </TiltCard>
-            )
-          })}
+                </TiltCard>
+              )
+            })}
+          </div>
         </div>
       </div>
     </div>

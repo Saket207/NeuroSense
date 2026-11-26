@@ -551,36 +551,38 @@ export default function AloisProfile({
       />
 
       {/* ─── 1. Nav Bar (Lisso Editorial Style) ─────────────────────── */}
-      <header className="h-[76px] px-4 flex items-center justify-between bg-[#F7F5F0]/95 border-b border-black/[0.05] sticky top-0 z-20">
-        <div className="flex items-center gap-3">
+      <header className="h-[76px] px-4 @[520px]:px-8 flex items-center justify-between bg-[#F7F5F0]/95 border-b border-black/[0.05] sticky top-0 z-20">
+        <div className="w-full max-w-none @[520px]:max-w-3xl @[900px]:max-w-5xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={onBack}
+              aria-label="Back"
+              className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <h1
+              style={{ fontFamily }}
+              className="text-[20px] font-bold text-[#1A1A1A] tracking-tight leading-tight"
+            >
+              Patient Profile
+            </h1>
+          </div>
+
           <button
             type="button"
-            onClick={onBack}
-            aria-label="Back"
+            onClick={() => setShowPersonalDataModal(true)}
+            aria-label="Edit Profile"
+            title="Edit Profile Data"
             className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <Edit2 className="w-4 h-4 text-[#1A1A1A]" />
           </button>
-          <h1
-            style={{ fontFamily }}
-            className="text-[20px] font-bold text-[#1A1A1A] tracking-tight leading-tight"
-          >
-            Patient Profile
-          </h1>
         </div>
-
-        <button
-          type="button"
-          onClick={() => setShowPersonalDataModal(true)}
-          aria-label="Edit Profile"
-          title="Edit Profile Data"
-          className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
-        >
-          <Edit2 className="w-4 h-4 text-[#1A1A1A]" />
-        </button>
       </header>
 
-      <div className="px-4 pt-3 space-y-4 w-full max-w-[400px] mx-auto">
+      <div className="px-4 @[520px]:px-8 @[900px]:px-12 pt-3 space-y-5 w-full max-w-none @[520px]:max-w-3xl @[900px]:max-w-5xl mx-auto">
         {/* ─── 2. Avatar & Patient Bio with Upload ────────────────────────── */}
         <div className="flex flex-col items-center text-center pt-1">
           <div

@@ -183,44 +183,46 @@ export default function AloisProgress({
       className="flex-1 overflow-y-auto bg-[#F7F5F0] text-[#1A1A1A] select-none pb-8 relative"
     >
       {/* ─── 1. Header (Lisso Editorial Style) ─── */}
-      <header className="h-[76px] px-4 flex items-center justify-between bg-[#F7F5F0]/95 border-b border-black/[0.05] sticky top-0 z-20">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={onBack}
-            aria-label="Back"
-            className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <h1
-            style={{ fontFamily }}
-            className="text-[20px] font-bold text-[#1A1A1A] tracking-tight leading-tight"
-          >
-            Progress & Stability
-          </h1>
-        </div>
+      <header className="h-[76px] px-4 @[520px]:px-8 flex items-center justify-between bg-[#F7F5F0]/95 border-b border-black/[0.05] sticky top-0 z-20">
+        <div className="w-full max-w-none @[520px]:max-w-3xl @[900px]:max-w-5xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={onBack}
+              aria-label="Back"
+              className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <h1
+              style={{ fontFamily }}
+              className="text-[20px] font-bold text-[#1A1A1A] tracking-tight leading-tight"
+            >
+              Progress & Stability
+            </h1>
+          </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="Notifications"
-            className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
-          >
-            <Bell className="w-4 h-4" />
-          </button>
-          <button
-            type="button"
-            onClick={onOpenSettings}
-            aria-label="Settings"
-            className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
-          >
-            <Settings className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              aria-label="Notifications"
+              className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
+            >
+              <Bell className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={onOpenSettings}
+              aria-label="Settings"
+              className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </header>
 
-      <div className="px-4 pt-4 space-y-4 w-full max-w-[400px] mx-auto">
+      <div className="px-4 @[520px]:px-8 @[900px]:px-12 pt-4 space-y-5 w-full max-w-none @[520px]:max-w-3xl @[900px]:max-w-5xl mx-auto">
         {/* ─── 2. Segmented Pill Switcher (Cognitive | Overall | Health) ─── */}
         <div className="flex rounded-full bg-black/[0.04] p-1 border border-black/[0.03]">
           <button
@@ -274,7 +276,7 @@ export default function AloisProgress({
         <Stability3DGraph segment={activeSegment} fontFamily={fontFamily} />
 
         {/* ─── 5. 2x2 Metric Cards (with 3D Tilt interaction) ─── */}
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-2 @[520px]:grid-cols-4 gap-3">
           {currentCards.map((card) => (
             <TiltCard
               key={card.label}

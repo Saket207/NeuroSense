@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react"
 import {
   Sparkles,
+  ChevronLeft,
   ChevronRight,
   Info,
   Award,
@@ -175,36 +176,46 @@ export default function CognitiveGamesHub({
       className="flex-1 overflow-y-auto bg-[#F7F5F0] text-[#1A1A1A] select-none pb-8 relative"
     >
       {/* ─── 1. Top Header (Lisso Editorial Style) ─── */}
-      <header className="h-[76px] px-4 flex items-center justify-between bg-[#F7F5F0]/95 border-b border-black/[0.05] sticky top-0 z-20">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-[#F5CE57] text-[#1A1A1A] flex items-center justify-center shadow-2xs border border-black/[0.06] shrink-0 font-bold">
-            <Brain className="w-5 h-5" />
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#78716A] bg-black/[0.05] px-2 py-0.5 rounded-full">
-                Synaptic Training
-              </span>
-            </div>
-            <h1
-              style={{ fontFamily }}
-              className="text-[20px] font-bold text-[#1A1A1A] tracking-tight leading-tight mt-0.5"
+      <header className="h-[76px] px-4 @[520px]:px-8 flex items-center justify-between bg-[#F7F5F0]/95 border-b border-black/[0.05] sticky top-0 z-20">
+        <div className="w-full max-w-none @[520px]:max-w-3xl @[900px]:max-w-5xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={onBack}
+              aria-label="Back"
+              className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
             >
-              Cognitive Games
-            </h1>
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <div className="w-10 h-10 rounded-full bg-[#F5CE57] text-[#1A1A1A] flex items-center justify-center shadow-2xs border border-black/[0.06] shrink-0 font-bold">
+              <Brain className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#78716A] bg-black/[0.05] px-2 py-0.5 rounded-full">
+                  Synaptic Training
+                </span>
+              </div>
+              <h1
+                style={{ fontFamily }}
+                className="text-[20px] font-bold text-[#1A1A1A] tracking-tight leading-tight mt-0.5"
+              >
+                Cognitive Games
+              </h1>
+            </div>
           </div>
-        </div>
 
-        {/* Gamified XP / Streak Pill Badge */}
-        <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-black/[0.06] shadow-2xs">
-          <Flame className="w-4 h-4 text-amber-500 fill-amber-500 animate-pulse" />
-          <span className="text-[12px] font-bold text-[#1A1A1A] font-serif">
-            {totalScore > 0 ? `${totalScore} pts` : "Daily Streak"}
-          </span>
+          {/* Gamified XP / Streak Pill Badge */}
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-white border border-black/[0.06] shadow-2xs">
+            <Flame className="w-4 h-4 text-amber-500 fill-amber-500 animate-pulse" />
+            <span className="text-[12px] font-bold text-[#1A1A1A] font-serif">
+              {totalScore > 0 ? `${totalScore} pts` : "Daily Streak"}
+            </span>
+          </div>
         </div>
       </header>
 
-      <div className="px-4 pt-4 space-y-4 w-full max-w-[400px] mx-auto">
+      <div className="px-4 @[520px]:px-8 @[900px]:px-12 pt-4 space-y-5 w-full max-w-none @[520px]:max-w-3xl @[900px]:max-w-5xl mx-auto">
         {/* ─── 2. Hero Feature Card: Lisso Amber "Daily Booster" ─── */}
         <div className="rounded-[28px] bg-gradient-to-br from-[#F5CE57] via-[#FAD978] to-[#E5BE45] text-[#1A1A1A] p-5 shadow-[0_12px_32px_rgba(245,206,87,0.22)] relative overflow-hidden border border-black/[0.06]">
           {/* Subtle Ambient Ray Background */}
@@ -303,7 +314,7 @@ export default function CognitiveGamesHub({
         </div>
 
         {/* ─── 4. Catchy Interactive Game Cards (with 3D Tilt) ─── */}
-        <div className="space-y-3.5">
+        <div className="grid grid-cols-1 @[520px]:grid-cols-2 gap-3.5">
           {filteredGames.map((meta) => {
             const prog = progressMap[meta.id]
             const cfg = GAME_DISPLAY_CONFIG[meta.id]
