@@ -48,7 +48,12 @@ export default function MarqueeSection({ currentLang }: MarqueeSectionProps) {
     </div>
   )
 
-  const PillCard = ({ title, index }: { title: string index: number }) => (
+  interface PillCardProps {
+    title: string
+    index: number
+  }
+
+  const PillCard = ({ title, index }: PillCardProps) => (
     <div className="flex items-center gap-3 px-5 py-3 rounded-full bg-[#F6F5F1] border border-[rgba(32,1,16,0.06)] shadow-2xs flex-shrink-0 hover:bg-white transition-colors cursor-default">
       {/* Mini icon badge */}
       <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-xs font-bold text-[#200110] border border-[rgba(32,1,16,0.08)]">

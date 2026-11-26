@@ -370,58 +370,75 @@ export default function DoctorClinicalShowcase({
                     stroke="rgba(0,0,0,0.08)"
                   />
 
-                  {/* Area fill */}
-                  <path
-                    d={`M 15 ${80 - currentTrajPatient.trendData[0].risk * 0.7} Q 40 ${80 - currentTrajPatient.trendData[1].risk * 0.7} 75 ${80 - currentTrajPatient.trendData[1].risk * 0.7} T 135 ${80 - currentTrajPatient.trendData[2].risk * 0.7} T 195 ${80 - currentTrajPatient.trendData[3].risk * 0.7} T 255 ${80 - currentTrajPatient.trendData[4].risk * 0.7} T 305 ${80 - currentTrajPatient.trendData[5].risk * 0.7} L 305 75 L 15 75 Z`}
-                    fill="url(#docTrajGrad)"
-                  />
+                  {/* Dynamic Area Fill & Curve */}
+                  {(() => {
+                    const pts = currentTrajPatient.trendData || []
+                    const n = pts.length
+                    if (n === 0) return null
+                    const getX = (idx: number) =>
+                      15 + idx * (290 / Math.max(n - 1, 1))
+                    const getY = (risk: number) =>
+                      80 - Math.min(Math.max(risk, 0), 100) * 0.7
 
-                  {/* Curve */}
-                  <path
-                    d={`M 15 ${80 - currentTrajPatient.trendData[0].risk * 0.7} Q 40 ${80 - currentTrajPatient.trendData[1].risk * 0.7} 75 ${80 - currentTrajPatient.trendData[1].risk * 0.7} T 135 ${80 - currentTrajPatient.trendData[2].risk * 0.7} T 195 ${80 - currentTrajPatient.trendData[3].risk * 0.7} T 255 ${80 - currentTrajPatient.trendData[4].risk * 0.7} T 305 ${80 - currentTrajPatient.trendData[5].risk * 0.7}`}
-                    fill="none"
-                    stroke={
-                      currentTrajPatient.risk === "elevated"
-                        ? "#F43F5E"
-                        : currentTrajPatient.risk === "moderate"
-                          ? "#0284C7"
-                          : "#10B981"
-                    }
-                    strokeWidth="3"
-                    strokeLinecap="round"
-                  />
+                    const pathCoords = pts
+                      .map(
+                        (p, idx) =>
+                          `${
+                            idx === 0 ? "M" : "L"
+                          } ${getX(idx)} ${getY(p.risk)}`,
+                      )
+                      .join(" ")
+                    const areaCoords = `${pathCoords} L ${getX(n - 1)} 75 L 15 75 Z`
 
-                  {/* Points */}
-                  {currentTrajPatient.trendData.map((pt, i) => {
-                    const x = 15 + i * 58
-                    const y = 80 - pt.risk * 0.7
                     return (
-                      <g key={pt.month}>
-                        <circle
-                          cx={x}
-                          cy={y}
-                          r="4"
-                          fill="#FFFFFF"
+                      <>
+                        <path d={areaCoords} fill="url(#docTrajGrad)" />
+                        <path
+                          d={pathCoords}
+                          fill="none"
                           stroke={
                             currentTrajPatient.risk === "elevated"
                               ? "#F43F5E"
-                              : "#0284C7"
+                              : currentTrajPatient.risk === "moderate"
+                                ? "#0284C7"
+                                : "#10B981"
                           }
-                          strokeWidth="2"
+                          strokeWidth="3"
+                          strokeLinecap="round"
                         />
-                        <text
-                          x={x}
-                          y="88"
-                          fontSize="9"
-                          textAnchor="middle"
-                          fill="#78716A"
-                          fontWeight="600"
-                        >
-                          {pt.month}
-                        </text>
-                      </g>
+                        {pts.map((pt, i) => {
+                          const x = getX(i)
+                          const y = getY(pt.risk)
+                          return (
+                            <g key={pt.month || i}>
+                              <circle
+                                cx={x}
+                                cy={y}
+                                r="4"
+                                fill="#FFFFFF"
+                                stroke={
+                                  currentTrajPatient.risk === "elevated"
+                                    ? "#F43F5E"
+                                    : "#0284C7"
+                                }
+                                strokeWidth="2"
+                              />
+                              <text
+                                x={x}
+                                y="88"
+                                fontSize="9"
+                                textAnchor="middle"
+                                fill="#78716A"
+                                fontWeight="600"
+                              >
+                                {pt.month}
+                              </text>
+                            </g>
+                          )
+                        })}
+                      </>
                     )
-                  })}
+                  })()}
                 </svg>
               </div>
 
