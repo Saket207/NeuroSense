@@ -133,10 +133,14 @@ export default function AloisHomeDashboard({
   return (
     <div
       ref={scrollContainerRef}
-      className="flex-1 overflow-y-auto bg-[#F7F5F0] text-[#1A1A1A] select-none pb-8 relative scroll-smooth"
+      style={{
+        WebkitOverflowScrolling: "touch",
+        overscrollBehaviorY: "contain",
+      }}
+      className="flex-1 overflow-y-auto bg-[#F7F5F0] text-[#1A1A1A] select-none pb-8 relative"
     >
       {/* ─── 1. Home Nav Bar (Lisso Editorial Style) ───────────── */}
-      <header className="h-[76px] px-4 flex items-center justify-between bg-[#F7F5F0]/90 border-b border-black/[0.05] sticky top-0 z-20 backdrop-blur-md">
+      <header className="h-[76px] px-4 flex items-center justify-between bg-[#F7F5F0]/95 border-b border-black/[0.05] sticky top-0 z-20">
         <div className="flex items-center gap-3">
           {/* User circular avatar with initial */}
           <div className="w-10 h-10 rounded-full bg-[#F5CE57] text-[#1A1A1A] font-bold text-base flex items-center justify-center shadow-2xs border border-black/[0.06] shrink-0">

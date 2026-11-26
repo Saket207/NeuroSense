@@ -20,6 +20,11 @@ export default function MemoryOrbScene({
 }: MemoryOrbSceneProps) {
   const mountRef = useRef<HTMLDivElement>(null)
   const [webGLSupported, setWebGLSupported] = useState(true)
+  const parallaxRef = useRef({ x: parallaxX, y: parallaxY })
+
+  useEffect(() => {
+    parallaxRef.current = { x: parallaxX, y: parallaxY }
+  }, [parallaxX, parallaxY])
 
   useEffect(() => {
     const container = mountRef.current
@@ -55,11 +60,11 @@ export default function MemoryOrbScene({
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
-      antialias: true,
+      antialias: false,
       powerPreference: "high-performance",
     })
     renderer.setSize(width, height)
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5))
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.0))
     renderer.toneMapping = THREE.ACESFilmicToneMapping
     renderer.toneMappingExposure = 1.2
     container.appendChild(renderer.domElement)
@@ -80,22 +85,18 @@ export default function MemoryOrbScene({
     const orbGroup = new THREE.Group()
     scene.add(orbGroup)
 
-    const outerGeo = new THREE.SphereGeometry(2.4, 48, 48)
-    const outerMat = new THREE.MeshPhysicalMaterial({
+    const outerGeo = new THREE.SphereGeometry(2.4, 32, 32)
+    const outerMat = new THREE.MeshStandardMaterial({
       color: 0xfbf6ee,
-      transmission: 0.85,
-      opacity: 0.9,
+      opacity: 0.65,
       transparent: true,
-      roughness: 0.12,
-      ior: 1.45,
-      reflectivity: 0.6,
-      clearcoat: 1.0,
-      clearcoatRoughness: 0.1,
+      roughness: 0.2,
+      metalness: 0.05,
     })
     const outerOrb = new THREE.Mesh(outerGeo, outerMat)
     orbGroup.add(outerOrb)
 
-    const innerGeo = new THREE.SphereGeometry(1.2, 32, 32)
+    const innerGeo = new THREE.SphereGeometry(1.2, 24, 24)
     const innerMat = new THREE.MeshStandardMaterial({
       color: 0xf5ce57,
       emissive: 0xd97706,
@@ -205,8 +206,8 @@ export default function MemoryOrbScene({
       drop.position.y = 3.8 + Math.sin(elapsedTime * 0.5 + 3) * 0.2
 
       // Smooth pointer parallax follow
-      const targetX = parallaxX * 0.8
-      const targetY = parallaxY * 0.8
+      const targetX = parallaxRef.current.x * 0.8
+      const targetY = parallaxRef.current.y * 0.8
       scene.position.x += (targetX - scene.position.x) * 0.05
       scene.position.y += (targetY - scene.position.y) * 0.05
 
@@ -254,7 +255,7 @@ export default function MemoryOrbScene({
       dropMat.dispose()
       renderer.dispose()
     }
-  }, [parallaxX, parallaxY])
+  }, [])
 
   if (!webGLSupported) {
     // Pure CSS mesh fallback
@@ -262,7 +263,13 @@ export default function MemoryOrbScene({
       <div
         className={`absolute inset-0 pointer-events-none overflow-hidden ${className}`}
       >
-        <div className="absolute top-[20%] right-[15%] w-[480px] h-[480px] rounded-full bg-gradient-to-br from-amber-400/20 via-purple-600/15 to-transparent blur-3xl animate-pulse" />
+        <div
+          className="absolute top-[20%] right-[15%] w-[480px] h-[480px] rounded-full"
+          style={{
+            background:
+              "radial-gradient(circle, rgba(251, 191, 36, 0.18) 0%, rgba(147, 51, 234, 0.12) 50%, transparent 75%)",
+          }}
+        />
       </div>
     )
   }

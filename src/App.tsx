@@ -4155,8 +4155,6 @@ function NeuroSenseApp({
 
   const [fullScreenMode, setFullScreenMode] = useState<boolean>(false)
 
-  const [pointerParallax, setPointerParallax] = useState({ x: 0, y: 0 })
-
   const [showApkModal, setShowApkModal] = useState<boolean>(false)
 
   const [showRecordingUploadModal, setShowRecordingUploadModal] =
@@ -4485,26 +4483,23 @@ function NeuroSenseApp({
     }
   }
 
-  const navigate = useCallback(
-    (s: Screen, options?: { replace?: boolean }) => {
-      stopSpeech()
+  const navigate = useCallback((s: Screen, options?: { replace?: boolean }) => {
+    stopSpeech()
 
-      setScreen((current) => {
-        if (current !== s && !options?.replace) {
-          setScreenHistory((prev) => [...prev, current])
+    setScreen((current) => {
+      if (current !== s && !options?.replace) {
+        setScreenHistory((prev) => [...prev, current])
 
-          try {
-            window.history.pushState({ screen: s }, "", "")
-          } catch {
-            // ignore in environments without history API
-          }
+        try {
+          window.history.pushState({ screen: s }, "", "")
+        } catch {
+          // ignore in environments without history API
         }
+      }
 
-        return s
-      })
-    },
-    [],
-  )
+      return s
+    })
+  }, [])
 
   const goBack = useCallback(() => {
     stopSpeech()
@@ -10391,80 +10386,11 @@ function NeuroSenseApp({
     <div
       className="min-h-screen flex flex-col items-center justify-start relative overflow-x-hidden bg-gradient-to-b from-[#1C0212] via-[#12000B] to-[#0A0006] selection:bg-[#F5CE57] selection:text-black"
       style={{ fontFamily: F.body }}
-      onMouseMove={(e) => {
-        const x = (e.clientX / window.innerWidth - 0.5) * 2
-
-        const y = (e.clientY / window.innerHeight - 0.5) * 2
-
-        setPointerParallax({ x, y })
-      }}
     >
-      {/* ─── 1. Deep Aubergine Backdrop with Glowing Aurora & Particles ─── */}
+      {/* ─── 1. Deep Aubergine Backdrop with High-Performance Gradients (Zero Lag) ─── */}
       <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-        {/* Glowing Aurora Blob 1 - Warm Gold/Amber */}
-        <div
-          className="absolute -top-[15%] -right-[10%] w-[750px] h-[750px] rounded-full bg-gradient-to-br from-[#F5CE57]/20 via-[#E11D48]/15 to-transparent blur-3xl opacity-75 animate-pulse"
-          style={{
-            transform: `translate3d(${pointerParallax.x * -15}px, ${pointerParallax.y * -15}px, 0)`,
-
-            transition: "transform 0.4s ease-out",
-          }}
-        />
-        {/* Glowing Aurora Blob 2 - Deep Violet/Aubergine */}
-        <div
-          className="absolute top-[30%] -left-[15%] w-[800px] h-[800px] rounded-full bg-gradient-to-tr from-[#9333EA]/20 via-[#C026D3]/15 to-transparent blur-3xl opacity-65"
-          style={{
-            transform: `translate3d(${pointerParallax.x * 20}px, ${pointerParallax.y * 20}px, 0)`,
-
-            transition: "transform 0.4s ease-out",
-          }}
-        />
-        {/* Glowing Aurora Blob 3 - Rose Warm Glow */}
-        <div
-          className="absolute -bottom-[10%] right-[15%] w-[650px] h-[650px] rounded-full bg-gradient-to-t from-[#F5CE57]/15 via-[#F43F5E]/10 to-transparent blur-2xl opacity-60"
-          style={{
-            transform: `translate3d(${pointerParallax.x * -10}px, ${pointerParallax.y * -10}px, 0)`,
-
-            transition: "transform 0.4s ease-out",
-          }}
-        />
-
-        {/* Floating Ambient Dust Particles */}
-        <div className="absolute inset-0 opacity-40">
-          {[
-            { top: "15%", left: "12%", size: 3, delay: "0s" },
-
-            { top: "28%", left: "86%", size: 4, delay: "1.4s" },
-
-            { top: "48%", left: "18%", size: 2, delay: "2.8s" },
-
-            { top: "66%", left: "78%", size: 3, delay: "0.9s" },
-
-            { top: "82%", left: "28%", size: 4, delay: "3.1s" },
-
-            { top: "12%", left: "62%", size: 2, delay: "4s" },
-
-            { top: "88%", left: "82%", size: 3, delay: "1.6s" },
-          ].map((p, idx) => (
-            <div
-              key={idx}
-              className="absolute rounded-full bg-[#F5CE57] animate-ping"
-              style={{
-                top: p.top,
-
-                left: p.left,
-
-                width: p.size,
-
-                height: p.size,
-
-                animationDuration: "4s",
-
-                animationDelay: p.delay,
-              }}
-            />
-          ))}
-        </div>
+        {/* Hardware-accelerated GPU Radial Gradients (No heavy CSS blurs) */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_15%,rgba(245,206,87,0.14)_0%,transparent_50%),radial-gradient(circle_at_15%_45%,rgba(147,51,234,0.16)_0%,transparent_55%),radial-gradient(circle_at_75%_85%,rgba(225,29,72,0.12)_0%,transparent_50%)]" />
 
         {/* Subtle Vignette Overlay */}
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.65)_100%)] pointer-events-none" />
@@ -10472,10 +10398,7 @@ function NeuroSenseApp({
 
       {/* Lazy-Loaded Procedural 3D Memory Orb Scene (Three.js) */}
       <React.Suspense fallback={null}>
-        <MemoryOrbScene
-          parallaxX={pointerParallax.x}
-          parallaxY={pointerParallax.y}
-        />
+        <MemoryOrbScene />
       </React.Suspense>
 
       {/* Demo Studio Drawer (Gated by ?demo=1 or demoMode toggle) */}

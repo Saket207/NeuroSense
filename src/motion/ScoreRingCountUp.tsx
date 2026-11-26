@@ -66,7 +66,11 @@ export default function ScoreRingCountUp({
     <div className="bg-white rounded-[28px] border border-black/[0.05] p-5 shadow-[0_8px_24px_rgba(0,0,0,0.03)] relative overflow-hidden transition-all duration-300">
       {/* Subtle ambient breathing glow */}
       <div
-        className="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-amber-200/20 blur-2xl pointer-events-none animate-pulse"
+        className="absolute -right-10 -top-10 w-44 h-44 rounded-full pointer-events-none"
+        style={{
+          background:
+            "radial-gradient(circle, rgba(253, 230, 138, 0.22) 0%, transparent 70%)",
+        }}
         aria-hidden="true"
       />
 
