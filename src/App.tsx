@@ -10135,28 +10135,28 @@ function NeuroSenseApp({
       )}
 
       {/* ─── Dedicated Sticky Floating Toolbar - Guaranteed ZERO Phone Overlap ─── */}
-      <header className="w-full flex justify-center sticky top-0 z-40 pt-[calc(env(safe-area-inset-top,0px)+12px)] pb-2 px-3 sm:px-4 shrink-0 pointer-events-none">
-        <div className="nv-demo-nav pointer-events-auto flex items-center justify-between gap-2 w-full max-w-[calc(100vw-1.5rem)] sm:max-w-6xl px-3 sm:px-4 py-2 rounded-2xl sm:rounded-full bg-white/95 border border-white/20 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.45)] transition-all overflow-hidden">
-          <div className="flex items-center gap-3 shrink-0">
+      <header className="w-full flex justify-center sticky top-0 z-40 pt-[calc(env(safe-area-inset-top,0px)+12px)] pb-2 px-2 sm:px-4 shrink-0 pointer-events-none">
+        <div className="nv-demo-nav pointer-events-auto flex items-center justify-between gap-2 sm:gap-3 w-full max-w-[calc(100vw-1rem)] sm:max-w-6xl px-3 sm:px-4 py-2 rounded-2xl sm:rounded-full bg-white/95 border border-white/20 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.45)] transition-all">
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
             <img
               src="/logo.jpeg"
               alt="NeuroSense Logo"
-              className="w-8 h-8 rounded-full shadow-xs object-contain border border-black/[0.08]"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full shadow-xs object-contain border border-black/[0.08]"
             />
-            <div className="hidden xs:block">
+            <div className="hidden sm:block">
               <div
                 className="text-xs font-bold text-[#1A1A1A] tracking-wide"
                 style={{ fontFamily: F.display }}
               >
                 NeuroSense
               </div>
-              <div className="text-[10px] text-[#78716A] font-medium truncate max-w-[150px] sm:max-w-none">
+              <div className="text-[10px] text-[#78716A] font-medium truncate max-w-[150px] md:max-w-none">
                 AI Seizure & Neurological Monitoring
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5 max-w-full">
+          <div className="min-w-0 flex-1 flex items-center justify-end gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5">
             {/* Home / About (Returns to the new public editorial Homepage) */}
             {onOpenHomepage && (
               <button
@@ -10372,7 +10372,7 @@ function NeuroSenseApp({
           {/* Render Active Screen */}
           <div
             lang={lang}
-            className="flex-1 flex flex-col h-full min-h-0 overflow-hidden bg-gradient-to-b from-[#fbfdfd] via-[#f3f9fb] to-[#eaf5f8]"
+            className="w-full flex-1 flex flex-col h-full min-h-0 overflow-hidden bg-gradient-to-b from-[#fbfdfd] via-[#f3f9fb] to-[#eaf5f8]"
           >
             {renderScreen()}
           </div>
