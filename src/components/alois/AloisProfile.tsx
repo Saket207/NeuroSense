@@ -924,7 +924,7 @@ export default function AloisProfile({
       {/* ─── MODAL 1: ABHA Digital Health QR Modal ─────────────────────── */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {showQrModal && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 pt-14 pb-6 animate-in fade-in duration-200">
           <div className="w-full max-w-[340px] bg-white rounded-3xl p-5 shadow-2xl border border-blue-100 text-center space-y-3.5">
             <div className="flex items-center justify-between border-b pb-2.5">
               <div className="flex items-center gap-2">
@@ -1018,7 +1018,7 @@ export default function AloisProfile({
       {/* ─── MODAL 2: Personal Data Editor Modal ───────────────────────── */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {showPersonalDataModal && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 pt-14 pb-6 animate-in fade-in duration-200">
           <div className="w-full max-w-[345px] max-h-[700px] overflow-y-auto bg-white rounded-3xl p-5 shadow-2xl border border-slate-200 space-y-3.5 text-left">
             <div className="flex items-center justify-between border-b pb-2">
               <div className="flex items-center gap-2">
@@ -1179,7 +1179,7 @@ export default function AloisProfile({
       {/* ─── MODAL 3: Emergency Contacts Action Sheet ───────────────────── */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {showEmergencyModal && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 pt-14 pb-6 animate-in fade-in duration-200">
           <div className="w-full max-w-[340px] bg-white rounded-3xl p-5 shadow-2xl border border-rose-100 text-left space-y-3.5">
             <div className="flex items-center justify-between border-b pb-2">
               <div className="flex items-center gap-2">
@@ -1309,7 +1309,7 @@ export default function AloisProfile({
       {/* ─── MODAL 4: Household Member Switcher Modal ──────────────────── */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {showHouseholdModal && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 pt-14 pb-6 animate-in fade-in duration-200">
           <div className="w-full max-w-[340px] max-h-[680px] overflow-y-auto bg-white rounded-3xl p-5 shadow-2xl border border-purple-100 text-left space-y-3.5">
             <div className="flex items-center justify-between border-b pb-2">
               <div className="flex items-center gap-2">
@@ -1459,7 +1459,7 @@ export default function AloisProfile({
       {/* ─── MODAL 5: Help & FAQs + Audio Mic Test Modal ────────────────── */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {showHelpModal && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 pt-14 pb-6 animate-in fade-in duration-200">
           <div className="w-full max-w-[345px] max-h-[700px] overflow-y-auto bg-white rounded-3xl p-5 shadow-2xl border border-slate-200 text-left space-y-3.5">
             <div className="flex items-center justify-between border-b pb-2">
               <div className="flex items-center gap-2">

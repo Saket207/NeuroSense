@@ -35,6 +35,7 @@ export default function PatientStoryModeModal({
   const CHAPTERS = [
     {
       id: "childhood",
+      tabLabel: "1. Roots",
       title: "Chapter 1: Ancestral Roots",
       badge: "Childhood 1952",
       icon: <MapPin className="w-4 h-4 text-amber-600" />,
@@ -43,10 +44,11 @@ export default function PatientStoryModeModal({
       memoryFact:
         "Grew up near the sacred river ghats in Varanasi under the grand ancestral banyan tree.",
       audioPrompt: `Namaste ${patientName}! Tell me about the banyan tree near the river ghats where you used to walk in the morning.`,
-      cognitiveTarget: "Episodic remote autobiographical memory retrieval.",
+      cognitiveTarget: "Episodic remote autobiographical recall.",
     },
     {
       id: "youth",
+      tabLabel: "2. Music",
       title: "Chapter 2: Youth & Passions",
       badge: "Art & Music",
       icon: <Music className="w-4 h-4 text-purple-600" />,
@@ -59,6 +61,7 @@ export default function PatientStoryModeModal({
     },
     {
       id: "family",
+      tabLabel: "3. Legacy",
       title: "Chapter 3: Family Legacy",
       badge: "Golden Jubilee",
       icon: <Heart className="w-4 h-4 text-rose-500" />,
@@ -71,6 +74,7 @@ export default function PatientStoryModeModal({
     },
     {
       id: "comfort",
+      tabLabel: "4. Ritual",
       title: "Chapter 4: Daily Comfort",
       badge: "Morning Ritual",
       icon: <Radio className="w-4 h-4 text-teal-600" />,
@@ -90,12 +94,22 @@ export default function PatientStoryModeModal({
   }
 
   return (
-    <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200 select-none">
-      <div className="w-full max-w-[360px] bg-[#F7F5F0] rounded-[32px] p-5 shadow-2xl border border-black/[0.08] text-left space-y-4 max-h-[85vh] overflow-y-auto">
+    <div
+      onClick={onClose}
+      className="absolute inset-0 bg-black/50 backdrop-blur-xs z-50 flex flex-col justify-end animate-in fade-in duration-200 select-none"
+    >
+      {/* Bottom Sheet Modal Container */}
+      <div
+        onClick={(e) => e.stopPropagation()}
+        className="w-full bg-[#F7F5F0] rounded-t-[36px] pt-3 pb-8 px-5 shadow-2xl border-t border-black/[0.08] text-left space-y-4 max-h-[82%] overflow-y-auto overscroll-contain"
+      >
+        {/* Drag Pill Handle */}
+        <div className="w-10 h-1.5 rounded-full bg-black/15 mx-auto mb-1 cursor-pointer" />
+
         {/* Modal Top Header */}
         <div className="flex items-center justify-between border-b border-black/[0.06] pb-3">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-full bg-[#F5CE57] text-[#1A1A1A] flex items-center justify-center font-bold shadow-2xs">
+            <div className="w-8 h-8 rounded-full bg-[#F5CE57] text-[#1A1A1A] flex items-center justify-center font-bold shadow-2xs shrink-0">
               <BookOpen className="w-4 h-4" />
             </div>
             <div>
@@ -105,7 +119,7 @@ export default function PatientStoryModeModal({
               >
                 Autobiographical Story Mode
               </h3>
-              <p className="text-[10px] text-[#78716A]">
+              <p className="text-[11px] text-[#78716A]">
                 Reminiscence screening for {patientName}
               </p>
             </div>
@@ -114,33 +128,37 @@ export default function PatientStoryModeModal({
           <button
             type="button"
             onClick={onClose}
-            className="w-8 h-8 rounded-full bg-white border border-black/[0.06] text-[#78716A] flex items-center justify-center hover:text-[#1A1A1A] hover:bg-slate-100 transition-all cursor-pointer"
+            aria-label="Close"
+            className="w-8 h-8 rounded-full bg-white border border-black/[0.08] text-[#78716A] flex items-center justify-center hover:text-[#1A1A1A] hover:bg-slate-100 transition-all cursor-pointer shadow-2xs"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Story Chapter Selector Carousel */}
-        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-          {CHAPTERS.map((ch, idx) => (
-            <button
-              key={ch.id}
-              type="button"
-              onClick={() => setActiveChapter(idx)}
-              className={`px-3 py-1.5 rounded-full text-[11px] font-bold transition-all whitespace-nowrap cursor-pointer ${
-                activeChapter === idx
-                  ? "bg-[#1A1A1A] text-white shadow-2xs"
-                  : "bg-white text-[#78716A] border border-black/[0.06] hover:text-[#1A1A1A]"
-              }`}
-            >
-              {ch.title.split(":")[0]}
-            </button>
-          ))}
+        {/* 4-Segment Full-Width Chapter Selector (Fits 100% with no overflow) */}
+        <div className="grid grid-cols-4 gap-1 p-1 bg-black/[0.04] rounded-full border border-black/[0.03]">
+          {CHAPTERS.map((ch, idx) => {
+            const isActive = activeChapter === idx
+            return (
+              <button
+                key={ch.id}
+                type="button"
+                onClick={() => setActiveChapter(idx)}
+                className={`py-1.5 text-[11px] font-bold rounded-full transition-all text-center cursor-pointer ${
+                  isActive
+                    ? "bg-[#1A1A1A] text-white shadow-2xs"
+                    : "text-[#78716A] hover:text-[#1A1A1A]"
+                }`}
+              >
+                {ch.tabLabel}
+              </button>
+            )
+          })}
         </div>
 
         {/* Active Chapter Card */}
         <div
-          className={`rounded-2xl p-4 bg-gradient-to-br ${currentCh.bgGradient} border ${currentCh.borderColor} shadow-2xs space-y-3`}
+          className={`rounded-2xl p-4 bg-gradient-to-br ${currentCh.bgGradient} border ${currentCh.borderColor} shadow-2xs space-y-2.5`}
         >
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
@@ -160,7 +178,7 @@ export default function PatientStoryModeModal({
             &ldquo;{currentCh.memoryFact}&rdquo;
           </p>
 
-          <div className="pt-2 border-t border-black/[0.06] text-[10px] text-[#78716A] flex items-center gap-1">
+          <div className="pt-2 border-t border-black/[0.06] text-[10px] text-[#78716A] flex items-center gap-1.5">
             <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
             <span>Target: {currentCh.cognitiveTarget}</span>
           </div>
@@ -170,10 +188,10 @@ export default function PatientStoryModeModal({
         <div className="rounded-2xl bg-white border border-black/[0.06] p-4 shadow-2xs space-y-3">
           <div className="flex items-center justify-between">
             <span className="text-[10px] font-bold uppercase tracking-wider text-[#78716A] flex items-center gap-1">
-              <Volume2 className="w-3 h-3 text-amber-600" />
+              <Volume2 className="w-3.5 h-3.5 text-amber-600" />
               <span>Voice Screening Question</span>
             </span>
-            <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-1.5 py-0.5 rounded-full border border-amber-200">
+            <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
               Zero-Literacy Audio
             </span>
           </div>
@@ -207,15 +225,15 @@ export default function PatientStoryModeModal({
             <button
               type="button"
               onClick={toggleAudio}
-              className="px-3.5 py-1.5 rounded-full bg-[#1A1A1A] text-white text-[11px] font-bold flex items-center gap-1.5 shadow-sm hover:bg-black active:scale-95 transition-all cursor-pointer"
+              className="px-4 py-1.5 rounded-full bg-[#1A1A1A] text-white text-[11px] font-bold flex items-center gap-1.5 shadow-sm hover:bg-black active:scale-95 transition-all cursor-pointer"
             >
               {isPlayingAudio ? (
                 <>
-                  <Pause className="w-3 h-3 fill-white" /> Pause
+                  <Pause className="w-3.5 h-3.5 fill-white" /> Pause
                 </>
               ) : (
                 <>
-                  <Play className="w-3 h-3 fill-white" /> Listen
+                  <Play className="w-3.5 h-3.5 fill-white" /> Listen
                 </>
               )}
             </button>
@@ -223,7 +241,7 @@ export default function PatientStoryModeModal({
         </div>
 
         {/* Footer Note */}
-        <p className="text-[10px] text-center text-[#78716A] leading-relaxed">
+        <p className="text-[10px] text-center text-[#78716A] leading-relaxed pb-2">
           Autobiographical questions prompt spontaneous speech, allowing
           PennyLane VQC to screen phonation cadence without inducing test
           anxiety.
