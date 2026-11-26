@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react"
 import {
   AlertTriangle,
+  BookOpen,
   Camera,
   Check,
   CheckCircle2,
@@ -12,6 +13,7 @@ import {
   Edit2,
   FileText,
   Globe,
+  Heart,
   HelpCircle,
   LogOut,
   Mic,
@@ -20,6 +22,7 @@ import {
   Plus,
   QrCode,
   ShieldCheck,
+  Sparkles,
   Stethoscope,
   User,
   Users,
@@ -27,6 +30,10 @@ import {
   X,
 } from "lucide-react"
 import { QRCodeSVG } from "qrcode.react"
+
+import TiltCard from "../../motion/TiltCard"
+import MemoryCapsuleModel from "../../scene3d/MemoryCapsuleModel"
+import PatientStoryModeModal from "./PatientStoryModeModal"
 
 import {
   createMemberId,
@@ -99,6 +106,7 @@ export default function AloisProfile({
   const [showEmergencyModal, setShowEmergencyModal] = useState(false)
   const [showHouseholdModal, setShowHouseholdModal] = useState(false)
   const [showHelpModal, setShowHelpModal] = useState(false)
+  const [showStoryModal, setShowStoryModal] = useState(false)
 
   // Toast feedback
   const [toastMessage, setToastMessage] = useState<string | null>(null)
@@ -518,10 +526,16 @@ export default function AloisProfile({
   )}`
 
   return (
-    <div className="flex-1 overflow-y-auto bg-[#F4F4F4] text-[#161616] select-none relative pb-6">
+    <div
+      style={{
+        WebkitOverflowScrolling: "touch",
+        overscrollBehaviorY: "contain",
+      }}
+      className="flex-1 overflow-y-auto bg-[#F7F5F0] text-[#1A1A1A] select-none relative pb-8"
+    >
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-slate-900 text-white px-4 py-2.5 rounded-2xl shadow-xl text-[12px] font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-top-3 duration-200">
+        <div className="fixed top-4 left-1/2 -translate-x-1/2 z-50 bg-[#1A1A1A] text-white px-4 py-2.5 rounded-full shadow-2xl text-[12px] font-semibold flex items-center gap-2 animate-in fade-in slide-in-from-top-3 duration-200 border border-white/10">
           <CheckCircle2 className="w-4 h-4 text-emerald-400" />
           <span>{toastMessage}</span>
         </div>
@@ -536,44 +550,46 @@ export default function AloisProfile({
         className="hidden"
       />
 
-      {/* ─── Nav Bar ─────────────────────────────────────────────────── */}
-      <header className="h-[72px] px-4 flex items-center justify-between bg-[#F4F4F4] border-b border-[#E0E0E0] sticky top-0 z-20">
-        <div className="flex items-center gap-3">
+      {/* ─── 1. Nav Bar (Lisso Editorial Style) ─────────────────────── */}
+      <header className="h-[76px] px-4 @[520px]:px-8 flex items-center justify-between bg-[#F7F5F0]/95 border-b border-black/[0.05] sticky top-0 z-20">
+        <div className="w-full max-w-none @[520px]:max-w-3xl @[900px]:max-w-5xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={onBack}
+              aria-label="Back"
+              className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <h1
+              style={{ fontFamily }}
+              className="text-[20px] font-bold text-[#1A1A1A] tracking-tight leading-tight"
+            >
+              Patient Profile
+            </h1>
+          </div>
+
           <button
             type="button"
-            onClick={onBack}
-            aria-label="Back"
-            className="w-9 h-9 rounded-full bg-white border border-[#E0E0E0] text-[#525252] flex items-center justify-center hover:text-[#161616] active:scale-95 transition-all shadow-xs"
+            onClick={() => setShowPersonalDataModal(true)}
+            aria-label="Edit Profile"
+            title="Edit Profile Data"
+            className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
           >
-            <ChevronLeft className="w-5 h-5" />
+            <Edit2 className="w-4 h-4 text-[#1A1A1A]" />
           </button>
-          <h1
-            style={{ fontFamily }}
-            className="text-[20px] font-bold text-[#161616] tracking-tight"
-          >
-            Profile
-          </h1>
         </div>
-
-        <button
-          type="button"
-          onClick={() => setShowPersonalDataModal(true)}
-          aria-label="Edit Profile"
-          title="Edit Profile Data"
-          className="w-9 h-9 rounded-full bg-white border border-[#E0E0E0] text-[#525252] flex items-center justify-center hover:text-[#161616] hover:bg-slate-50 active:scale-95 transition-all shadow-xs"
-        >
-          <Edit2 className="w-4 h-4 text-[#0F62FE]" />
-        </button>
       </header>
 
-      <div className="px-4 pt-3 space-y-4 max-w-[375px] mx-auto">
-        {/* ─── Avatar & Header with Upload ────────────────────────────── */}
+      <div className="px-4 @[520px]:px-8 @[900px]:px-12 pt-3 space-y-5 w-full max-w-none @[520px]:max-w-3xl @[900px]:max-w-5xl mx-auto">
+        {/* ─── 2. Avatar & Patient Bio with Upload ────────────────────────── */}
         <div className="flex flex-col items-center text-center pt-1">
           <div
             className="relative group cursor-pointer"
             onClick={() => fileInputRef.current?.click()}
           >
-            <div className="w-[110px] h-[110px] rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-sky-500 text-white font-bold text-3xl flex items-center justify-center shadow-lg shadow-blue-500/20 border-4 border-white overflow-hidden">
+            <div className="w-[104px] h-[104px] rounded-full bg-gradient-to-tr from-[#F5CE57] via-[#FAD978] to-[#E5BE45] text-[#1A1A1A] font-bold text-3xl flex items-center justify-center shadow-lg shadow-amber-500/15 border-4 border-white overflow-hidden ring-4 ring-black/[0.03]">
               {avatarPhoto ? (
                 <img
                   src={avatarPhoto}
@@ -592,31 +608,82 @@ export default function AloisProfile({
               }}
               aria-label="Change photo"
               title="Upload new profile picture"
-              className="absolute -bottom-1 -right-1 w-9 h-9 rounded-full bg-[#0F62FE] text-white flex items-center justify-center border-2 border-white shadow-md hover:bg-[#0353e9] active:scale-90 transition-all"
+              className="absolute -bottom-1 -right-1 w-8 h-8 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center border-2 border-white shadow-md hover:bg-black active:scale-90 transition-all cursor-pointer"
             >
-              <Camera className="w-4 h-4" />
+              <Camera className="w-3.5 h-3.5" />
             </button>
           </div>
 
           <h2
             style={{ fontFamily }}
-            className="text-[20px] font-bold text-[#161616] mt-3 tracking-tight flex items-center gap-1.5 justify-center"
+            className="text-[20px] font-bold text-[#1A1A1A] mt-2.5 tracking-tight flex items-center gap-1.5 justify-center"
           >
             <span>{currentName || "Jerrold Harrington"}</span>
           </h2>
-          <p className="text-[12px] text-[#525252] mt-0.5">
-            {isAssisted ? "Caregiver Assisted" : "Patient"} • {currentStage}
-          </p>
+          <div className="flex items-center gap-1.5 mt-0.5 justify-center">
+            <span className="text-[11px] font-semibold text-[#78716A] bg-black/[0.04] px-2.5 py-0.5 rounded-full border border-black/[0.03]">
+              {isAssisted ? "Caregiver Assisted" : "Patient"}
+            </span>
+            <span className="text-[11px] font-medium text-[#78716A]">
+              • {currentAge} yrs • {currentCity}
+            </span>
+          </div>
         </div>
 
-        {/* ─── ABDM Ayushman Bharat Health Account (ABHA) Interactive Card ─── */}
+        {/* ─── 3. Interactive 3D Memory Capsule (Reminiscence Therapy Core) ─── */}
+        <MemoryCapsuleModel factsCount={10} patientName={currentName} />
+
+        {/* ─── 4. Autobiographical Memory Story Mode Feature Card ─── */}
         <div
-          onClick={() => setShowQrModal(true)}
-          className="rounded-2xl bg-white border border-[#E0E0E0] p-4 shadow-2xs cursor-pointer hover:border-[#0F62FE]/40 hover:shadow-md transition-all active:scale-[0.99] group"
+          onClick={() => setShowStoryModal(true)}
+          className="rounded-[28px] bg-gradient-to-br from-white via-white to-amber-500/[0.06] border border-black/[0.06] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_32px_rgba(0,0,0,0.07)] hover:border-black/15 transition-all cursor-pointer group relative overflow-hidden"
         >
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F62FE] group-hover:underline flex items-center gap-1">
-              <ShieldCheck className="w-3.5 h-3.5" />
+            <div className="flex items-center gap-2">
+              <div className="w-8 h-8 rounded-full bg-[#F5CE57] text-[#1A1A1A] flex items-center justify-center font-bold shadow-2xs">
+                <BookOpen className="w-4 h-4" />
+              </div>
+              <div>
+                <span className="text-[13px] font-bold text-[#1A1A1A] block leading-tight">
+                  Autobiographical Story Mode
+                </span>
+                <span className="text-[10px] text-[#78716A]">
+                  Reminiscence & Lived Memories
+                </span>
+              </div>
+            </div>
+
+            <span className="text-[9px] font-bold uppercase tracking-wider bg-amber-50 text-amber-700 border border-amber-200 px-2 py-0.5 rounded-full">
+              Story Mode
+            </span>
+          </div>
+
+          <p className="text-[11px] text-[#78716A] leading-relaxed line-clamp-2 my-2">
+            Interactive voice prompts based on {currentName}&apos;s verified
+            childhood memories, sitar raga, and family golden jubilee.
+          </p>
+
+          <div className="flex items-center justify-between pt-2 border-t border-black/[0.05]">
+            <span className="text-[11px] font-bold text-[#1A1A1A] flex items-center gap-1 group-hover:text-amber-600 transition-colors">
+              <Play className="w-3.5 h-3.5 fill-amber-500 text-amber-500" />{" "}
+              Listen to Screening Prompts
+            </span>
+            <div className="w-7 h-7 rounded-full bg-black/[0.04] text-[#1A1A1A] flex items-center justify-center group-hover:bg-[#1A1A1A] group-hover:text-white transition-all">
+              <ChevronRight className="w-4 h-4" />
+            </div>
+          </div>
+        </div>
+
+        {/* ─── 5. 3D Holographic Ayushman Bharat (ABHA) Health Card ─── */}
+        <TiltCard
+          maxTilt={4}
+          scale={1.015}
+          onClick={() => setShowQrModal(true)}
+          className="rounded-[28px] bg-gradient-to-br from-white via-blue-50/20 to-indigo-50/30 border border-black/[0.06] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.03)] cursor-pointer hover:border-[#0F62FE]/30 transition-all active:scale-[0.99] group text-left"
+        >
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-[#0F62FE] flex items-center gap-1">
+              <ShieldCheck className="w-3.5 h-3.5 text-[#0F62FE]" />
               <span>Ayushman Bharat Health Account</span>
             </span>
             <span className="px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 text-[10px] font-bold border border-emerald-200">
@@ -624,119 +691,119 @@ export default function AloisProfile({
             </span>
           </div>
 
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between gap-3">
             <div>
-              <div className="text-[15px] font-bold text-[#161616] tracking-wide font-mono">
+              <div className="text-[16px] font-bold text-[#1A1A1A] tracking-wide font-mono">
                 {abhaNumber}
               </div>
-              <div className="text-[11px] text-[#6F6F6F] mt-0.5">
+              <div className="text-[11px] text-[#78716A] mt-0.5">
                 ABHA ID:{" "}
-                <span className="font-semibold text-slate-800">
+                <span className="font-semibold text-[#1A1A1A]">
                   {abhaIdFormatted}
                 </span>
               </div>
-              <div className="text-[10px] text-blue-600 font-semibold mt-1 flex items-center gap-1">
+              <div className="text-[10px] text-blue-600 font-bold mt-1.5 flex items-center gap-1 group-hover:underline">
                 <span>Tap to view QR & Share</span>
-                <ChevronRight className="w-3 h-3" />
+                <ChevronRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
               </div>
             </div>
-            <div className="p-2.5 rounded-xl bg-blue-50/70 border border-blue-200 text-[#0F62FE] group-hover:bg-[#0F62FE] group-hover:text-white transition-all shadow-2xs">
+            <div className="p-2.5 rounded-2xl bg-blue-50 border border-blue-200 text-[#0F62FE] group-hover:bg-[#0F62FE] group-hover:text-white transition-all shadow-2xs shrink-0">
               <QrCode className="w-6 h-6" />
             </div>
           </div>
-        </div>
+        </TiltCard>
 
-        {/* ─── Menu Rows ──────────────────────────────────────────────── */}
-        <div className="rounded-2xl bg-white border border-[#E0E0E0] overflow-hidden shadow-2xs divide-y divide-slate-100">
+        {/* ─── 6. Lisso Editorial Menu List ──────────────────────────── */}
+        <div className="rounded-[28px] bg-white border border-black/[0.05] overflow-hidden shadow-[0_8px_24px_rgba(0,0,0,0.03)] divide-y divide-black/[0.04]">
           {/* 1. Personal Data */}
           <button
             type="button"
             onClick={() => setShowPersonalDataModal(true)}
-            className="w-full p-3.5 flex items-center justify-between hover:bg-slate-50 text-left transition-colors active:bg-slate-100"
+            className="w-full p-3.5 flex items-center justify-between hover:bg-black/[0.02] text-left transition-colors cursor-pointer group"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 shadow-2xs">
                 <User className="w-4 h-4" />
               </div>
               <div>
                 <span
                   style={{ fontFamily }}
-                  className="text-[13px] font-medium text-[#161616] block"
+                  className="text-[13px] font-bold text-[#1A1A1A] block group-hover:text-blue-600 transition-colors"
                 >
-                  Personal Data
+                  Personal Data & Demographics
                 </span>
-                <span className="text-[10px] text-[#6F6F6F]">
+                <span className="text-[10px] text-[#78716A]">
                   {currentAge} yrs • {currentGender} • {currentCity}
                 </span>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#6F6F6F]" />
+            <ChevronRight className="w-4 h-4 text-[#78716A] group-hover:translate-x-0.5 transition-transform" />
           </button>
 
           {/* 2. Medical Record / Screening History */}
           <button
             type="button"
             onClick={onOpenHistory}
-            className="w-full p-3.5 flex items-center justify-between hover:bg-slate-50 text-left transition-colors active:bg-slate-100"
+            className="w-full p-3.5 flex items-center justify-between hover:bg-black/[0.02] text-left transition-colors cursor-pointer group"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-2xs">
                 <FileText className="w-4 h-4" />
               </div>
               <div>
                 <span
                   style={{ fontFamily }}
-                  className="text-[13px] font-medium text-[#161616] block"
+                  className="text-[13px] font-bold text-[#1A1A1A] block group-hover:text-emerald-600 transition-colors"
                 >
                   Medical Record & Reports
                 </span>
-                <span className="text-[10px] text-[#6F6F6F]">
+                <span className="text-[10px] text-[#78716A]">
                   Past Voice Screening & EHR
                 </span>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#6F6F6F]" />
+            <ChevronRight className="w-4 h-4 text-[#78716A] group-hover:translate-x-0.5 transition-transform" />
           </button>
 
           {/* 3. Emergency Contacts */}
           <button
             type="button"
             onClick={() => setShowEmergencyModal(true)}
-            className="w-full p-3.5 flex items-center justify-between hover:bg-slate-50 text-left transition-colors active:bg-slate-100"
+            className="w-full p-3.5 flex items-center justify-between hover:bg-black/[0.02] text-left transition-colors cursor-pointer group"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-rose-50 text-rose-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-rose-50 text-rose-600 flex items-center justify-center border border-rose-100 shadow-2xs">
                 <Phone className="w-4 h-4" />
               </div>
               <div>
                 <span
                   style={{ fontFamily }}
-                  className="text-[13px] font-medium text-[#161616] block"
+                  className="text-[13px] font-bold text-[#1A1A1A] block group-hover:text-rose-600 transition-colors"
                 >
-                  Emergency Contacts
+                  Emergency Contacts & WhatsApp
                 </span>
-                <span className="text-[10px] text-[#6F6F6F]">
+                <span className="text-[10px] text-[#78716A]">
                   Caregiver: {currentCaregiverName} ({currentCaregiverPhone})
                 </span>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#6F6F6F]" />
+            <ChevronRight className="w-4 h-4 text-[#78716A] group-hover:translate-x-0.5 transition-transform" />
           </button>
 
           {/* 4. Language Selector */}
           <button
             type="button"
             onClick={onOpenLanguageModal}
-            className="w-full p-3.5 flex items-center justify-between hover:bg-slate-50 text-left transition-colors active:bg-slate-100"
+            className="w-full p-3.5 flex items-center justify-between hover:bg-black/[0.02] text-left transition-colors cursor-pointer group"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100 shadow-2xs">
                 <Globe className="w-4 h-4" />
               </div>
               <div>
                 <span
                   style={{ fontFamily }}
-                  className="text-[13px] font-medium text-[#161616] block"
+                  className="text-[13px] font-bold text-[#1A1A1A] block group-hover:text-indigo-600 transition-colors"
                 >
                   Language (Vernacular / ASHA)
                 </span>
@@ -745,32 +812,32 @@ export default function AloisProfile({
                 </span>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#6F6F6F]" />
+            <ChevronRight className="w-4 h-4 text-[#78716A] group-hover:translate-x-0.5 transition-transform" />
           </button>
 
           {/* 5. Switch Household Member */}
           <button
             type="button"
             onClick={() => setShowHouseholdModal(true)}
-            className="w-full p-3.5 flex items-center justify-between hover:bg-slate-50 text-left transition-colors active:bg-slate-100"
+            className="w-full p-3.5 flex items-center justify-between hover:bg-black/[0.02] text-left transition-colors cursor-pointer group"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100 shadow-2xs">
                 <Users className="w-4 h-4" />
               </div>
               <div>
                 <span
                   style={{ fontFamily }}
-                  className="text-[13px] font-medium text-[#161616] block"
+                  className="text-[13px] font-bold text-[#1A1A1A] block group-hover:text-purple-600 transition-colors"
                 >
                   Switch Household Profile
                 </span>
-                <span className="text-[10px] text-[#6F6F6F]">
+                <span className="text-[10px] text-[#78716A]">
                   {householdMembers.length} member(s) linked
                 </span>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#6F6F6F]" />
+            <ChevronRight className="w-4 h-4 text-[#78716A] group-hover:translate-x-0.5 transition-transform" />
           </button>
 
           {/* 6. Doctor Clinical Hub (Desktop) */}
@@ -778,25 +845,25 @@ export default function AloisProfile({
             <button
               type="button"
               onClick={onOpenDoctorDash}
-              className="w-full p-3.5 flex items-center justify-between hover:bg-blue-50/40 text-left transition-colors active:bg-blue-50"
+              className="w-full p-3.5 flex items-center justify-between hover:bg-blue-50/40 text-left transition-colors cursor-pointer group"
             >
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center shadow-xs">
+                <div className="w-8 h-8 rounded-full bg-[#1A1A1A] text-white flex items-center justify-center shadow-xs">
                   <Stethoscope className="w-4 h-4" />
                 </div>
                 <div>
                   <span
                     style={{ fontFamily }}
-                    className="text-[13px] font-medium text-blue-900 block"
+                    className="text-[13px] font-bold text-[#1A1A1A] block group-hover:text-blue-600 transition-colors"
                   >
                     Doctor View (Desktop)
                   </span>
-                  <span className="text-[10px] text-blue-600 font-medium">
+                  <span className="text-[10px] text-[#78716A]">
                     22 Biomarker Radar & EHR Export
                   </span>
                 </div>
               </div>
-              <ChevronRight className="w-4 h-4 text-blue-600" />
+              <ChevronRight className="w-4 h-4 text-[#78716A] group-hover:translate-x-0.5 transition-transform" />
             </button>
           )}
 
@@ -804,36 +871,38 @@ export default function AloisProfile({
           <button
             type="button"
             onClick={() => setShowHelpModal(true)}
-            className="w-full p-3.5 flex items-center justify-between hover:bg-slate-50 text-left transition-colors active:bg-slate-100"
+            className="w-full p-3.5 flex items-center justify-between hover:bg-black/[0.02] text-left transition-colors cursor-pointer group"
           >
             <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-600 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center border border-slate-200 shadow-2xs">
                 <HelpCircle className="w-4 h-4" />
               </div>
               <div>
                 <span
                   style={{ fontFamily }}
-                  className="text-[13px] font-medium text-[#161616] block"
+                  className="text-[13px] font-bold text-[#1A1A1A] block group-hover:text-black transition-colors"
                 >
                   Help & FAQs
                 </span>
-                <span className="text-[10px] text-[#6F6F6F]">
-                  Audio test & usage guide
+                <span className="text-[10px] text-[#78716A]">
+                  Audio mic test & usage guide
                 </span>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#6F6F6F]" />
+            <ChevronRight className="w-4 h-4 text-[#78716A] group-hover:translate-x-0.5 transition-transform" />
           </button>
         </div>
 
-        {/* ─── Logout / Sign Out ───────────────────────────────────────── */}
+        {/* ─── 7. Logout / Sign Out ───────────────────────────────────── */}
         <button
           type="button"
           onClick={onLogout}
-          className="w-full p-3.5 rounded-xl bg-rose-50 border border-rose-200 text-rose-700 hover:bg-rose-100/70 flex items-center justify-between text-left transition-colors mt-2 active:scale-[0.99] shadow-2xs"
+          className="w-full p-4 rounded-[24px] bg-rose-50/80 border border-rose-200/80 text-rose-700 hover:bg-rose-100 flex items-center justify-between text-left transition-all active:scale-[0.99] shadow-2xs cursor-pointer group"
         >
           <div className="flex items-center gap-3">
-            <LogOut className="w-4 h-4 text-rose-600" />
+            <div className="w-8 h-8 rounded-full bg-rose-100 text-rose-600 flex items-center justify-center">
+              <LogOut className="w-4 h-4 text-rose-600" />
+            </div>
             <span
               style={{ fontFamily }}
               className="text-[13px] font-bold text-rose-700"
@@ -841,14 +910,23 @@ export default function AloisProfile({
               Sign Out
             </span>
           </div>
+          <ChevronRight className="w-4 h-4 text-rose-400 group-hover:translate-x-0.5 transition-transform" />
         </button>
       </div>
+
+      {/* ─── Autobiographical Story Mode Modal ─── */}
+      <PatientStoryModeModal
+        isOpen={showStoryModal}
+        onClose={() => setShowStoryModal(false)}
+        patientName={currentName}
+        fontFamily={fontFamily}
+      />
 
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {/* ─── MODAL 1: ABHA Digital Health QR Modal ─────────────────────── */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {showQrModal && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 pt-14 pb-6 animate-in fade-in duration-200">
           <div className="w-full max-w-[340px] bg-white rounded-3xl p-5 shadow-2xl border border-blue-100 text-center space-y-3.5">
             <div className="flex items-center justify-between border-b pb-2.5">
               <div className="flex items-center gap-2">
@@ -942,7 +1020,7 @@ export default function AloisProfile({
       {/* ─── MODAL 2: Personal Data Editor Modal ───────────────────────── */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {showPersonalDataModal && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 pt-14 pb-6 animate-in fade-in duration-200">
           <div className="w-full max-w-[345px] max-h-[700px] overflow-y-auto bg-white rounded-3xl p-5 shadow-2xl border border-slate-200 space-y-3.5 text-left">
             <div className="flex items-center justify-between border-b pb-2">
               <div className="flex items-center gap-2">
@@ -1103,7 +1181,7 @@ export default function AloisProfile({
       {/* ─── MODAL 3: Emergency Contacts Action Sheet ───────────────────── */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {showEmergencyModal && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 pt-14 pb-6 animate-in fade-in duration-200">
           <div className="w-full max-w-[340px] bg-white rounded-3xl p-5 shadow-2xl border border-rose-100 text-left space-y-3.5">
             <div className="flex items-center justify-between border-b pb-2">
               <div className="flex items-center gap-2">
@@ -1233,7 +1311,7 @@ export default function AloisProfile({
       {/* ─── MODAL 4: Household Member Switcher Modal ──────────────────── */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {showHouseholdModal && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 pt-14 pb-6 animate-in fade-in duration-200">
           <div className="w-full max-w-[340px] max-h-[680px] overflow-y-auto bg-white rounded-3xl p-5 shadow-2xl border border-purple-100 text-left space-y-3.5">
             <div className="flex items-center justify-between border-b pb-2">
               <div className="flex items-center gap-2">
@@ -1383,7 +1461,7 @@ export default function AloisProfile({
       {/* ─── MODAL 5: Help & FAQs + Audio Mic Test Modal ────────────────── */}
       {/* ═══════════════════════════════════════════════════════════════════ */}
       {showHelpModal && (
-        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 animate-in fade-in duration-200">
+        <div className="absolute inset-0 bg-black/60 backdrop-blur-xs z-50 flex items-center justify-center p-4 pt-14 pb-6 animate-in fade-in duration-200">
           <div className="w-full max-w-[345px] max-h-[700px] overflow-y-auto bg-white rounded-3xl p-5 shadow-2xl border border-slate-200 text-left space-y-3.5">
             <div className="flex items-center justify-between border-b pb-2">
               <div className="flex items-center gap-2">

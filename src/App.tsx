@@ -170,8 +170,9 @@ import VoiceProcessingVisualizer from "./components/VoiceProcessingVisualizer"
 import NoiseCheckCard from "./components/NoiseCheckCard"
 
 import AloisContainer from "./components/alois/AloisContainer"
-
+import DoctorClinicalShowcase from "./components/doctor/DoctorClinicalShowcase"
 import CognitiveGamesHub from "./components/cognitiveGames/CognitiveGamesHub"
+import RealPhoneFrame from "./components/phone/RealPhoneFrame"
 
 import FamilySetupWizard from "./components/familySetup/FamilySetupWizard"
 
@@ -189,6 +190,8 @@ import type { FamilySetupRecord } from "./types/familySetup"
 const DemoStudioDrawer = React.lazy(() => import("./demo/DemoStudioDrawer"))
 
 const Homepage = React.lazy(() => import("./homepage/Homepage"))
+
+const MemoryOrbScene = React.lazy(() => import("./scene3d/MemoryOrbScene"))
 
 const isDemoModeEnabled = (): boolean => {
   if (typeof window === "undefined") return false
@@ -5882,7 +5885,7 @@ function NeuroSenseApp({
 
       case "home":
         return (
-          <div className="flex-1 flex flex-col h-full min-h-0 overflow-hidden bg-slate-50">
+          <div className="flex-1 flex flex-col h-full min-h-0 overflow-hidden bg-[#F7F5F0]">
             <StatusBar />
             <div className="flex-1 min-h-0 overflow-hidden">
               <AloisContainer
@@ -7663,305 +7666,22 @@ function NeuroSenseApp({
 
       case "doctorDash": {
         const stats = getDoctorStats()
-
-        const filteredPatients = DOCTOR_PATIENT_PROFILES.filter((p) => {
-          if (doctorFilterTab !== "all" && p.risk !== doctorFilterTab)
-            return false
-
-          if (!doctorSearchQuery.trim()) return true
-
-          const q = doctorSearchQuery.toLowerCase()
-
-          return (
-            p.name.toLowerCase().includes(q) ||
-            p.lang.toLowerCase().includes(q) ||
-            p.chiefComplaint.toLowerCase().includes(q) ||
-            p.clinicalImpression.toLowerCase().includes(q) ||
-            p.protocolMode.toLowerCase().includes(q) ||
-            String(p.age).includes(q)
-          )
-        })
-
         return (
-          <div className="h-full flex flex-col bg-[#021820] text-white min-h-0 overflow-hidden">
-            <StatusBar light />
-
-            {/* Clinical Hub Top Header */}
-            <div className="px-5 pt-3 pb-3 space-y-3 shrink-0">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#02738a] to-[#013a46] p-0.5 border border-[#38bdf8]/40 shadow-sm flex items-center justify-center">
-                    <Stethoscope className="w-5 h-5 text-[#38bdf8]" />
-                  </div>
-                  <div>
-                    <div className="flex items-center gap-1.5">
-                      <h1
-                        className="text-lg font-bold text-white tracking-tight"
-                        style={{ fontFamily: F.display }}
-                      >
-                        Doctor Clinical Hub
-                      </h1>
-                      <span className="px-1.5 py-0.5 rounded-full bg-[#02738a]/40 border border-[#02738a] text-[10px] font-semibold text-[#7dd3fc]">
-                        v2.4 Pro
-                      </span>
-                    </div>
-                    <p className="text-[11px] text-slate-400">
-                      Dr. Sunita Sharma, MD · NeuroSense Clinical Neurology &
-                      Seizure Monitoring
-                    </p>
-                  </div>
-                </div>
-                <button
-                  onClick={goBack}
-                  className="px-3 py-1.5 rounded-xl bg-[#042a35] border border-[#0d4f5e] text-xs font-semibold text-slate-200 hover:bg-[#073c4b] active:scale-95 transition-all flex items-center gap-1.5"
-                  title="Go back one level"
-                >
-                  <ArrowLeft className="w-3.5 h-3.5 text-[#38bdf8]" />
-                  <span>Back</span>
-                </button>
-              </div>
-
-              {/* Key Clinical Metric Stat Cards */}
-              <div className="grid grid-cols-4 gap-2">
-                <div className="p-2.5 rounded-xl bg-[#03232c] border border-[#094250] text-center">
-                  <div
-                    className="text-lg font-bold text-white"
-                    style={{ fontFamily: F.display }}
-                  >
-                    {stats.total}
-                  </div>
-                  <div className="text-[10px] text-slate-400 uppercase tracking-wider mt-0.5">
-                    Patients
-                  </div>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-[#03232c] border border-rose-500/30 text-center">
-                  <div
-                    className="text-lg font-bold text-rose-400"
-                    style={{ fontFamily: F.display }}
-                  >
-                    {stats.elevated}
-                  </div>
-                  <div className="text-[10px] text-rose-300/80 uppercase tracking-wider mt-0.5">
-                    Priority
-                  </div>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-[#03232c] border border-sky-500/30 text-center">
-                  <div
-                    className="text-lg font-bold text-sky-400"
-                    style={{ fontFamily: F.display }}
-                  >
-                    {stats.moderate}
-                  </div>
-                  <div className="text-[10px] text-sky-300/80 uppercase tracking-wider mt-0.5">
-                    Monitor
-                  </div>
-                </div>
-
-                <div className="p-2.5 rounded-xl bg-[#03232c] border border-emerald-500/30 text-center">
-                  <div
-                    className="text-lg font-bold text-emerald-400"
-                    style={{ fontFamily: F.display }}
-                  >
-                    {stats.low}
-                  </div>
-                  <div className="text-[10px] text-emerald-300/80 uppercase tracking-wider mt-0.5">
-                    Stable
-                  </div>
-                </div>
-              </div>
-
-              {/* Patient Search Input */}
-              <div className="relative">
-                <Search className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                <input
-                  type="text"
-                  placeholder="Search patient, language, or clinical case..."
-                  value={doctorSearchQuery}
-                  onChange={(e) => setDoctorSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-8 py-2 rounded-xl bg-[#042833] border border-[#0d4f5e] text-xs text-white placeholder-slate-400 focus:outline-none focus:border-[#38bdf8] transition-colors"
-                />
-                {doctorSearchQuery && (
-                  <button
-                    onClick={() => setDoctorSearchQuery("")}
-                    className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                )}
-              </div>
-
-              {/* Case Classification Filter Tabs */}
-              <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar text-xs">
-                <button
-                  onClick={() => setDoctorFilterTab("all")}
-                  className={`px-3 py-1 rounded-lg font-medium transition-all whitespace-nowrap ${
-                    doctorFilterTab === "all"
-                      ? "bg-[#02738a] text-white shadow-xs"
-                      : "bg-[#042a35] text-slate-300 hover:bg-[#073c4b]"
-                  }`}
-                >
-                  All ({DOCTOR_PATIENT_PROFILES.length})
-                </button>
-                <button
-                  onClick={() => setDoctorFilterTab("elevated")}
-                  className={`px-3 py-1 rounded-lg font-medium transition-all whitespace-nowrap flex items-center gap-1.5 ${
-                    doctorFilterTab === "elevated"
-                      ? "bg-rose-500/25 text-rose-300 border border-rose-500/50"
-                      : "bg-[#042a35] text-rose-300/80 hover:bg-[#073c4b]"
-                  }`}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-rose-400" />
-                  Priority / High ({stats.elevated})
-                </button>
-                <button
-                  onClick={() => setDoctorFilterTab("moderate")}
-                  className={`px-3 py-1 rounded-lg font-medium transition-all whitespace-nowrap flex items-center gap-1.5 ${
-                    doctorFilterTab === "moderate"
-                      ? "bg-sky-500/25 text-sky-300 border border-sky-500/50"
-                      : "bg-[#042a35] text-sky-300/80 hover:bg-[#073c4b]"
-                  }`}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-sky-400" />
-                  Monitoring ({stats.moderate})
-                </button>
-                <button
-                  onClick={() => setDoctorFilterTab("low")}
-                  className={`px-3 py-1 rounded-lg font-medium transition-all whitespace-nowrap flex items-center gap-1.5 ${
-                    doctorFilterTab === "low"
-                      ? "bg-emerald-500/25 text-emerald-300 border border-emerald-500/50"
-                      : "bg-[#042a35] text-emerald-300/80 hover:bg-[#073c4b]"
-                  }`}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
-                  Stable Control ({stats.low})
-                </button>
-              </div>
-            </div>
-
-            {/* Patient Registry List Container */}
-            <div className="flex-1 rounded-t-3xl bg-[#f3f9fb] text-slate-900 flex flex-col min-h-0 overflow-hidden shadow-inner">
-              <div className="px-5 pt-3.5 pb-2 flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <h2
-                    className="text-xs font-bold uppercase tracking-wider text-slate-600"
-                    style={{ fontFamily: F.display }}
-                  >
-                    Clinical Case Registry
-                  </h2>
-                  <span className="px-2 py-0.5 rounded-full bg-slate-200 text-slate-700 text-[10px] font-bold">
-                    {filteredPatients.length} of{" "}
-                    {DOCTOR_PATIENT_PROFILES.length} Cases
-                  </span>
-                </div>
-                <span className="text-[11px] text-slate-500 font-medium">
-                  Tap card for deep analysis
-                </span>
-              </div>
-
-              <div className="flex-1 overflow-y-auto min-h-0 px-5 pb-5 space-y-2.5">
-                {filteredPatients.length === 0 ? (
-                  <div className="py-12 text-center text-slate-500 space-y-2">
-                    <AlertCircle className="w-8 h-8 text-slate-400 mx-auto" />
-                    <p className="text-sm font-medium">
-                      No patient records match the selected filter.
-                    </p>
-                    <button
-                      onClick={() => {
-                        setDoctorFilterTab("all")
-
-                        setDoctorSearchQuery("")
-                      }}
-                      className="px-3 py-1.5 rounded-xl bg-[#02738a] text-white text-xs font-bold hover:bg-[#015364]"
-                    >
-                      Reset Filters
-                    </button>
-                  </div>
-                ) : (
-                  filteredPatients.map((p) => {
-                    const isElevated = p.risk === "elevated"
-
-                    const isModerate = p.risk === "moderate"
-
-                    const badgeStyle = isElevated
-                      ? "bg-rose-100 text-rose-800 border-rose-200"
-                      : isModerate
-                        ? "bg-sky-100 text-sky-800 border-sky-200"
-                        : "bg-emerald-100 text-emerald-800 border-emerald-200"
-
-                    const borderAccent = isElevated
-                      ? "border-l-4 border-l-rose-500"
-                      : isModerate
-                        ? "border-l-4 border-l-sky-500"
-                        : "border-l-4 border-l-emerald-500"
-
-                    return (
-                      <div
-                        key={p.id}
-                        onClick={() => {
-                          setSelectedPatient(p.name)
-
-                          navigate("doctorPatient")
-                        }}
-                        className={`p-3.5 rounded-2xl bg-white border border-[#d7eaef] ${borderAccent} hover:border-[#02738a] hover:shadow-md cursor-pointer transition-all active:scale-[0.99] space-y-2`}
-                      >
-                        {/* Top row: Name, age, gender & risk badge */}
-                        <div className="flex items-start justify-between gap-2">
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span
-                                className="font-bold text-sm text-slate-900"
-                                style={{ fontFamily: F.display }}
-                              >
-                                {p.name}, {p.age}y
-                              </span>
-                              <span className="text-[11px] font-medium text-slate-500">
-                                ({p.gender.charAt(0)})
-                              </span>
-                              <span className="px-1.5 py-0.2 rounded text-[10px] font-medium bg-slate-100 text-slate-600 border border-slate-200">
-                                {p.lang}
-                              </span>
-                            </div>
-                            <p className="text-[11px] text-slate-500 line-clamp-1 mt-0.5">
-                              {p.chiefComplaint}
-                            </p>
-                          </div>
-                          <div className="text-right shrink-0">
-                            <span
-                              className={`inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-bold border ${badgeStyle}`}
-                            >
-                              {p.riskScore}%{" "}
-                              {p.risk === "elevated"
-                                ? "HIGH"
-                                : p.risk === "moderate"
-                                  ? "MOD"
-                                  : "LOW"}
-                            </span>
-                          </div>
-                        </div>
-
-                        {/* Bottom metrics row */}
-                        <div className="pt-1.5 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-600">
-                          <div className="flex items-center gap-3">
-                            <span className="flex items-center gap-1 font-medium">
-                              <Activity className="w-3.5 h-3.5 text-[#02738a]" />
-                              {p.wpm} WPM
-                            </span>
-                            <span className="text-slate-300">·</span>
-                            <span className="text-slate-500">{p.date}</span>
-                          </div>
-                          <div className="flex items-center gap-1 text-[#02738a] font-bold hover:underline text-[11px]">
-                            <span>View Deep Analysis</span>
-                            <ChevronRight className="w-3.5 h-3.5" />
-                          </div>
-                        </div>
-                      </div>
-                    )
-                  })
-                )}
-              </div>
-            </div>
+          <div className="h-full flex flex-col bg-[#F7F5F0] min-h-0 overflow-hidden">
+            <StatusBar />
+            <DoctorClinicalShowcase
+              stats={stats}
+              selectedFilter={doctorFilterTab}
+              onSelectFilter={setDoctorFilterTab}
+              searchQuery={doctorSearchQuery}
+              onSearchChange={setDoctorSearchQuery}
+              onSelectPatient={(name) => {
+                setSelectedPatient(name)
+                navigate("doctorPatient")
+              }}
+              onBack={goBack}
+              fontFamily={F.display}
+            />
             <HomeIndicator />
           </div>
         )
@@ -10382,9 +10102,23 @@ function NeuroSenseApp({
 
   return (
     <div
-      className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-b from-[#031d25] via-[#02171e] to-[#010e13] p-0 sm:p-4 md:p-6"
+      className="min-h-screen flex flex-col items-center justify-start relative overflow-x-hidden bg-gradient-to-b from-[#1C0212] via-[#12000B] to-[#0A0006] selection:bg-[#F5CE57] selection:text-black"
       style={{ fontFamily: F.body }}
     >
+      {/* ─── 1. Deep Aubergine Backdrop with High-Performance Gradients (Zero Lag) ─── */}
+      <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
+        {/* Hardware-accelerated GPU Radial Gradients (No heavy CSS blurs) */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_85%_15%,rgba(245,206,87,0.14)_0%,transparent_50%),radial-gradient(circle_at_15%_45%,rgba(147,51,234,0.16)_0%,transparent_55%),radial-gradient(circle_at_75%_85%,rgba(225,29,72,0.12)_0%,transparent_50%)]" />
+
+        {/* Subtle Vignette Overlay */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_45%,rgba(0,0,0,0.65)_100%)] pointer-events-none" />
+      </div>
+
+      {/* Lazy-Loaded Procedural 3D Memory Orb Scene (Three.js) */}
+      <React.Suspense fallback={null}>
+        <MemoryOrbScene />
+      </React.Suspense>
+
       {/* Demo Studio Drawer (Gated by ?demo=1 or demoMode toggle) */}
       {demoMode && (
         <React.Suspense fallback={null}>
@@ -10400,267 +10134,267 @@ function NeuroSenseApp({
         </React.Suspense>
       )}
 
-      {/* Top / Floating Demo Navigation Bar on Desktop */}
-      <div className="nv-demo-nav fixed top-3 sm:top-4 left-3 right-3 sm:left-4 sm:right-4 z-40 flex flex-wrap items-center justify-between gap-2 max-w-5xl mx-auto px-4 py-2 rounded-2xl bg-[#03222a]/90 border border-[#0d4f5e] backdrop-blur-md shadow-2xl">
-        <div className="flex items-center gap-3">
-          <img
-            src="/logo.jpeg"
-            alt="NeuroSense Logo"
-            className="w-8 h-8 rounded-xl shadow-md object-contain border border-[#0e5666]"
-          />
-          <div>
-            <div
-              className="text-xs font-bold text-white tracking-wide"
-              style={{ fontFamily: F.display }}
-            >
-              NeuroSense
-            </div>
-            <div className="text-[10px] text-[#38bdf8] font-medium">
-              AI Seizure & Neurological Monitoring
+      {/* ─── Dedicated Sticky Floating Toolbar - Guaranteed ZERO Phone Overlap ─── */}
+      <header className="w-full flex justify-center sticky top-0 z-40 pt-[calc(env(safe-area-inset-top,0px)+12px)] pb-2 px-2 sm:px-4 shrink-0 pointer-events-none">
+        <div className="nv-demo-nav pointer-events-auto flex items-center justify-between gap-2 sm:gap-3 w-full max-w-[calc(100vw-1rem)] sm:max-w-6xl px-3 sm:px-4 py-2 rounded-2xl sm:rounded-full bg-white/95 border border-white/20 backdrop-blur-xl shadow-[0_12px_40px_rgba(0,0,0,0.45)] transition-all">
+          <div className="flex items-center gap-2.5 sm:gap-3 shrink-0">
+            <img
+              src="/logo.jpeg"
+              alt="NeuroSense Logo"
+              className="w-7 h-7 sm:w-8 sm:h-8 rounded-full shadow-xs object-contain border border-black/[0.08]"
+            />
+            <div className="hidden sm:block">
+              <div
+                className="text-xs font-bold text-[#1A1A1A] tracking-wide"
+                style={{ fontFamily: F.display }}
+              >
+                NeuroSense
+              </div>
+              <div className="text-[10px] text-[#78716A] font-medium truncate max-w-[150px] md:max-w-none">
+                AI Seizure & Neurological Monitoring
+              </div>
             </div>
           </div>
-        </div>
 
-        <div className="flex items-center gap-2">
-          {/* Home / About (Returns to the new public editorial Homepage) */}
-          {onOpenHomepage && (
-            <button
-              onClick={onOpenHomepage}
-              className="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-[#38bdf8] hover:text-white cursor-pointer"
-              title="Go to Homepage / About"
-            >
-              <HomeIcon className="w-3.5 h-3.5 text-[#38bdf8]" />
-              <span>Home / About</span>
-            </button>
-          )}
-
-          {/* Quick Demo Studio Toggle */}
-          <button
-            onClick={() => {
-              const next = !demoMode
-
-              setDemoMode(next)
-
-              const url = new URL(window.location.href)
-
-              if (next) {
-                url.searchParams.set("demo", "1")
-              } else {
-                url.searchParams.delete("demo")
-              }
-
-              window.history.replaceState({}, "", url.toString())
-            }}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer ${
-              demoMode
-                ? "bg-amber-500 text-slate-950 border border-amber-400 font-extrabold"
-                : "bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-slate-200 hover:text-white"
-            }`}
-            title="Toggle Demo Studio with 1-click Autofill"
-          >
-            <span>🎭</span>
-            <span>Demo Studio</span>
-            {demoMode && (
-              <span className="w-2 h-2 rounded-full bg-slate-950 animate-pulse" />
+          <div className="min-w-0 flex-1 flex items-center justify-end gap-1.5 sm:gap-2 overflow-x-auto no-scrollbar py-0.5">
+            {/* Home / About (Returns to the new public editorial Homepage) */}
+            {onOpenHomepage && (
+              <button
+                onClick={onOpenHomepage}
+                className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] cursor-pointer shrink-0"
+                title="Go to Homepage / About"
+              >
+                <HomeIcon className="w-3.5 h-3.5 text-[#544F49]" />
+                <span>Home / About</span>
+              </button>
             )}
-          </button>
-          {/* Return to the current login and registration flow. */}
-          <div className="relative">
-            <div className="flex items-center rounded-xl bg-[#042a35] border border-[#0d4f5e] hover:border-[#38bdf8]/60 shadow-md transition-all">
-              <button
-                onClick={onLogout}
-                title="Return to the login and registration flow"
-                className="px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 text-slate-200 hover:text-white active:scale-95 transition-all"
-              >
-                <RotateCcw className="w-3.5 h-3.5 text-[#38bdf8]" />
-                <span>Start from Beginning</span>
-              </button>
-              <button
-                onClick={() => setShowRestartMenu(!showRestartMenu)}
-                title="Choose start point"
-                className="px-1.5 py-1.5 border-l border-[#0d4f5e] text-slate-400 hover:text-white hover:bg-[#073c4b] rounded-r-xl transition-colors"
-              >
-                <ChevronDown className="w-3 h-3" />
-              </button>
-            </div>
 
-            {showRestartMenu && (
-              <>
-                <div
-                  className="fixed inset-0 z-40"
-                  onClick={() => setShowRestartMenu(false)}
-                />
-                <div className="absolute left-0 sm:right-0 sm:left-auto top-full mt-2 w-64 rounded-2xl bg-[#03222a] border border-[#0d4f5e] shadow-2xl p-1.5 z-50 animate-fade-in text-xs space-y-1">
-                  {onOpenHomepage && (
-                    <button
-                      onClick={() => {
-                        setShowRestartMenu(false)
-                        onOpenHomepage()
-                      }}
-                      className="w-full px-3 py-2 rounded-xl text-left hover:bg-[#073c4b] text-slate-200 hover:text-white transition-colors flex items-center gap-2.5 cursor-pointer"
-                    >
-                      <HomeIcon className="w-4 h-4 text-[#38bdf8] shrink-0" />
-                      <div>
-                        <div className="font-bold text-white">
-                          Homepage / About
+            {/* Quick Demo Studio Toggle */}
+            <button
+              onClick={() => {
+                const next = !demoMode
+
+                setDemoMode(next)
+
+                const url = new URL(window.location.href)
+
+                if (next) {
+                  url.searchParams.set("demo", "1")
+                } else {
+                  url.searchParams.delete("demo")
+                }
+
+                window.history.replaceState({}, "", url.toString())
+              }}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all cursor-pointer shrink-0 ${
+                demoMode
+                  ? "bg-[#F5CE57] text-[#1A1A1A] border border-[#E5BE45] font-extrabold shadow-sm"
+                  : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
+              }`}
+              title="Toggle Demo Studio with 1-click Autofill"
+            >
+              <span>🎭</span>
+              <span>Demo Studio</span>
+              {demoMode && (
+                <span className="w-2 h-2 rounded-full bg-[#1A1A1A] animate-pulse" />
+              )}
+            </button>
+
+            {/* Return to the current login and registration flow. */}
+            <div className="relative shrink-0">
+              <div className="flex items-center rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:border-black/20 shadow-2xs transition-all">
+                <button
+                  onClick={onLogout}
+                  title="Return to the login and registration flow"
+                  className="px-3 py-1.5 text-xs font-bold flex items-center gap-1.5 text-[#2C2925] hover:text-black active:scale-95 transition-all shrink-0"
+                >
+                  <RotateCcw className="w-3.5 h-3.5 text-[#544F49]" />
+                  <span>Start from Beginning</span>
+                </button>
+                <button
+                  onClick={() => setShowRestartMenu(!showRestartMenu)}
+                  title="Choose start point"
+                  className="px-1.5 py-1.5 border-l border-black/[0.08] text-[#78716A] hover:text-black hover:bg-[#EAE4D9] rounded-r-full transition-colors"
+                >
+                  <ChevronDown className="w-3 h-3" />
+                </button>
+              </div>
+
+              {showRestartMenu && (
+                <>
+                  <div
+                    className="fixed inset-0 z-40"
+                    onClick={() => setShowRestartMenu(false)}
+                  />
+                  <div className="absolute left-0 sm:right-0 sm:left-auto top-full mt-2 w-64 rounded-2xl bg-white border border-black/[0.08] shadow-2xl p-1.5 z-50 animate-fade-in text-xs space-y-1">
+                    {onOpenHomepage && (
+                      <button
+                        onClick={() => {
+                          setShowRestartMenu(false)
+
+                          onOpenHomepage()
+                        }}
+                        className="w-full px-3 py-2 rounded-xl text-left hover:bg-[#F5F2EB] text-[#2C2925] hover:text-black transition-colors flex items-center gap-2.5 cursor-pointer"
+                      >
+                        <HomeIcon className="w-4 h-4 text-[#1A1A1A] shrink-0" />
+                        <div>
+                          <div className="font-bold text-[#1A1A1A]">
+                            Homepage / About
+                          </div>
+                          <div className="text-[10px] text-[#78716A]">
+                            View the editorial homepage & product intro
+                          </div>
                         </div>
-                        <div className="text-[10px] text-slate-400">
-                          View the editorial homepage & product intro
+                      </button>
+                    )}
+                    <button
+                      onClick={onLogout}
+                      className="w-full px-3 py-2 rounded-xl text-left hover:bg-[#F5F2EB] text-[#2C2925] hover:text-black transition-colors flex items-center gap-2.5"
+                    >
+                      <Sparkles className="w-4 h-4 text-[#1A1A1A] shrink-0" />
+                      <div>
+                        <div className="font-bold text-[#1A1A1A]">
+                          Login / Registration
+                        </div>
+                        <div className="text-[10px] text-[#78716A]">
+                          Return to the current Alois sign-in flow
                         </div>
                       </div>
                     </button>
-                  )}
-                  <button
-                    onClick={onLogout}
-                    className="w-full px-3 py-2 rounded-xl text-left hover:bg-[#073c4b] text-slate-200 hover:text-white transition-colors flex items-center gap-2.5"
-                  >
-                    <Sparkles className="w-4 h-4 text-[#38bdf8] shrink-0" />
-                    <div>
-                      <div className="font-bold text-white">
-                        Login / Registration
-                      </div>
-                      <div className="text-[10px] text-slate-400">
-                        Return to the current Alois sign-in flow
-                      </div>
-                    </div>
-                  </button>
-                </div>
-              </>
-            )}
-          </div>
+                  </div>
+                </>
+              )}
+            </div>
 
-          {screen !== "home" && (
+            {screen !== "home" && (
+              <button
+                onClick={goBack}
+                className="px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] shrink-0"
+                title="Go back one level to the previous screen"
+              >
+                <ArrowLeft className="w-3.5 h-3.5 text-[#544F49]" />
+                <span>Back</span>
+              </button>
+            )}
+
             <button
-              onClick={goBack}
-              className="px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-slate-200 hover:text-white"
-              title="Go back one level to the previous screen"
+              onClick={() => navigate("home")}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all shrink-0 ${
+                screen !== "doctorDash" &&
+                screen !== "doctorPatient" &&
+                screen !== "cognitiveGamesHub"
+                  ? "bg-[#1A1A1A] text-white hover:bg-black shadow-sm"
+                  : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
+              }`}
             >
-              <ArrowLeft className="w-3.5 h-3.5 text-[#38bdf8]" />
-              <span>Back</span>
+              <User className="w-3.5 h-3.5" />
+              <span>Patient View</span>
             </button>
-          )}
 
-          <button
-            onClick={() => navigate("home")}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all ${
-              screen !== "doctorDash" &&
-              screen !== "doctorPatient" &&
-              screen !== "cognitiveGamesHub"
-                ? "bg-gradient-to-r from-[#02738a] to-[#015364] hover:from-[#02849f] hover:to-[#02738a] text-white"
-                : "bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-slate-200"
-            }`}
-          >
-            <User className="w-3.5 h-3.5" />
-            <span>Patient View</span>
-          </button>
+            <button
+              onClick={() => navigate("cognitiveGamesHub")}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all shrink-0 ${
+                screen === "cognitiveGamesHub"
+                  ? "bg-teal-800 text-white shadow-sm ring-2 ring-teal-600/30"
+                  : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
+              }`}
+            >
+              <Brain className="w-3.5 h-3.5 text-teal-600" />
+              <span>Cognitive Games</span>
+            </button>
 
-          <button
-            onClick={() => navigate("cognitiveGamesHub")}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all ${
-              screen === "cognitiveGamesHub"
-                ? "bg-gradient-to-r from-[#0F766E] to-[#0D9488] text-white ring-2 ring-teal-400/40"
-                : "bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-slate-200"
-            }`}
-          >
-            <Brain className="w-3.5 h-3.5 text-teal-300" />
-            <span>Cognitive Games</span>
-          </button>
+            <button
+              onClick={() => setIsOffline(!isOffline)}
+              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 transition-colors shrink-0 ${
+                isOffline
+                  ? "bg-amber-600 text-white"
+                  : "bg-[#F3EFE8] border border-black/[0.06] text-[#2C2925] hover:bg-[#EAE4D9]"
+              }`}
+            >
+              {isOffline ? (
+                <WifiOff className="w-3.5 h-3.5" />
+              ) : (
+                <span className="flex items-center gap-1.5">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  <Wifi className="w-3.5 h-3.5" />
+                </span>
+              )}
+              <span>{isOffline ? "Offline Mode" : "Online"}</span>
+            </button>
 
-          <button
-            onClick={() => setIsOffline(!isOffline)}
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 transition-colors ${
-              isOffline
-                ? "bg-amber-600 text-white"
-                : "bg-[#042a35] border border-[#0d4f5e] text-slate-200 hover:bg-[#073c4b]"
-            }`}
-          >
-            {isOffline ? (
-              <WifiOff className="w-3.5 h-3.5" />
-            ) : (
-              <Wifi className="w-3.5 h-3.5" />
-            )}
-            <span>{isOffline ? "Offline Mode" : "Online"}</span>
-          </button>
+            <button
+              onClick={() =>
+                requireCaregiver("open the clinician view", () =>
+                  navigate("doctorDash"),
+                )
+              }
+              className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all shrink-0 ${
+                screen === "doctorDash" || screen === "doctorPatient"
+                  ? "bg-[#1A1A1A] text-white hover:bg-black shadow-sm"
+                  : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
+              }`}
+            >
+              <Lock className="w-3.5 h-3.5 text-[#544F49]" />
+              <span>Doctor View</span>
+            </button>
 
-          <button
-            onClick={() =>
-              requireCaregiver("open the clinician view", () =>
-                navigate("doctorDash"),
-              )
-            }
-            className={`px-3 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all ${
-              screen === "doctorDash" || screen === "doctorPatient"
-                ? "bg-gradient-to-r from-[#02738a] to-[#015364] hover:from-[#02849f] hover:to-[#02738a] text-white"
-                : "bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-slate-200"
-            }`}
-          >
-            <Stethoscope className="w-3.5 h-3.5 text-[#38bdf8]" />
-            <span>Doctor View</span>
-          </button>
+            <button
+              onClick={onLogout}
+              className="px-3 py-1.5 rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:bg-rose-50 hover:border-rose-300 text-[#78716A] hover:text-rose-700 text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all shrink-0"
+              title="Sign out and return to Figma Login Screen"
+            >
+              <Lock className="w-3.5 h-3.5" />
+              <span>Sign Out</span>
+            </button>
 
-          <button
-            onClick={onLogout}
-            className="px-3 py-1.5 rounded-xl bg-[#042a35] border border-[#0d4f5e] hover:bg-rose-950/40 hover:border-rose-600/50 text-slate-300 hover:text-rose-200 text-xs font-bold flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
-            title="Sign out and return to Figma Login Screen"
-          >
-            <Lock className="w-3.5 h-3.5" />
-            <span>Sign Out</span>
-          </button>
-
-          <button
-            onClick={() => setFullScreenMode(!fullScreenMode)}
-            className="px-2.5 py-1.5 rounded-xl bg-[#042a35] border border-[#0d4f5e] hover:bg-[#073c4b] text-slate-300 text-xs font-bold hidden sm:flex items-center gap-1"
-          >
-            {fullScreenMode ? (
-              <Minimize2 className="w-3.5 h-3.5" />
-            ) : (
-              <Maximize2 className="w-3.5 h-3.5" />
-            )}
-          </button>
-        </div>
-      </div>
-
-      {/* Main Container: Native 100% on actual mobile vs polished mockup on desktop */}
-      <div
-        className={`nv-app-shell relative flex flex-col overflow-hidden bg-white shadow-2xl transition-all duration-300 ${
-          fullScreenMode
-            ? "w-full max-w-2xl h-[92vh] rounded-3xl border border-[#0d4f5e] mt-16 sm:mt-20"
-            : "w-full max-w-[390px] h-[844px] max-h-[calc(100vh-5.5rem)] rounded-none sm:rounded-[48px] border-0 sm:border-[8px] border-[#07252f] shadow-[0_25px_80px_rgba(0,0,0,0.85),0_0_50px_rgba(2,115,138,0.15)] ring-1 ring-[#0d4f5e]/30 mt-16 sm:mt-20"
-        }`}
-      >
-        {/* Dynamic Island on Mockup (Hidden on fullScreenMode and mobile viewports) */}
-        {!fullScreenMode && (
-          <div className="hidden sm:flex absolute top-2.5 left-1/2 -translate-x-1/2 z-50 w-28 h-7 rounded-full bg-[#02151c] border border-white/10 items-center justify-between px-3 pointer-events-none shadow-inner">
-            <div className="w-2.5 h-2.5 rounded-full bg-[#04232c]" />
-            <div className="w-2 h-2 rounded-full bg-[#02738a]/40" />
+            <button
+              onClick={() => setFullScreenMode(!fullScreenMode)}
+              className="px-2.5 py-1.5 rounded-full bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925] text-xs font-bold hidden sm:flex items-center gap-1 shrink-0"
+            >
+              {fullScreenMode ? (
+                <Minimize2 className="w-3.5 h-3.5" />
+              ) : (
+                <Maximize2 className="w-3.5 h-3.5" />
+              )}
+            </button>
           </div>
-        )}
-
-        {/* Render Active Screen */}
-        <div
-          lang={lang}
-          className="flex-1 flex flex-col h-full min-h-0 overflow-hidden bg-gradient-to-b from-[#fbfdfd] via-[#f3f9fb] to-[#eaf5f8]"
-        >
-          {renderScreen()}
         </div>
+      </header>
 
-        {/* Caregiver gate for destructive or outbound actions. Inside the phone
+      {/* ─── Main Content Flow: Phone starts below toolbar with zero overlap ─── */}
+      <main className="flex-1 flex flex-col items-center justify-start w-full relative z-10 px-0 sm:px-4 pt-1 sm:pt-2 pb-12">
+        {/* Realistic Flagship Phone Frame / Tablet Container */}
+        <RealPhoneFrame
+          isExpanded={fullScreenMode}
+          onToggleExpand={() => setFullScreenMode(!fullScreenMode)}
+          lang={lang}
+        >
+          {/* Render Active Screen */}
+          <div
+            lang={lang}
+            className="w-full flex-1 flex flex-col h-full min-h-0 overflow-hidden bg-gradient-to-b from-[#fbfdfd] via-[#f3f9fb] to-[#eaf5f8]"
+          >
+            {renderScreen()}
+          </div>
+
+          {/* Caregiver gate for destructive or outbound actions. Inside the phone
             frame so it overlays the device, not the desktop chrome. */}
-        {pendingGatedAction && (
-          <CaregiverGate
-            action={pendingGatedAction.label}
-            onUnlocked={() => {
-              const action = pendingGatedAction
+          {pendingGatedAction && (
+            <CaregiverGate
+              action={pendingGatedAction.label}
+              onUnlocked={() => {
+                const action = pendingGatedAction
 
-              setPendingGatedAction(null)
+                setPendingGatedAction(null)
 
-              action.run()
-            }}
-            onCancel={() => setPendingGatedAction(null)}
-            fontFamily={F.display}
-          />
-        )}
-      </div>
+                action.run()
+              }}
+              onCancel={() => setPendingGatedAction(null)}
+              fontFamily={F.display}
+            />
+          )}
+        </RealPhoneFrame>
+      </main>
 
       {/* APK & PWA Download Modal */}
       <ApkDownloadModal
@@ -11028,6 +10762,7 @@ export default function App() {
         fontFamily={F.display}
         onBackToHome={() => {
           setShowLanding(true)
+
           if (typeof window !== "undefined") {
             window.location.hash = "home"
           }
@@ -11059,6 +10794,7 @@ export default function App() {
       onLogout={handleLogout}
       onOpenHomepage={() => {
         setShowLanding(true)
+
         if (typeof window !== "undefined") {
           window.location.hash = "home"
         }

@@ -1,281 +1,237 @@
 import React, { useState } from "react"
-
 import {
   ChevronLeft,
   Bell,
   Settings,
   FileText,
   ChevronRight,
-  TrendingUp,
   Activity,
   Award,
   Sparkles,
+  TrendingUp,
 } from "lucide-react"
+
+import TiltCard from "../../motion/TiltCard"
+import NeuralStabilityModel from "../../scene3d/NeuralStabilityModel"
+import Stability3DGraph from "./Stability3DGraph"
 
 interface AloisProgressProps {
   onBack: () => void
-
   onViewReport: () => void
-
   onOpenSettings: () => void
-
   fontFamily?: string
 }
 
 /**
- * Alois Progress Screen — matching Figma node 512:19216 & app/(main)/progress.tsx.
- * Displays activity curve with Tuesday peak, 2x2 metrics grid, and Monthly Report ABHA export.
+ * Alois Progress & Stability Screen — Redesigned in the Lisso editorial design language.
+ * Featuring:
+ * - Interactive 3D Synaptic Stability Model (WebGL Three.js)
+ * - 3D Volumetric Extruded Graph with clinical day telemetry
+ * - 3D Tilt interactive metric cards with progress bars
+ * - Warm #F7F5F0 backdrop and clean typography
  */
-
 export default function AloisProgress({
   onBack,
-
   onViewReport,
-
   onOpenSettings,
-
   fontFamily = "'Outfit', sans-serif",
 }: AloisProgressProps) {
   const [activeSegment, setActiveSegment] =
     useState<"cognitive" | "overall" | "health">("overall")
 
-  // Segment-specific trend data, SVG curves, and clinical biomarker cards
-  const SEGMENT_CONFIG = {
-    cognitive: {
-      title: "Cognitive & Memory Trajectory",
-      subtitle: "Episodic Recall & Semantic Fluency",
-      trendBadge: "+6.2%",
-      badgeClass: "bg-indigo-50 text-indigo-700 border-indigo-200",
-      strokeColor: "#6366F1",
-      gradStart: "#6366F1",
-      gradientId: "chartGradCognitive",
-      points: [
-        { x: 10, y: 60, day: "M" },
-        { x: 55, y: 45, day: "T" },
-        { x: 105, y: 38, day: "W" },
-        { x: 155, y: 22, day: "T" },
-        { x: 205, y: 30, day: "F" },
-        { x: 255, y: 14, day: "S" }, // Peak Saturday 96%
-        { x: 305, y: 20, day: "S" },
-      ],
-      pathD:
-        "M 10 60 Q 35 45 55 45 T 105 38 T 155 22 T 205 30 T 255 14 T 305 20",
-      peak: { x: 255, y: 14, text: "96%" },
-      cards: [
-        {
-          label: "Episodic Recall",
-          value: "88%",
-          unit: "retention",
-          indicatorColor: "bg-[#6366F1]",
-          barColor: "bg-[#6366F1]",
-          barWidth: "88%",
-          isSparkle: false,
-        },
-        {
-          label: "Semantic Fluency",
-          value: "94%",
-          unit: "word finding",
-          indicatorColor: "bg-[#0EA5E9]",
-          barColor: "bg-[#0EA5E9]",
-          barWidth: "94%",
-          isSparkle: true,
-          sparkleColor: "text-[#6366F1]",
-        },
-        {
-          label: "Memory Sessions",
-          value: "4 of 4",
-          unit: "completed",
-          indicatorColor: "bg-[#10B981]",
-          barColor: "bg-[#10B981]",
-          barWidth: "100%",
-          isSparkle: false,
-        },
-        {
-          label: "Cadence Latency",
-          value: "1.2s",
-          unit: "normal delay",
-          indicatorColor: "bg-[#F59E0B]",
-          barColor: "bg-[#F59E0B]",
-          barWidth: "82%",
-          isSparkle: false,
-        },
-      ],
-    },
-    overall: {
-      title: "Weekly Stability Trend",
-      subtitle: "Acoustic Fluency & Cognitive Cadence",
-      trendBadge: "+4.8%",
-      badgeClass: "bg-emerald-50 text-emerald-700 border-emerald-200",
-      strokeColor: "#0F62FE",
-      gradStart: "#0F62FE",
-      gradientId: "chartGradOverall",
-      points: [
-        { x: 10, y: 55, day: "M" },
-        { x: 55, y: 15, day: "T" }, // Tuesday Peak 95%
-        { x: 105, y: 48, day: "W" },
-        { x: 155, y: 35, day: "T" },
-        { x: 205, y: 62, day: "F" },
-        { x: 255, y: 28, day: "S" },
-        { x: 305, y: 40, day: "S" },
-      ],
-      pathD:
-        "M 10 55 Q 35 15 55 15 T 105 48 T 155 35 T 205 62 T 255 28 T 305 40",
-      peak: { x: 55, y: 15, text: "95%" },
-      cards: [
-        {
-          label: "Daily Cares",
-          value: "78%",
-          unit: "completed",
-          indicatorColor: "bg-[#42BE65]",
-          barColor: "bg-[#42BE65]",
-          barWidth: "78%",
-          isSparkle: false,
-        },
-        {
-          label: "Voice Stability",
-          value: "92%",
-          unit: "Stable",
-          indicatorColor: "bg-[#0F62FE]",
-          barColor: "bg-[#0F62FE]",
-          barWidth: "92%",
-          isSparkle: true,
-          sparkleColor: "text-[#0F62FE]",
-        },
-        {
-          label: "Appointments",
-          value: "100%",
-          unit: "on schedule",
-          indicatorColor: "bg-[#F1C21B]",
-          barColor: "bg-[#F1C21B]",
-          barWidth: "100%",
-          isSparkle: false,
-        },
-        {
-          label: "Medication Adherence",
-          value: "85%",
-          unit: "adherence",
-          indicatorColor: "bg-[#FA4D56]",
-          barColor: "bg-[#FA4D56]",
-          barWidth: "85%",
-          isSparkle: false,
-        },
-      ],
-    },
-    health: {
-      title: "Neurological & Physical Vitals",
-      subtitle: "Motor Tremor, Sleep Rhythm & Hydration",
-      trendBadge: "+3.1%",
-      badgeClass: "bg-teal-50 text-teal-700 border-teal-200",
-      strokeColor: "#059669",
-      gradStart: "#059669",
-      gradientId: "chartGradHealth",
-      points: [
-        { x: 10, y: 50, day: "M" },
-        { x: 55, y: 42, day: "T" },
-        { x: 105, y: 18, day: "W" }, // Wednesday Peak 94%
-        { x: 155, y: 24, day: "T" },
-        { x: 205, y: 35, day: "F" },
-        { x: 255, y: 40, day: "S" },
-        { x: 305, y: 28, day: "S" },
-      ],
-      pathD:
-        "M 10 50 Q 35 42 55 42 T 105 18 T 155 24 T 205 35 T 255 40 T 305 28",
-      peak: { x: 105, y: 18, text: "94%" },
-      cards: [
-        {
-          label: "Sleep Rhythm",
-          value: "7.6 hrs",
-          unit: "optimal rest",
-          indicatorColor: "bg-[#8B5CF6]",
-          barColor: "bg-[#8B5CF6]",
-          barWidth: "90%",
-          isSparkle: false,
-        },
-        {
-          label: "Motor Stability",
-          value: "96%",
-          unit: "tremor-free",
-          indicatorColor: "bg-[#059669]",
-          barColor: "bg-[#059669]",
-          barWidth: "96%",
-          isSparkle: true,
-          sparkleColor: "text-[#059669]",
-        },
-        {
-          label: "Daily Hydration",
-          value: "2.1 L",
-          unit: "goal met",
-          indicatorColor: "bg-[#06B6D4]",
-          barColor: "bg-[#06B6D4]",
-          barWidth: "85%",
-          isSparkle: false,
-        },
-        {
-          label: "Medication Log",
-          value: "3 of 3",
-          unit: "doses logged",
-          indicatorColor: "bg-[#E11D48]",
-          barColor: "bg-[#E11D48]",
-          barWidth: "100%",
-          isSparkle: false,
-        },
-      ],
-    },
+  // Segment-specific 2x2 cards with clinical biomarkers
+  const SEGMENT_CARDS = {
+    cognitive: [
+      {
+        label: "Episodic Recall",
+        value: "88%",
+        unit: "retention",
+        indicatorColor: "bg-[#6366F1]",
+        barColor: "bg-[#6366F1]",
+        barWidth: "88%",
+        trend: "+5.1%",
+        isSparkle: false,
+      },
+      {
+        label: "Semantic Fluency",
+        value: "94%",
+        unit: "word finding",
+        indicatorColor: "bg-[#0EA5E9]",
+        barColor: "bg-[#0EA5E9]",
+        barWidth: "94%",
+        trend: "+4.3%",
+        isSparkle: true,
+        sparkleColor: "text-[#6366F1]",
+      },
+      {
+        label: "Memory Sessions",
+        value: "4 of 4",
+        unit: "completed",
+        indicatorColor: "bg-[#10B981]",
+        barColor: "bg-[#10B981]",
+        barWidth: "100%",
+        trend: "100%",
+        isSparkle: false,
+      },
+      {
+        label: "Cadence Latency",
+        value: "1.2s",
+        unit: "normal delay",
+        indicatorColor: "bg-[#F59E0B]",
+        barColor: "bg-[#F59E0B]",
+        barWidth: "82%",
+        trend: "Steady",
+        isSparkle: false,
+      },
+    ],
+    overall: [
+      {
+        label: "Daily Cares",
+        value: "78%",
+        unit: "completed",
+        indicatorColor: "bg-[#42BE65]",
+        barColor: "bg-[#42BE65]",
+        barWidth: "78%",
+        trend: "+3.2%",
+        isSparkle: false,
+      },
+      {
+        label: "Voice Stability",
+        value: "92%",
+        unit: "Stable",
+        indicatorColor: "bg-[#0F62FE]",
+        barColor: "bg-[#0F62FE]",
+        barWidth: "92%",
+        trend: "+4.8%",
+        isSparkle: true,
+        sparkleColor: "text-[#0F62FE]",
+      },
+      {
+        label: "Appointments",
+        value: "100%",
+        unit: "on schedule",
+        indicatorColor: "bg-[#F1C21B]",
+        barColor: "bg-[#F1C21B]",
+        barWidth: "100%",
+        trend: "On Track",
+        isSparkle: false,
+      },
+      {
+        label: "Medication Adherence",
+        value: "85%",
+        unit: "adherence",
+        indicatorColor: "bg-[#FA4D56]",
+        barColor: "bg-[#FA4D56]",
+        barWidth: "85%",
+        trend: "+2.0%",
+        isSparkle: false,
+      },
+    ],
+    health: [
+      {
+        label: "Sleep Rhythm",
+        value: "7.6 hrs",
+        unit: "optimal rest",
+        indicatorColor: "bg-[#8B5CF6]",
+        barColor: "bg-[#8B5CF6]",
+        barWidth: "90%",
+        trend: "+0.8h",
+        isSparkle: false,
+      },
+      {
+        label: "Motor Stability",
+        value: "96%",
+        unit: "tremor-free",
+        indicatorColor: "bg-[#059669]",
+        barColor: "bg-[#059669]",
+        barWidth: "96%",
+        trend: "+1.5%",
+        isSparkle: true,
+        sparkleColor: "text-[#059669]",
+      },
+      {
+        label: "Daily Hydration",
+        value: "2.1 L",
+        unit: "goal met",
+        indicatorColor: "bg-[#06B6D4]",
+        barColor: "bg-[#06B6D4]",
+        barWidth: "85%",
+        trend: "Optimal",
+        isSparkle: false,
+      },
+      {
+        label: "Medication Log",
+        value: "3 of 3",
+        unit: "doses logged",
+        indicatorColor: "bg-[#E11D48]",
+        barColor: "bg-[#E11D48]",
+        barWidth: "100%",
+        trend: "Done",
+        isSparkle: false,
+      },
+    ],
   }
 
-  const currentSegment = SEGMENT_CONFIG[activeSegment]
-  const areaD = `${currentSegment.pathD} L 305 85 L 10 85 Z`
+  const currentCards = SEGMENT_CARDS[activeSegment]
 
   return (
-    <div className="flex-1 overflow-y-auto bg-[#F4F4F4] text-[#161616] select-none">
-      {/* ─── Nav Bar ─────────────────────────────────────────────────── */}
-      <header className="h-[72px] px-4 flex items-center justify-between bg-[#F4F4F4] border-b border-[#E0E0E0] sticky top-0 z-20">
-        <div className="flex items-center gap-3">
-          <button
-            type="button"
-            onClick={onBack}
-            aria-label="Back"
-            className="w-9 h-9 rounded-full bg-white border border-[#E0E0E0] text-[#525252] flex items-center justify-center hover:text-[#161616] active:scale-95 transition-all"
-          >
-            <ChevronLeft className="w-5 h-5" />
-          </button>
-          <h1
-            style={{ fontFamily }}
-            className="text-[20px] font-bold text-[#161616] tracking-tight"
-          >
-            Progress & Stability
-          </h1>
-        </div>
+    <div
+      style={{
+        WebkitOverflowScrolling: "touch",
+        overscrollBehaviorY: "contain",
+      }}
+      className="flex-1 overflow-y-auto bg-[#F7F5F0] text-[#1A1A1A] select-none pb-8 relative"
+    >
+      {/* ─── 1. Header (Lisso Editorial Style) ─── */}
+      <header className="h-[76px] px-4 @[520px]:px-8 flex items-center justify-between bg-[#F7F5F0]/95 border-b border-black/[0.05] sticky top-0 z-20">
+        <div className="w-full max-w-none @[520px]:max-w-3xl @[900px]:max-w-5xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <button
+              type="button"
+              onClick={onBack}
+              aria-label="Back"
+              className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
+            >
+              <ChevronLeft className="w-5 h-5" />
+            </button>
+            <h1
+              style={{ fontFamily }}
+              className="text-[20px] font-bold text-[#1A1A1A] tracking-tight leading-tight"
+            >
+              Progress & Stability
+            </h1>
+          </div>
 
-        <div className="flex items-center gap-2">
-          <button
-            type="button"
-            aria-label="Notifications"
-            className="w-9 h-9 rounded-full bg-white border border-[#E0E0E0] text-[#525252] flex items-center justify-center hover:text-[#161616] active:scale-95 transition-all"
-          >
-            <Bell className="w-4 h-4" />
-          </button>
-          <button
-            type="button"
-            onClick={onOpenSettings}
-            aria-label="Settings"
-            className="w-9 h-9 rounded-full bg-white border border-[#E0E0E0] text-[#525252] flex items-center justify-center hover:text-[#161616] active:scale-95 transition-all"
-          >
-            <Settings className="w-4 h-4" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              aria-label="Notifications"
+              className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
+            >
+              <Bell className="w-4 h-4" />
+            </button>
+            <button
+              type="button"
+              onClick={onOpenSettings}
+              aria-label="Settings"
+              className="w-9 h-9 rounded-full bg-white border border-black/[0.06] text-[#544F49] flex items-center justify-center hover:text-[#1A1A1A] hover:border-black/20 shadow-2xs active:scale-95 transition-all cursor-pointer"
+            >
+              <Settings className="w-4 h-4" />
+            </button>
+          </div>
         </div>
       </header>
 
-      <div className="px-4 pt-4 space-y-4 max-w-[375px] mx-auto">
-        {/* ─── Segmented Control: Cognitive | Overall | Health ─────────── */}
-        <div className="flex rounded-xl bg-slate-200/70 p-1">
+      <div className="px-4 @[520px]:px-8 @[900px]:px-12 pt-4 space-y-5 w-full max-w-none @[520px]:max-w-3xl @[900px]:max-w-5xl mx-auto">
+        {/* ─── 2. Segmented Pill Switcher (Cognitive | Overall | Health) ─── */}
+        <div className="flex rounded-full bg-black/[0.04] p-1 border border-black/[0.03]">
           <button
             type="button"
             onClick={() => setActiveSegment("cognitive")}
-            className={`flex-1 py-1.5 text-[12px] font-semibold rounded-lg transition-all ${
+            className={`flex-1 py-1.5 text-[12px] font-bold rounded-full transition-all cursor-pointer ${
               activeSegment === "cognitive"
-                ? "bg-white text-[#161616] shadow-xs"
-                : "text-[#525252] hover:text-[#161616]"
+                ? "bg-[#1A1A1A] text-white shadow-2xs"
+                : "text-[#78716A] hover:text-[#1A1A1A]"
             }`}
           >
             Cognitive
@@ -283,10 +239,10 @@ export default function AloisProgress({
           <button
             type="button"
             onClick={() => setActiveSegment("overall")}
-            className={`flex-1 py-1.5 text-[12px] font-semibold rounded-lg transition-all ${
+            className={`flex-1 py-1.5 text-[12px] font-bold rounded-full transition-all cursor-pointer ${
               activeSegment === "overall"
-                ? "bg-white text-[#161616] shadow-xs"
-                : "text-[#525252] hover:text-[#161616]"
+                ? "bg-[#1A1A1A] text-white shadow-2xs"
+                : "text-[#78716A] hover:text-[#1A1A1A]"
             }`}
           >
             Overall
@@ -294,154 +250,42 @@ export default function AloisProgress({
           <button
             type="button"
             onClick={() => setActiveSegment("health")}
-            className={`flex-1 py-1.5 text-[12px] font-semibold rounded-lg transition-all ${
+            className={`flex-1 py-1.5 text-[12px] font-bold rounded-full transition-all cursor-pointer ${
               activeSegment === "health"
-                ? "bg-white text-[#161616] shadow-xs"
-                : "text-[#525252] hover:text-[#161616]"
+                ? "bg-[#1A1A1A] text-white shadow-2xs"
+                : "text-[#78716A] hover:text-[#1A1A1A]"
             }`}
           >
             Health
           </button>
         </div>
 
-        {/* ─── Activity Line Chart (Dynamically adapts per Cognitive / Overall / Health) ──── */}
-        <div className="rounded-2xl bg-white border border-[#E0E0E0] p-4 shadow-2xs transition-all">
-          <div className="flex items-center justify-between mb-3">
-            <div>
-              <span
-                style={{ fontFamily }}
-                className="text-[14px] font-bold text-[#161616] block"
-              >
-                {currentSegment.title}
-              </span>
-              <span className="text-[11px] text-[#525252]">
-                {currentSegment.subtitle}
-              </span>
-            </div>
-            <span
-              className={`px-2.5 py-1 rounded-full text-[11px] font-bold flex items-center gap-1 border ${currentSegment.badgeClass}`}
-            >
-              <TrendingUp className="w-3 h-3" /> {currentSegment.trendBadge}
-            </span>
-          </div>
+        {/* ─── 3. Interactive 3D Neural Stability Synaptic Model ─── */}
+        <NeuralStabilityModel
+          score={
+            activeSegment === "cognitive"
+              ? 96.2
+              : activeSegment === "overall"
+                ? 94.8
+                : 95.1
+          }
+          segment={activeSegment}
+        />
 
-          {/* SVG Smooth Curve Graph */}
-          <div className="relative h-[110px] w-full mt-2">
-            <svg
-              viewBox="0 0 315 90"
-              className="w-full h-full overflow-visible"
-            >
-              <defs>
-                <linearGradient
-                  id={currentSegment.gradientId}
-                  x1="0%"
-                  y1="0%"
-                  x2="0%"
-                  y2="100%"
-                >
-                  <stop
-                    offset="0%"
-                    stopColor={currentSegment.gradStart}
-                    stopOpacity="0.25"
-                  />
-                  <stop
-                    offset="100%"
-                    stopColor={currentSegment.gradStart}
-                    stopOpacity="0.0"
-                  />
-                </linearGradient>
-              </defs>
+        {/* ─── 4. 3D Informative Volumetric Spline Graph ─── */}
+        <Stability3DGraph segment={activeSegment} fontFamily={fontFamily} />
 
-              {/* Grid guide lines */}
-              <line
-                x1="0"
-                y1="25"
-                x2="315"
-                y2="25"
-                stroke="#E0E0E0"
-                strokeDasharray="3 3"
-              />
-              <line
-                x1="0"
-                y1="55"
-                x2="315"
-                y2="55"
-                stroke="#E0E0E0"
-                strokeDasharray="3 3"
-              />
-              <line
-                x1="0"
-                y1="85"
-                x2="315"
-                y2="85"
-                stroke="#E0E0E0"
-                strokeWidth="1"
-              />
-
-              {/* Shaded area */}
-              <path
-                d={areaD}
-                fill={`url(#${currentSegment.gradientId})`}
-                className="transition-all duration-300"
-              />
-
-              {/* Spline curve */}
-              <path
-                d={currentSegment.pathD}
-                fill="none"
-                stroke={currentSegment.strokeColor}
-                strokeWidth="2.5"
-                strokeLinecap="round"
-                className="transition-all duration-300"
-              />
-
-              {/* Peak Marker */}
-              <circle
-                cx={currentSegment.peak.x}
-                cy={currentSegment.peak.y}
-                r="5"
-                fill={currentSegment.strokeColor}
-                stroke="#FFFFFF"
-                strokeWidth="2"
-              />
-              <text
-                x={currentSegment.peak.x}
-                y={currentSegment.peak.y - 7}
-                textAnchor="middle"
-                fontSize="9"
-                fontWeight="bold"
-                fill={currentSegment.strokeColor}
-              >
-                {currentSegment.peak.text}
-              </text>
-
-              {/* Day Labels */}
-              {currentSegment.points.map((p) => (
-                <text
-                  key={p.day + p.x}
-                  x={p.x}
-                  y="102"
-                  textAnchor="middle"
-                  fontSize="10"
-                  fill="#6F6F6F"
-                  fontWeight="500"
-                >
-                  {p.day}
-                </text>
-              ))}
-            </svg>
-          </div>
-        </div>
-
-        {/* ─── 2x2 Metric Grid (Tailored to active segment) ── */}
-        <div className="grid grid-cols-2 gap-3">
-          {currentSegment.cards.map((card) => (
-            <div
+        {/* ─── 5. 2x2 Metric Cards (with 3D Tilt interaction) ─── */}
+        <div className="grid grid-cols-2 @[520px]:grid-cols-4 gap-3">
+          {currentCards.map((card) => (
+            <TiltCard
               key={card.label}
-              className="rounded-xl bg-white border border-[#E0E0E0] p-3.5 shadow-2xs transition-all"
+              maxTilt={4}
+              scale={1.015}
+              className="rounded-[24px] bg-white border border-black/[0.05] p-4 shadow-[0_4px_16px_rgba(0,0,0,0.02)] transition-all cursor-default"
             >
               <div className="flex items-center justify-between mb-2">
-                <span className="text-[12px] font-semibold text-[#525252]">
+                <span className="text-[12px] font-semibold text-[#78716A]">
                   {card.label}
                 </span>
                 {card.isSparkle ? (
@@ -454,88 +298,116 @@ export default function AloisProgress({
                   />
                 )}
               </div>
-              <div className="flex items-baseline gap-1">
-                <span
-                  style={{ fontFamily }}
-                  className="text-[22px] font-bold text-[#161616]"
-                >
-                  {card.value}
+              <div className="flex items-baseline justify-between gap-1">
+                <div className="flex items-baseline gap-1">
+                  <span
+                    style={{ fontFamily }}
+                    className="text-[24px] font-bold text-[#1A1A1A] tracking-tight font-serif"
+                  >
+                    {card.value}
+                  </span>
+                  <span className="text-[10px] text-[#78716A] font-medium">
+                    {card.unit}
+                  </span>
+                </div>
+                <span className="text-[10px] font-semibold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded-full">
+                  {card.trend}
                 </span>
-                <span className="text-[10px] text-[#525252]">{card.unit}</span>
               </div>
-              <div className="w-full h-1.5 rounded-full bg-slate-100 mt-2 overflow-hidden">
+              <div className="w-full h-1.5 rounded-full bg-black/[0.04] mt-2.5 overflow-hidden">
                 <div
                   className={`h-full ${card.barColor} rounded-full transition-all duration-300`}
                   style={{ width: card.barWidth }}
                 />
               </div>
-            </div>
+            </TiltCard>
           ))}
         </div>
 
-        {/* ─── List Rows (Figma Monthly Report, Support, Tips) ────────── */}
-        <div className="space-y-2 pt-1">
+        {/* ─── 6. List Action Rows (ABHA Clinical Report & Insights) ─── */}
+        <div className="space-y-2.5 pt-1">
           {/* Monthly Report Button -> Triggers ABHA Clinical PDF */}
           <button
             type="button"
             onClick={onViewReport}
-            className="w-full p-3.5 rounded-xl bg-white border border-[#E0E0E0] hover:bg-slate-50 flex items-center justify-between transition-colors shadow-2xs group"
+            className="w-full p-4 rounded-[24px] bg-white border border-black/[0.05] hover:border-black/15 flex items-center justify-between transition-all shadow-[0_4px_16px_rgba(0,0,0,0.02)] group cursor-pointer active:scale-[0.99]"
           >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center">
-                <FileText className="w-4 h-4" />
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 shadow-2xs">
+                <FileText className="w-5 h-5" />
               </div>
               <div className="text-left">
-                <span
-                  style={{ fontFamily }}
-                  className="text-[13px] font-semibold text-[#161616] block group-hover:text-blue-600 transition-colors"
-                >
-                  Monthly Clinical Report (ABDM)
-                </span>
-                <span className="text-[11px] text-[#6F6F6F]">
+                <div className="flex items-center gap-1.5">
+                  <span
+                    style={{ fontFamily }}
+                    className="text-[14px] font-bold text-[#1A1A1A] block group-hover:text-blue-600 transition-colors"
+                  >
+                    Monthly Clinical Report
+                  </span>
+                  <span className="text-[9px] font-bold bg-blue-50 text-blue-700 px-1.5 py-0.2 rounded-full border border-blue-200">
+                    ABHA
+                  </span>
+                </div>
+                <span className="text-[11px] font-medium text-[#78716A]">
                   Download signed EHR summary PDF
                 </span>
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#525252] group-hover:translate-x-0.5 transition-transform" />
+            <div className="w-8 h-8 rounded-full bg-black/[0.03] flex items-center justify-center text-[#78716A] group-hover:bg-[#1A1A1A] group-hover:text-white transition-all">
+              <ChevronRight className="w-4 h-4" />
+            </div>
           </button>
 
           {/* Communication and Support */}
           <button
             type="button"
-            className="w-full p-3.5 rounded-xl bg-white border border-[#E0E0E0] hover:bg-slate-50 flex items-center justify-between transition-colors shadow-2xs group"
+            className="w-full p-4 rounded-[24px] bg-white border border-black/[0.05] hover:border-black/15 flex items-center justify-between transition-all shadow-[0_4px_16px_rgba(0,0,0,0.02)] group cursor-pointer active:scale-[0.99]"
           >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
-                <Activity className="w-4 h-4" />
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100 shadow-2xs">
+                <Activity className="w-5 h-5" />
               </div>
-              <span
-                style={{ fontFamily }}
-                className="text-[13px] font-semibold text-[#161616] group-hover:text-emerald-600 transition-colors"
-              >
-                Communication and Support
-              </span>
+              <div className="text-left">
+                <span
+                  style={{ fontFamily }}
+                  className="text-[14px] font-bold text-[#1A1A1A] block group-hover:text-emerald-600 transition-colors"
+                >
+                  Clinical Communication & Support
+                </span>
+                <span className="text-[11px] font-medium text-[#78716A]">
+                  Message assigned care specialist
+                </span>
+              </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#525252] group-hover:translate-x-0.5 transition-transform" />
+            <div className="w-8 h-8 rounded-full bg-black/[0.03] flex items-center justify-center text-[#78716A] group-hover:bg-[#1A1A1A] group-hover:text-white transition-all">
+              <ChevronRight className="w-4 h-4" />
+            </div>
           </button>
 
           {/* Tips and Recommendations */}
           <button
             type="button"
-            className="w-full p-3.5 rounded-xl bg-white border border-[#E0E0E0] hover:bg-slate-50 flex items-center justify-between transition-colors shadow-2xs group"
+            className="w-full p-4 rounded-[24px] bg-white border border-black/[0.05] hover:border-black/15 flex items-center justify-between transition-all shadow-[0_4px_16px_rgba(0,0,0,0.02)] group cursor-pointer active:scale-[0.99]"
           >
-            <div className="flex items-center gap-3">
-              <div className="w-8 h-8 rounded-lg bg-purple-50 text-purple-600 flex items-center justify-center">
-                <Award className="w-4 h-4" />
+            <div className="flex items-center gap-3.5">
+              <div className="w-10 h-10 rounded-2xl bg-purple-50 text-purple-600 flex items-center justify-center border border-purple-100 shadow-2xs">
+                <Award className="w-5 h-5" />
               </div>
-              <span
-                style={{ fontFamily }}
-                className="text-[13px] font-semibold text-[#161616] group-hover:text-purple-600 transition-colors"
-              >
-                Tips and Recommendations
-              </span>
+              <div className="text-left">
+                <span
+                  style={{ fontFamily }}
+                  className="text-[14px] font-bold text-[#1A1A1A] block group-hover:text-purple-600 transition-colors"
+                >
+                  Tips & Cognitive Exercises
+                </span>
+                <span className="text-[11px] font-medium text-[#78716A]">
+                  Personalized daily guidance
+                </span>
+              </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-[#525252] group-hover:translate-x-0.5 transition-transform" />
+            <div className="w-8 h-8 rounded-full bg-black/[0.03] flex items-center justify-center text-[#78716A] group-hover:bg-[#1A1A1A] group-hover:text-white transition-all">
+              <ChevronRight className="w-4 h-4" />
+            </div>
           </button>
         </div>
       </div>

@@ -1,0 +1,738 @@
+import React, { useState } from "react"
+import {
+  Activity,
+  Award,
+  BookOpen,
+  CheckCircle2,
+  ChevronRight,
+  FileText,
+  Heart,
+  HelpCircle,
+  Layers,
+  LineChart,
+  Mic,
+  Radio,
+  Search,
+  ShieldCheck,
+  Sparkles,
+  Stethoscope,
+  TrendingDown,
+  TrendingUp,
+  User,
+  Zap,
+} from "lucide-react"
+
+import TiltCard from "../../motion/TiltCard"
+import DoctorTerminal3DModel from "../../scene3d/DoctorTerminal3DModel"
+import {
+  DOCTOR_PATIENT_PROFILES,
+  DoctorPatientProfile,
+} from "../../services/doctorPatients"
+
+interface DoctorClinicalShowcaseProps {
+  stats: {
+    total: number
+    elevated: number
+    moderate: number
+    low: number
+  }
+  selectedFilter: "all" | "elevated" | "moderate" | "low"
+  onSelectFilter: (tab: "all" | "elevated" | "moderate" | "low") => void
+  searchQuery: string
+  onSearchChange: (q: string) => void
+  onSelectPatient: (patientName: string) => void
+  onBack: () => void
+  fontFamily?: string
+}
+
+export default function DoctorClinicalShowcase({
+  stats,
+  selectedFilter,
+  onSelectFilter,
+  searchQuery,
+  onSearchChange,
+  onSelectPatient,
+  onBack,
+  fontFamily = "'Outfit', sans-serif",
+}: DoctorClinicalShowcaseProps) {
+  const [activeVisualizerTab, setActiveVisualizerTab] =
+    useState<"trajectory" | "acoustics" | "story">("trajectory")
+  const [selectedTrajectoryPatient, setSelectedTrajectoryPatient] =
+    useState<string>("pat_rama_devi")
+
+  // Filter patients based on tab and query
+  const filteredPatients = DOCTOR_PATIENT_PROFILES.filter((p) => {
+    if (selectedFilter !== "all" && p.risk !== selectedFilter) return false
+    if (!searchQuery.trim()) return true
+    const q = searchQuery.toLowerCase()
+    return (
+      p.name.toLowerCase().includes(q) ||
+      p.lang.toLowerCase().includes(q) ||
+      p.chiefComplaint.toLowerCase().includes(q) ||
+      p.clinicalImpression.toLowerCase().includes(q) ||
+      p.protocolMode.toLowerCase().includes(q) ||
+      String(p.age).includes(q)
+    )
+  })
+
+  // Selected patient for longitudinal curve
+  const currentTrajPatient =
+    DOCTOR_PATIENT_PROFILES.find((p) => p.id === selectedTrajectoryPatient) ||
+    DOCTOR_PATIENT_PROFILES[0]
+
+  return (
+    <div
+      style={{
+        WebkitOverflowScrolling: "touch",
+        overscrollBehaviorY: "contain",
+      }}
+      className="flex-1 overflow-y-auto bg-[#F7F5F0] text-[#1A1A1A] select-none pb-8 relative"
+    >
+      {/* ─── 1. Doctor Terminal Header (Lisso Editorial Style) ─── */}
+      <header className="h-[76px] px-4 @[520px]:px-8 flex items-center justify-between bg-[#F7F5F0]/95 border-b border-black/[0.05] sticky top-0 z-20">
+        <div className="w-full max-w-none @[520px]:max-w-3xl @[900px]:max-w-5xl mx-auto flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-full bg-[#1A1A1A] text-[#F5CE57] flex items-center justify-center shadow-2xs border border-black/[0.08] shrink-0 font-bold">
+              <Stethoscope className="w-5 h-5 text-[#F5CE57]" />
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#78716A] bg-black/[0.04] px-2 py-0.5 rounded-full">
+                  Clinical Terminal
+                </span>
+                <span className="text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-200">
+                  v2.4 Pro
+                </span>
+              </div>
+              <h1
+                style={{ fontFamily }}
+                className="text-[18px] font-bold text-[#1A1A1A] tracking-tight leading-tight mt-0.5"
+              >
+                Doctor Clinical Hub
+              </h1>
+            </div>
+          </div>
+
+          <button
+            type="button"
+            onClick={onBack}
+            className="px-3.5 py-1.5 rounded-full bg-white border border-black/[0.08] text-xs font-bold text-[#1A1A1A] hover:bg-black hover:text-white active:scale-95 transition-all cursor-pointer shadow-2xs"
+          >
+            Exit Hub
+          </button>
+        </div>
+      </header>
+
+      <div className="px-4 @[520px]:px-8 @[900px]:px-12 pt-4 space-y-5 w-full max-w-none @[520px]:max-w-3xl @[900px]:max-w-5xl mx-auto">
+        {/* ─── 2. Attending Neurologist Profile Card ─── */}
+        <div className="rounded-[28px] bg-white border border-black/[0.05] p-4 shadow-[0_8px_24px_rgba(0,0,0,0.03)] flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3">
+            <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-sky-500 to-indigo-600 text-white font-bold flex items-center justify-center text-base border-2 border-white shadow-md shrink-0">
+              👩‍⚕️
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="text-[14px] font-bold text-[#1A1A1A]">
+                  Dr. Sunita Sharma, MD
+                </span>
+                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+              </div>
+              <p className="text-[11px] text-[#78716A]">
+                AIIMS & NIMHANS Clinical Neurology
+              </p>
+              <div className="flex items-center gap-1 mt-0.5">
+                <span className="text-[9px] font-bold bg-black/[0.04] text-[#1A1A1A] px-2 py-0.2 rounded-full">
+                  ABDM #DL-8824
+                </span>
+                <span className="text-[9px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.2 rounded-full border border-emerald-200">
+                  Verified Clinician
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* ─── 3. Interactive 3D Quantum Synaptic Terminal Model ─── */}
+        <DoctorTerminal3DModel
+          totalPatients={stats.total}
+          highPriorityCount={stats.elevated}
+        />
+
+        {/* ─── 4. Epidemiological Metrics Grid (4 Stat Blocks) ─── */}
+        <div className="grid grid-cols-4 gap-2">
+          <button
+            type="button"
+            onClick={() => onSelectFilter("all")}
+            className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer ${
+              selectedFilter === "all"
+                ? "bg-[#1A1A1A] text-white border-[#1A1A1A] shadow-sm"
+                : "bg-white text-[#1A1A1A] border-black/[0.05] hover:border-black/20 shadow-2xs"
+            }`}
+          >
+            <div className="text-xl font-bold font-serif tabular-nums">
+              {stats.total}
+            </div>
+            <div
+              className={`text-[9px] font-bold uppercase tracking-wider mt-0.5 ${
+                selectedFilter === "all" ? "text-white/80" : "text-[#78716A]"
+              }`}
+            >
+              Registry
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onSelectFilter("elevated")}
+            className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer ${
+              selectedFilter === "elevated"
+                ? "bg-rose-600 text-white border-rose-600 shadow-sm"
+                : "bg-white text-rose-600 border-rose-200/80 hover:border-rose-400 shadow-2xs"
+            }`}
+          >
+            <div className="text-xl font-bold font-serif tabular-nums">
+              {stats.elevated}
+            </div>
+            <div
+              className={`text-[9px] font-bold uppercase tracking-wider mt-0.5 ${
+                selectedFilter === "elevated"
+                  ? "text-white/80"
+                  : "text-rose-500"
+              }`}
+            >
+              Priority
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onSelectFilter("moderate")}
+            className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer ${
+              selectedFilter === "moderate"
+                ? "bg-sky-600 text-white border-sky-600 shadow-sm"
+                : "bg-white text-sky-600 border-sky-200/80 hover:border-sky-400 shadow-2xs"
+            }`}
+          >
+            <div className="text-xl font-bold font-serif tabular-nums">
+              {stats.moderate}
+            </div>
+            <div
+              className={`text-[9px] font-bold uppercase tracking-wider mt-0.5 ${
+                selectedFilter === "moderate" ? "text-white/80" : "text-sky-500"
+              }`}
+            >
+              Monitor
+            </div>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => onSelectFilter("low")}
+            className={`p-2.5 rounded-2xl border text-center transition-all cursor-pointer ${
+              selectedFilter === "low"
+                ? "bg-emerald-600 text-white border-emerald-600 shadow-sm"
+                : "bg-white text-emerald-600 border-emerald-200/80 hover:border-emerald-400 shadow-2xs"
+            }`}
+          >
+            <div className="text-xl font-bold font-serif tabular-nums">
+              {stats.low}
+            </div>
+            <div
+              className={`text-[9px] font-bold uppercase tracking-wider mt-0.5 ${
+                selectedFilter === "low" ? "text-white/80" : "text-emerald-500"
+              }`}
+            >
+              Stable
+            </div>
+          </button>
+        </div>
+
+        {/* ─── 5. Informative Clinical Visualizer & Story Mode Tabs ─── */}
+        <div className="rounded-[28px] bg-white border border-black/[0.05] p-5 shadow-[0_8px_24px_rgba(0,0,0,0.03)] space-y-3.5">
+          {/* Visualizer Switcher Pills */}
+          <div className="flex items-center gap-1 p-1 bg-black/[0.04] rounded-full border border-black/[0.03] text-[11px] font-bold">
+            <button
+              type="button"
+              onClick={() => setActiveVisualizerTab("trajectory")}
+              className={`flex-1 py-1.5 rounded-full transition-all cursor-pointer ${
+                activeVisualizerTab === "trajectory"
+                  ? "bg-[#1A1A1A] text-white shadow-2xs"
+                  : "text-[#78716A] hover:text-[#1A1A1A]"
+              }`}
+            >
+              📈 Trajectory
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveVisualizerTab("acoustics")}
+              className={`flex-1 py-1.5 rounded-full transition-all cursor-pointer ${
+                activeVisualizerTab === "acoustics"
+                  ? "bg-[#1A1A1A] text-white shadow-2xs"
+                  : "text-[#78716A] hover:text-[#1A1A1A]"
+              }`}
+            >
+              🎙️ Acoustics
+            </button>
+            <button
+              type="button"
+              onClick={() => setActiveVisualizerTab("story")}
+              className={`flex-1 py-1.5 rounded-full transition-all cursor-pointer ${
+                activeVisualizerTab === "story"
+                  ? "bg-[#1A1A1A] text-white shadow-2xs"
+                  : "text-[#78716A] hover:text-[#1A1A1A]"
+              }`}
+            >
+              📖 Story Mode
+            </button>
+          </div>
+
+          {/* TAB 1: Longitudinal Risk Trajectory Graph */}
+          {activeVisualizerTab === "trajectory" && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <div>
+                  <span className="text-[13px] font-bold text-[#1A1A1A] block">
+                    6-Month Longitudinal Tracking
+                  </span>
+                  <span className="text-[10px] text-[#78716A]">
+                    Case: {currentTrajPatient.name} ({currentTrajPatient.age}y,{" "}
+                    {currentTrajPatient.lang})
+                  </span>
+                </div>
+
+                {/* Patient Selector */}
+                <select
+                  value={selectedTrajectoryPatient}
+                  onChange={(e) => setSelectedTrajectoryPatient(e.target.value)}
+                  className="text-[11px] font-bold bg-[#F7F5F0] border border-black/[0.08] px-2.5 py-1 rounded-xl text-[#1A1A1A] focus:outline-none"
+                >
+                  {DOCTOR_PATIENT_PROFILES.map((p) => (
+                    <option key={p.id} value={p.id}>
+                      {p.name} ({p.riskScore}%)
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {/* 3D Longitudinal Spline Curve */}
+              <div className="relative h-[110px] w-full pt-1">
+                <svg
+                  viewBox="0 0 315 80"
+                  className="w-full h-full overflow-visible"
+                >
+                  <defs>
+                    <linearGradient
+                      id="docTrajGrad"
+                      x1="0%"
+                      y1="0%"
+                      x2="0%"
+                      y2="100%"
+                    >
+                      <stop
+                        offset="0%"
+                        stopColor={
+                          currentTrajPatient.risk === "elevated"
+                            ? "#F43F5E"
+                            : currentTrajPatient.risk === "moderate"
+                              ? "#0284C7"
+                              : "#10B981"
+                        }
+                        stopOpacity="0.3"
+                      />
+                      <stop
+                        offset="100%"
+                        stopColor="#F7F5F0"
+                        stopOpacity="0.0"
+                      />
+                    </linearGradient>
+                  </defs>
+
+                  {/* Guide Grid */}
+                  <line
+                    x1="10"
+                    y1="20"
+                    x2="305"
+                    y2="20"
+                    stroke="rgba(0,0,0,0.05)"
+                    strokeDasharray="3 3"
+                  />
+                  <line
+                    x1="10"
+                    y1="50"
+                    x2="305"
+                    y2="50"
+                    stroke="rgba(0,0,0,0.05)"
+                    strokeDasharray="3 3"
+                  />
+                  <line
+                    x1="10"
+                    y1="75"
+                    x2="305"
+                    y2="75"
+                    stroke="rgba(0,0,0,0.08)"
+                  />
+
+                  {/* Dynamic Area Fill & Curve */}
+                  {(() => {
+                    const pts = currentTrajPatient.trendData || []
+                    const n = pts.length
+                    if (n === 0) return null
+                    const getX = (idx: number) =>
+                      15 + idx * (290 / Math.max(n - 1, 1))
+                    const getY = (risk: number) =>
+                      80 - Math.min(Math.max(risk, 0), 100) * 0.7
+
+                    const pathCoords = pts
+                      .map(
+                        (p, idx) =>
+                          `${
+                            idx === 0 ? "M" : "L"
+                          } ${getX(idx)} ${getY(p.risk)}`,
+                      )
+                      .join(" ")
+                    const areaCoords = `${pathCoords} L ${getX(n - 1)} 75 L 15 75 Z`
+
+                    return (
+                      <>
+                        <path d={areaCoords} fill="url(#docTrajGrad)" />
+                        <path
+                          d={pathCoords}
+                          fill="none"
+                          stroke={
+                            currentTrajPatient.risk === "elevated"
+                              ? "#F43F5E"
+                              : currentTrajPatient.risk === "moderate"
+                                ? "#0284C7"
+                                : "#10B981"
+                          }
+                          strokeWidth="3"
+                          strokeLinecap="round"
+                        />
+                        {pts.map((pt, i) => {
+                          const x = getX(i)
+                          const y = getY(pt.risk)
+                          return (
+                            <g key={pt.month || i}>
+                              <circle
+                                cx={x}
+                                cy={y}
+                                r="4"
+                                fill="#FFFFFF"
+                                stroke={
+                                  currentTrajPatient.risk === "elevated"
+                                    ? "#F43F5E"
+                                    : "#0284C7"
+                                }
+                                strokeWidth="2"
+                              />
+                              <text
+                                x={x}
+                                y="88"
+                                fontSize="9"
+                                textAnchor="middle"
+                                fill="#78716A"
+                                fontWeight="600"
+                              >
+                                {pt.month}
+                              </text>
+                            </g>
+                          )
+                        })}
+                      </>
+                    )
+                  })()}
+                </svg>
+              </div>
+
+              {/* Clinical summary badge */}
+              <div className="p-2.5 rounded-2xl bg-[#F7F5F0] border border-black/[0.05] flex items-center justify-between text-xs">
+                <span className="text-[11px] text-[#78716A]">
+                  Latest Phonation Jitter:{" "}
+                  <strong className="text-[#1A1A1A]">
+                    {currentTrajPatient.acousticComparison[0]?.patientValue}
+                  </strong>
+                </span>
+                <span className="text-[11px] font-bold text-blue-700">
+                  {currentTrajPatient.protocolMode}
+                </span>
+              </div>
+            </div>
+          )}
+
+          {/* TAB 2: Acoustic Comparison Biometrics */}
+          {activeVisualizerTab === "acoustics" && (
+            <div className="space-y-2.5">
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-bold text-[#1A1A1A]">
+                  Acoustic Phonation vs Normal Range
+                </span>
+                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">
+                  PyAV Engine
+                </span>
+              </div>
+
+              <div className="space-y-2">
+                {currentTrajPatient.acousticComparison.map((m) => (
+                  <div
+                    key={m.metric}
+                    className="p-2.5 rounded-xl bg-[#F7F5F0] border border-black/[0.04] flex items-center justify-between text-xs"
+                  >
+                    <div>
+                      <span className="font-bold text-[#1A1A1A] block">
+                        {m.metric}
+                      </span>
+                      <span className="text-[10px] text-[#78716A]">
+                        Normal: {m.normalRange}
+                      </span>
+                    </div>
+
+                    <div className="text-right">
+                      <span
+                        className={`text-sm font-bold font-serif ${
+                          m.status === "elevated"
+                            ? "text-rose-600"
+                            : m.status === "reduced"
+                              ? "text-amber-600"
+                              : "text-emerald-600"
+                        }`}
+                      >
+                        {m.patientValue}
+                      </span>
+                      <span
+                        className={`text-[9px] font-bold block uppercase ${
+                          m.status === "elevated"
+                            ? "text-rose-600"
+                            : "text-emerald-600"
+                        }`}
+                      >
+                        {m.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* TAB 3: Clinical Story Mode: How NeuroSense Works */}
+          {activeVisualizerTab === "story" && (
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[13px] font-bold text-[#1A1A1A]">
+                  Clinical Story: The NeuroSense Architecture
+                </span>
+                <span className="text-[9px] font-bold text-amber-700 bg-amber-50 px-2 py-0.5 rounded-full border border-amber-200">
+                  Story Mode
+                </span>
+              </div>
+
+              <div className="space-y-2">
+                {[
+                  {
+                    step: "1",
+                    title: "Autobiographical Prompting",
+                    desc: "Zero-literacy voice dialogue grounded in 10 verified life facts in vernacular languages (Hindi, Bengali, Kannada).",
+                    icon: "🎙️",
+                  },
+                  {
+                    step: "2",
+                    title: "PyAV Acoustic Feature Extraction",
+                    desc: "Extracts micro-tremor, vocal shimmer, pitch entropy, and response latency without test anxiety.",
+                    icon: "🔬",
+                  },
+                  {
+                    step: "3",
+                    title: "8-Qubit PennyLane Quantum VQC",
+                    desc: "AngleEmbedding maps speech features into quantum Hilbert space, detecting non-linear shifts missed by MMSE.",
+                    icon: "⚛️",
+                  },
+                  {
+                    step: "4",
+                    title: "Ayushman Bharat (ABHA) Integration",
+                    desc: "Instantly links signed EHR summaries directly to India's National Health Stack for clinical consultation.",
+                    icon: "🛡️",
+                  },
+                ].map((s) => (
+                  <div
+                    key={s.step}
+                    className="p-2.5 rounded-2xl bg-[#F7F5F0] border border-black/[0.04] flex items-start gap-2.5 text-left"
+                  >
+                    <div className="w-7 h-7 rounded-full bg-white flex items-center justify-center text-xs shadow-2xs shrink-0 font-bold">
+                      {s.icon}
+                    </div>
+                    <div>
+                      <div className="flex items-center gap-1.5">
+                        <span className="text-[12px] font-bold text-[#1A1A1A]">
+                          {s.step}. {s.title}
+                        </span>
+                      </div>
+                      <p className="text-[10px] text-[#78716A] leading-relaxed mt-0.5">
+                        {s.desc}
+                      </p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* ─── 6. Search Bar & Case Classification Tabs ─── */}
+        <div className="space-y-2.5 pt-1">
+          {/* Patient Search Input */}
+          <div className="relative">
+            <Search className="w-4 h-4 text-[#78716A] absolute left-3.5 top-1/2 -translate-y-1/2" />
+            <input
+              type="text"
+              placeholder="Search patient, language, or clinical case..."
+              value={searchQuery}
+              onChange={(e) => onSearchChange(e.target.value)}
+              className="w-full pl-9 pr-8 py-2.5 rounded-2xl bg-white border border-black/[0.08] text-xs text-[#1A1A1A] placeholder-[#A8A29E] focus:outline-none focus:border-black/30 shadow-2xs transition-colors"
+            />
+          </div>
+
+          {/* Filter Pills */}
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-xs">
+            <button
+              type="button"
+              onClick={() => onSelectFilter("all")}
+              className={`px-3 py-1.5 rounded-full font-bold transition-all whitespace-nowrap cursor-pointer ${
+                selectedFilter === "all"
+                  ? "bg-[#1A1A1A] text-white shadow-2xs"
+                  : "bg-white text-[#78716A] border border-black/[0.06] hover:text-[#1A1A1A]"
+              }`}
+            >
+              All Cases ({DOCTOR_PATIENT_PROFILES.length})
+            </button>
+            <button
+              type="button"
+              onClick={() => onSelectFilter("elevated")}
+              className={`px-3 py-1.5 rounded-full font-bold transition-all whitespace-nowrap cursor-pointer ${
+                selectedFilter === "elevated"
+                  ? "bg-rose-600 text-white shadow-2xs"
+                  : "bg-white text-rose-600 border border-rose-200/80 hover:bg-rose-50"
+              }`}
+            >
+              Priority High ({stats.elevated})
+            </button>
+            <button
+              type="button"
+              onClick={() => onSelectFilter("moderate")}
+              className={`px-3 py-1.5 rounded-full font-bold transition-all whitespace-nowrap cursor-pointer ${
+                selectedFilter === "moderate"
+                  ? "bg-sky-600 text-white shadow-2xs"
+                  : "bg-white text-sky-600 border border-sky-200/80 hover:bg-sky-50"
+              }`}
+            >
+              Monitoring ({stats.moderate})
+            </button>
+            <button
+              type="button"
+              onClick={() => onSelectFilter("low")}
+              className={`px-3 py-1.5 rounded-full font-bold transition-all whitespace-nowrap cursor-pointer ${
+                selectedFilter === "low"
+                  ? "bg-emerald-600 text-white shadow-2xs"
+                  : "bg-white text-emerald-600 border border-emerald-200/80 hover:bg-emerald-50"
+              }`}
+            >
+              Stable Control ({stats.low})
+            </button>
+          </div>
+        </div>
+
+        {/* ─── 7. Clinical Patient Case Registry Cards (with 3D Tilt) ─── */}
+        <div className="space-y-3">
+          <div className="flex items-center justify-between px-1">
+            <span className="text-[11px] font-bold uppercase tracking-wider text-[#78716A]">
+              Active Patient Cohort ({filteredPatients.length})
+            </span>
+            <span className="text-[10px] text-[#78716A]">
+              Tap card for deep analysis
+            </span>
+          </div>
+
+          <div className="grid grid-cols-1 @[520px]:grid-cols-2 gap-3">
+            {filteredPatients.map((p) => {
+              const isElevated = p.risk === "elevated"
+              const isModerate = p.risk === "moderate"
+
+              const badgeStyle = isElevated
+                ? "bg-rose-50 text-rose-700 border-rose-200"
+                : isModerate
+                  ? "bg-sky-50 text-sky-700 border-sky-200"
+                  : "bg-emerald-50 text-emerald-700 border-emerald-200"
+
+              const borderAccent = isElevated
+                ? "border-l-4 border-l-rose-500"
+                : isModerate
+                  ? "border-l-4 border-l-sky-500"
+                  : "border-l-4 border-l-emerald-500"
+
+              return (
+                <TiltCard
+                  key={p.id}
+                  maxTilt={3}
+                  scale={1.012}
+                  onClick={() => onSelectPatient(p.name)}
+                  className={`p-4 rounded-[24px] bg-white border border-black/[0.05] ${borderAccent} shadow-[0_4px_16px_rgba(0,0,0,0.02)] hover:shadow-md cursor-pointer transition-all active:scale-[0.99] text-left space-y-2`}
+                >
+                  {/* Header row */}
+                  <div className="flex items-start justify-between gap-2">
+                    <div>
+                      <div className="flex items-center gap-2">
+                        <span
+                          className="font-bold text-[15px] text-[#1A1A1A]"
+                          style={{ fontFamily }}
+                        >
+                          {p.name}, {p.age}y
+                        </span>
+                        <span className="text-[11px] font-medium text-[#78716A]">
+                          ({p.gender.charAt(0)})
+                        </span>
+                        <span className="px-2 py-0.2 rounded-full text-[10px] font-semibold bg-black/[0.04] text-[#78716A]">
+                          {p.lang}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-[#78716A] line-clamp-1 mt-0.5">
+                        {p.chiefComplaint}
+                      </p>
+                    </div>
+
+                    <div className="text-right shrink-0">
+                      <span
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${badgeStyle}`}
+                      >
+                        {p.riskScore}%{" "}
+                        {p.risk === "elevated"
+                          ? "HIGH"
+                          : p.risk === "moderate"
+                            ? "MOD"
+                            : "LOW"}
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Bottom metrics row */}
+                  <div className="pt-2 border-t border-black/[0.05] flex items-center justify-between text-[11px] text-[#78716A]">
+                    <div className="flex items-center gap-3">
+                      <span className="flex items-center gap-1 font-semibold text-[#1A1A1A]">
+                        <Activity className="w-3.5 h-3.5 text-blue-600" />
+                        <span>{p.wpm} WPM</span>
+                      </span>
+                      <span>• {p.date}</span>
+                    </div>
+
+                    <div className="flex items-center gap-1 font-bold text-[#1A1A1A] group-hover:text-blue-600 transition-colors">
+                      <span>Deep Analysis</span>
+                      <ChevronRight className="w-3.5 h-3.5" />
+                    </div>
+                  </div>
+                </TiltCard>
+              )
+            })}
+          </div>
+        </div>
+      </div>
+    </div>
+  )
+}

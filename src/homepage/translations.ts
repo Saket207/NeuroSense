@@ -21,6 +21,24 @@ export interface HomepageContent {
     recalledStatus: string
   }
   stats: {
+    sectionHeading: string
+    sectionSub: string
+    card1Num: string
+    card1Badge: string
+    card1Title: string
+    card1Desc: string
+    card1Pill: string
+    card2Num: string
+    card2Badge: string
+    card2Title: string
+    card2Desc: string
+    card2Pill: string
+    card3Num: string
+    card3Badge: string
+    card3Title: string
+    card3Desc: string
+    card3Pill: string
+    communityBadge: string
     avatarText: string
     stat1Number: string
     stat1Label: string
@@ -108,7 +126,10 @@ export interface HomepageContent {
     leftCardTitle: string
     leftCardDesc: string
     leftCardButton: string
-    items: Array<{ q: string a: string }>
+    items: Array<{
+      q: string
+      a: string
+    }>
   }
   story: {
     chap1: string
@@ -167,6 +188,28 @@ export const translations: Record<LanguageCode, HomepageContent> = {
       recalledStatus: "✓ Free Recall Verified",
     },
     stats: {
+      sectionHeading: "Why It's Trusted",
+      sectionSub:
+        "Designed with geriatricians and community health workers to provide zero-literacy preliminary screening with clinical rigor.",
+      card1Num: "001",
+      card1Badge: "Voice-First",
+      card1Title: "Mother Tongue Comfort",
+      card1Desc:
+        "Speaks naturally in Indian regional dialects with conversational cadence. No reading, writing, or clinical test anxiety required.",
+      card1Pill: "8 Dialects • 0 Literacy",
+      card2Num: "002",
+      card2Badge: "Lived Memory",
+      card2Title: "Family-Verified Recall",
+      card2Desc:
+        "Screening grounded in 10 verified life milestones and everyday habits provided by relatives, not abstract unfamiliar trivia.",
+      card2Pill: "10 Family Facts • Staged Retrieval",
+      card3Num: "003",
+      card3Badge: "Clinical Rigor",
+      card3Title: "Doctor-Ready Referral",
+      card3Desc:
+        "Generates an objective summary combining acoustic fluency, recall score, and informant observations for immediate clinician review.",
+      card3Pill: "Triangulated Signals • Private",
+      communityBadge: "Validated Across Community Health Workers",
       avatarText: "3 Langs",
       stat1Number: "3",
       stat1Label: "Launch Languages",
@@ -376,6 +419,28 @@ export const translations: Record<LanguageCode, HomepageContent> = {
       recalledStatus: "✓ स्मरण सत्यापित",
     },
     stats: {
+      sectionHeading: "इस पर क्यों भरोसा किया जाता है",
+      sectionSub:
+        "बुजुर्गों की गरिमा और सुरक्षा को ध्यान में रखते हुए तैयार, जहां पढ़ना-लिखना जाने बिना भी सटीक और विश्वसनीय जांच संभव है।",
+      card1Num: "001",
+      card1Badge: "मातृभाषा",
+      card1Title: "सहज और आत्मीय बातचीत",
+      card1Desc:
+        "अपनी क्षेत्रीय भाषा में सहज संवाद। किसी औपचारिक टेस्ट का डर नहीं, केवल चार मिनट की आत्मीय चर्चा।",
+      card1Pill: "क्षेत्रीय बोलियां • शून्य साक्षरता",
+      card2Num: "002",
+      card2Badge: "जीवन स्मृति",
+      card2Title: "परिवार-सत्यापित स्मरण",
+      card2Desc:
+        "कठिन पहेलियों के बजाय बुजुर्ग के अपने जीवन के 10 सच्चे प्रसंगों और दिनचर्या पर आधारित जांच।",
+      card2Pill: "10 पारिवारिक तथ्य • चरणबद्ध मिलान",
+      card3Num: "003",
+      card3Badge: "नैदानिक स्पष्टता",
+      card3Title: "डॉक्टर के लिए स्पष्ट रिपोर्ट",
+      card3Desc:
+        "आवाज के प्रवाह, याददाश्त के स्कोर और परिवार के 16 अवलोकनों को मिलाकर एक पारदर्शी रिपोर्ट तैयार करता है।",
+      card3Pill: "त्रि-संकेतक विश्लेषण • सुरक्षित",
+      communityBadge: "आशा व स्वास्थ्य कर्मियों द्वारा मान्य",
       avatarText: "3 भाषाएं",
       stat1Number: "3",
       stat1Label: "शुरुआती भाषाएं",
@@ -574,6 +639,28 @@ export const translations: Record<LanguageCode, HomepageContent> = {
       recalledStatus: "✓ ನೆನಪಿಸಿಕೊಂಡಿದ್ದಾರೆ",
     },
     stats: {
+      sectionHeading: "ನೀವು ಏಕೆ ನಂಬಬಹುದು",
+      sectionSub:
+        "ಹಿರಿಯರ ಗೌರವ ಮತ್ತು ಸುರಕ್ಷತೆಯೊಂದಿಗೆ, ಯಾವುದೇ ಓದು-ಬರಹವಿಲ್ಲದೆ ನಿಖರವಾದ ಪ್ರಾಥಮಿಕ ತಪಾಸಣೆಯನ್ನು ಒದಗಿಸಲು ವಿನ್ಯಾಸಗೊಳಿಸಲಾಗಿದೆ.",
+      card1Num: "001",
+      card1Badge: "ಮಾತೃಭಾಷೆ",
+      card1Title: "ಮಾತೃಭಾಷೆಯಲ್ಲಿ ಸಹಜತೆ",
+      card1Desc:
+        "ನಿಮ್ಮದೇ ಪ್ರಾದೇಶಿಕ ಭಾಷೆಯಲ್ಲಿ ಸಹಜ ಮಾತುಕತೆ. ಯಾವುದೇ ಕ್ಲಿನಿಕಲ್ ಪರೀಕ್ಷೆಯ ಭಯವಿಲ್ಲದೆ ಕೇವಲ ನಾಲ್ಕು ನಿಮಿಷಗಳ ಸಂಭಾಷಣೆ.",
+      card1Pill: "ಪ್ರಾದೇಶಿಕ ಭಾಷೆಗಳು • ಓದು-ಬರಹವಿಲ್ಲ",
+      card2Num: "002",
+      card2Badge: "ಜೀವನ ಸ್ಮೃತಿ",
+      card2Title: "ಕುಟುಂಬ-ದೃಢೀಕೃತ ನೆನಪು",
+      card2Desc:
+        "ಅಪರಿಚಿತ ಪ್ರಶ್ನೆಗಳ ಬದಲಿಗೆ ಕುಟುಂಬ ಸದಸ್ಯರು ನೀಡಿದ ಹಿರಿಯರ 10 ನೈಜ ಜೀವನದ ಪ್ರಮುಖ ಘಟನೆಗಳ ಆಧಾರದ ಮೇಲೆ ತಪಾಸಣೆ.",
+      card2Pill: "10 ಕುಟುಂಬದ ಅಂಶಗಳು • ಹಂತ ಹಂತದ ತಾಳೆ",
+      card3Num: "003",
+      card3Badge: "ವೈದ್ಯಕೀಯ ಸ್ಪಷ್ಟತೆ",
+      card3Title: "ವೈದ್ಯರಿಗಾಗಿ ಸಿದ್ಧಪಡಿಸಿದ ವರದಿ",
+      card3Desc:
+        "ಮಾತಿನ ವೇಗ, ನೆನಪಿನ ಸ್ಕೋರ್ ಮತ್ತು ಕುಟುಂಬದ 16 ದೈನಂದಿನ ಅವಲೋಕನಗಳನ್ನು ಒಗ್ಗೂಡಿಸಿ ವೈದ್ಯರಿಗೆ ಉಪಯುಕ್ತ ವರದಿ ನೀಡುತ್ತದೆ.",
+      card3Pill: "ತ್ರಿವಿಧ ಸಂಕೇತಗಳು • ರಕ್ಷಿತ",
+      communityBadge: "ಆಶಾ ಕಾರ್ಯಕರ್ತೆಯರಿಂದ ಮಾನ್ಯತೆ ಪಡೆದಿದೆ",
       avatarText: "3 ಭಾಷೆಗಳು",
       stat1Number: "3",
       stat1Label: "ಆರಂಭಿಕ ಭಾಷೆಗಳು",
