@@ -10322,14 +10322,18 @@ function NeuroSenseApp({
             </button>
 
             <button
-              onClick={() => navigate("doctorDash")}
+              onClick={() =>
+                requireCaregiver("open the clinician view", () =>
+                  navigate("doctorDash"),
+                )
+              }
               className={`px-3 py-1.5 rounded-full text-xs font-bold flex items-center gap-1.5 shadow-2xs active:scale-95 transition-all ${
                 screen === "doctorDash" || screen === "doctorPatient"
                   ? "bg-[#1A1A1A] text-white hover:bg-black shadow-sm"
                   : "bg-[#F3EFE8] border border-black/[0.06] hover:bg-[#EAE4D9] text-[#2C2925]"
               }`}
             >
-              <Stethoscope className="w-3.5 h-3.5 text-[#544F49]" />
+              <Lock className="w-3.5 h-3.5 text-[#544F49]" />
               <span>Doctor View</span>
             </button>
 

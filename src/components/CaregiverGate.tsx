@@ -141,6 +141,9 @@ export default function CaregiverGate({
               autoComplete="one-time-code"
               value={pin}
               onChange={(e) => setPin(digitsOnly(e.target.value))}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") handleSubmit()
+              }}
               placeholder="• • • •"
               aria-label="Family PIN"
               className="w-full py-3 px-4 rounded-2xl bg-white border border-black/[0.08] text-center text-2xl tracking-[0.6em] font-bold text-[#1A1A1A] focus:outline-none focus:border-black/30 shadow-2xs placeholder-[#A8A29E]"
