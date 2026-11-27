@@ -51,6 +51,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     greenLabel: "No concerning signs found in this screening",
     amberLabel: "Signs worth a clinical check",
     redLabel: "Suggest seeing a doctor soon",
+    test_complete:
+      "Screening completed successfully. Review your personalized cognitive score and memory analysis below.",
+    testCompleteTitle: "Life Memory Check Completed!",
+    viewDetailedAnalysis: "View Detailed Clinical Trends & Report",
+    returnHome: "Return to Home",
+    retakeTest: "Retake Memory Check",
   },
   hi: {
     appTitle: "पारिवारिक जीवन स्मृति जाँच",
@@ -75,6 +81,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     greenLabel: "इस जाँच में कोई चिंताजनक संकेत नहीं दिखे",
     amberLabel: "कुछ लक्षण जिन पर डॉक्टर से परामर्श लेना उचित होगा",
     redLabel: "जल्द डॉक्टर से चिकित्सीय जाँच कराने की सलाह दी जाती है",
+    test_complete:
+      "स्मृति जाँच सफलतापूर्वक पूरी हो गई है। नीचे अपना व्यक्तिगत स्कोर और विश्लेषण देखें।",
+    testCompleteTitle: "जीवन स्मृति जाँच पूर्ण!",
+    viewDetailedAnalysis: "विस्तृत क्लिनिकल रिपोर्ट व रुझान देखें",
+    returnHome: "होमपेज पर वापस जाएँ",
+    retakeTest: "जाँच दोबारा शुरू करें",
   },
   kn: {
     appTitle: "ಕುಟುಂಬ ಜೀವನ ಸ್ಮೃತಿ ಪರೀಕ್ಷೆ",
@@ -99,6 +111,12 @@ export const UI_STRINGS: Record<string, Record<string, string>> = {
     greenLabel: "ಈ ತಪಾಸಣೆಯಲ್ಲಿ ಯಾವುದೇ ಆತಂಕಕಾರಿ ಲಕ್ಷಣ ಕಂಡುಬಂದಿಲ್ಲ",
     amberLabel: "ವೈದ್ಯರನ್ನು ಸಂಪರ್ಕಿಸಲು ಪರಿಗಣಿಸಬಹುದಾದ ಲಕ್ಷಣಗಳು",
     redLabel: "ಶೀಘ್ರದಲ್ಲೇ ವೈದ್ಯರಿಂದ ತಪಾಸಣೆ ಮಾಡಿಸಿಕೊಳ್ಳಲು ಸಲಹೆ ನೀಡಲಾಗುತ್ತದೆ",
+    test_complete:
+      "ಸ್ಮೃತಿ ತಪಾಸಣೆ ಯಶಸ್ವಿಯಾಗಿ ಪೂರ್ಣಗೊಂಡಿದೆ. ನಿಮ್ಮ ಅಂಕಗಳು ಮತ್ತು ವಿವರವಾದ ವಿಶ್ಲೇಷಣೆಯನ್ನು ಕೆಳಗೆ ಪರಿಶೀಲಿಸಿ.",
+    testCompleteTitle: "ಜೀವನ ಸ್ಮೃತಿ ತಪಾಸಣೆ ಪೂರ್ಣಗೊಂಡಿದೆ!",
+    viewDetailedAnalysis: "ವಿವರವಾದ ಕ್ಲಿನಿಕಲ್ ವರದಿ ಮತ್ತು ಪ್ರವೃತ್ತಿಗಳನ್ನು ವೀಕ್ಷಿಸಿ",
+    returnHome: "ಮುಖಪುಟಕ್ಕೆ ಹಿಂತಿರುಗಿ",
+    retakeTest: "ತಪಾಸಣೆಯನ್ನು ಪುನರಾವರ್ತಿಸಿ",
   },
 }
 
