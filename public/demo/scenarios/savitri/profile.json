@@ -70,9 +70,9 @@
       "category": "people",
       "questionText": "What is your late husband's name?",
       "defaultPrompt": {
-        "en": "Spouse name?",
-        "hi": "पति का नाम?",
-        "kn": "ಪತಿಯ ಹೆಸರು?"
+        "en": "What is your late husband's name?",
+        "hi": "आपके पति का क्या नाम है?",
+        "kn": "ನಿಮ್ಮ ಪತಿಯ ಹೆಸರೇನು?"
       },
       "verifiedAnswer": "Madhavan",
       "acceptedAliases": [

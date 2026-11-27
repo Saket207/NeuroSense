@@ -69,9 +69,9 @@
       "category": "people",
       "questionText": "आपकी पत्नी का क्या नाम है?",
       "defaultPrompt": {
-        "en": "Spouse name?",
+        "en": "What is the name of your wife?",
         "hi": "आपकी पत्नी का क्या नाम है?",
-        "kn": "ಪತ್ನಿಯ ಹೆಸರು?"
+        "kn": "ನಿಮ್ಮ ಪತ್ನಿಯ ಹೆಸರೇನು?"
       },
       "verifiedAnswer": "कांती",
       "acceptedAliases": [

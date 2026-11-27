@@ -228,9 +228,37 @@ export default function LifeMemorySession({
     setIsListening(false)
   }
 
-  // Prompt Question and Start Latency Timer
-  const promptCurrentQuestion = (stage: RetrievalStage) => {
-    if (!currentFact) return
+  // Helper to get natural question prompt text
+  const getFactQuestionText = (fact: LifeFactItem, stage: RetrievalStage) => {
+    if (stage === "free") {
+      const defaultP = fact.defaultPrompt?.[lang]
+      if (defaultP && defaultP.trim().length > 15) {
+        return defaultP
+      }
+      if (fact.questionText && fact.questionText.trim().length > 0) {
+        return fact.questionText
+      }
+      return defaultP || "Please answer the question."
+    } else if (stage === "cued") {
+      const cue = fact.cue || "Think about where you lived or family memories."
+      return `${getVoicePrompt(lang, "cued_prefix")} ${cue}`
+    } else if (stage === "recognition") {
+      const options = [
+        fact.verifiedAnswer,
+        ...(fact.distractors || ["Other", "None"]),
+      ]
+        .sort(() => Math.random() - 0.5)
+        .join(", or ")
+      return `${getVoicePrompt(lang, "recognition_prefix")} ${options}?`
+    }
+    return fact.questionText || ""
+  }
+
+  // Prompt Question at explicit index to avoid React stale closure state bugs
+  const promptQuestionAtIndex = (factIndex: number, stage: RetrievalStage) => {
+    const targetFact = scorableFacts[factIndex]
+    if (!targetFact) return
+
     stopSpeech()
     if (activeAudioRef.current) {
       try {
@@ -241,27 +269,15 @@ export default function LifeMemorySession({
     stopListening()
     setDemoAudioPlaying(false)
     setElderThinking(false)
+
+    // Synchronously update question index and stage
+    setCurrentFactIndex(factIndex)
     setRetrievalStage(stage)
     setTranscript("")
     setEvaluationFeedback(null)
     setLatencyMs(null)
 
-    let promptText = ""
-    if (stage === "free") {
-      promptText = currentFact.defaultPrompt?.[lang] || currentFact.questionText
-    } else if (stage === "cued") {
-      const cue =
-        currentFact.cue || "Think about where you lived or family memories."
-      promptText = `${getVoicePrompt(lang, "cued_prefix")} ${cue}`
-    } else if (stage === "recognition") {
-      const options = [
-        currentFact.verifiedAnswer,
-        ...(currentFact.distractors || ["Other", "None"]),
-      ]
-        .sort(() => Math.random() - 0.5)
-        .join(", or ")
-      promptText = `${getVoicePrompt(lang, "recognition_prefix")} ${options}?`
-    }
+    const promptText = getFactQuestionText(targetFact, stage)
 
     speakVoice(promptText, () => {
       setQuestionStartTime(Date.now())
@@ -283,9 +299,18 @@ export default function LifeMemorySession({
     })
   }
 
+  const promptCurrentQuestion = (stage: RetrievalStage = retrievalStage) => {
+    promptQuestionAtIndex(currentFactIndex, stage)
+  }
+
   // Trigger demo audio playback and analysis
-  const triggerDemoAnswer = async (stage: RetrievalStage) => {
-    if (!currentFact) return
+  const triggerDemoAnswer = async (
+    stage: RetrievalStage = retrievalStage,
+    factIndex: number = currentFactIndex,
+  ) => {
+    const targetFact = scorableFacts[factIndex]
+    if (!targetFact) return
+
     stopSpeech()
     stopListening()
     if (activeAudioRef.current) {
@@ -295,17 +320,17 @@ export default function LifeMemorySession({
       activeAudioRef.current = null
     }
 
+    // Snappy natural pause (250ms) instead of sluggish delay
     setElderThinking(true)
-    const thinkDelay = 1100 + Math.random() * 500
-    await new Promise((r) => setTimeout(r, thinkDelay))
+    await new Promise((r) => setTimeout(r, 250))
     setElderThinking(false)
 
     const scenarioId = setup.patientId.replace("demo_", "").toLowerCase()
     const candidateUrls = [
-      `/demo/audio/${scenarioId}/current/${currentFact.id}_${stage}.wav`,
-      `/demo/audio/${scenarioId}/current/${currentFact.id}_free.wav`,
-      `/demo/audio/${scenarioId}/current/${currentFact.id}_cued.wav`,
-      `/demo/audio/${scenarioId}/current/${currentFact.id}_recognition.wav`,
+      `/demo/audio/${scenarioId}/current/${targetFact.id}_${stage}.wav`,
+      `/demo/audio/${scenarioId}/current/${targetFact.id}_free.wav`,
+      `/demo/audio/${scenarioId}/current/${targetFact.id}_cued.wav`,
+      `/demo/audio/${scenarioId}/current/${targetFact.id}_recognition.wav`,
     ]
 
     let validUrl: string | null = null
@@ -321,6 +346,20 @@ export default function LifeMemorySession({
         }
       } catch {}
     }
+
+    // Pre-determine recognized text immediately so we never block on slow networks
+    let recognizedText = targetFact.verifiedAnswer
+    try {
+      const scriptRes = await fetch(
+        `/demo/scenarios/${scenarioId}/answers_script.json`,
+      )
+      if (scriptRes.ok) {
+        const scriptData = await scriptRes.json()
+        if (scriptData[targetFact.id]?.spoken) {
+          recognizedText = scriptData[targetFact.id].spoken
+        }
+      }
+    } catch {}
 
     if (validUrl && audioBlob) {
       try {
@@ -347,59 +386,53 @@ export default function LifeMemorySession({
           setTimeout(finish, 6500)
         })
 
-        let recognizedText = currentFact.verifiedAnswer
-        let speechRateWpm: number | undefined
-        let pauseCount: number | undefined
-        let snrDb = scenarioId === "narayan" ? 7.2 : 21.4
+        // Instantly display transcript and latency without lag
+        setTranscript(recognizedText)
+        setLatencyMs(250)
 
+        // Non-blocking background telemetry for audio feature inspector
         try {
           const formData = new FormData()
-          formData.append("audio", audioBlob, `${currentFact.id}_${stage}.wav`)
-          const analysisRes = await fetch(
-            "http://localhost:8001/api/analyze-audio",
-            {
-              method: "POST",
-              body: formData,
-            },
-          )
-          if (analysisRes.ok) {
-            const data = await analysisRes.json()
-            if (data.transcription?.text) {
-              recognizedText = data.transcription.text
-            }
-            speechRateWpm = data.speech_features?.speech_rate_wpm
-            pauseCount = data.speech_features?.pause_count
-            snrDb = data.audio?.snr_db || snrDb
-          }
+          formData.append("audio", audioBlob, `${targetFact.id}_${stage}.wav`)
+          fetch("http://localhost:8001/api/analyze-audio", {
+            method: "POST",
+            body: formData,
+          })
+            .then((r) => (r.ok ? r.json() : null))
+            .then((data) => {
+              if (data) {
+                onInspectorUpdate?.({
+                  scenarioId,
+                  activeFactId: targetFact.id,
+                  activeStage: stage,
+                  rawAudio: {
+                    durationSeconds: data.audio?.duration_seconds || 2.5,
+                    snrDb:
+                      data.audio?.snr_db ||
+                      (scenarioId === "narayan" ? 7.2 : 21.4),
+                    speechRateWpm: data.speech_features?.speech_rate_wpm,
+                    pauseCount: data.speech_features?.pause_count,
+                  },
+                  asr: {
+                    transcript: data.transcription?.text || recognizedText,
+                    detectedLanguage: data.transcription?.language || lang,
+                    confidence:
+                      data.transcription?.language_probability || 0.95,
+                  },
+                  speechFeatures: {
+                    jitter: data.acoustic_features?.jitter || 0.015,
+                    shimmer: data.acoustic_features?.shimmer || 0.042,
+                    pitchVariance: data.acoustic_features?.f0_std || 25.1,
+                  },
+                  timestamp: new Date().toISOString(),
+                })
+              }
+            })
+            .catch(() => {})
         } catch {}
 
-        setTranscript(recognizedText)
-        setLatencyMs(Math.round(thinkDelay))
-
-        onInspectorUpdate?.({
-          scenarioId,
-          activeFactId: currentFact.id,
-          activeStage: stage,
-          rawAudio: {
-            durationSeconds: 2.5,
-            snrDb,
-            speechRateWpm,
-            pauseCount,
-          },
-          asr: {
-            transcript: recognizedText,
-            detectedLanguage: lang,
-            confidence: 0.96,
-          },
-          speechFeatures: {
-            jitter: 0.015,
-            shimmer: 0.042,
-            pitchVariance: 25.1,
-          },
-          timestamp: new Date().toISOString(),
-        })
-
-        await evaluateAnswer(recognizedText)
+        // Instantly evaluate and advance smoothly
+        await evaluateAnswer(recognizedText, targetFact)
         return
       } catch (err) {
         console.warn(
@@ -410,14 +443,14 @@ export default function LifeMemorySession({
     }
 
     // High clarity spoken voice fallback if no recorded audio file exists
-    const fallbackAnswer = currentFact.verifiedAnswer
+    const fallbackAnswer = targetFact.verifiedAnswer
     setTranscript(fallbackAnswer)
     setDemoAudioPlaying(true)
     speakVoice(
       fallbackAnswer,
       async () => {
         setDemoAudioPlaying(false)
-        await evaluateAnswer(fallbackAnswer)
+        await evaluateAnswer(fallbackAnswer, targetFact)
       },
       "patient",
     )
@@ -440,12 +473,12 @@ export default function LifeMemorySession({
         const data = await res.json()
         const recognizedText = data.transcription?.text || ""
         setTranscript(recognizedText)
-        await evaluateAnswer(recognizedText)
+        await evaluateAnswer(recognizedText, currentFact)
       } else {
-        await evaluateAnswer(currentFact.verifiedAnswer)
+        await evaluateAnswer(currentFact.verifiedAnswer, currentFact)
       }
     } catch {
-      await evaluateAnswer(currentFact.verifiedAnswer)
+      await evaluateAnswer(currentFact.verifiedAnswer, currentFact)
     } finally {
       setIsEvaluating(false)
     }
@@ -462,121 +495,123 @@ export default function LifeMemorySession({
 
   const handleFinishPractice = () => {
     setPhase("testing")
-    setCurrentFactIndex(0)
-    promptCurrentQuestion("free")
+    promptQuestionAtIndex(0, "free")
   }
 
   // Answer Evaluation against Backend Life Memory Match Engine
-  const evaluateAnswer = async (spokenText: string) => {
-    if (!currentFact) return
+  const evaluateAnswer = async (
+    spokenText: string,
+    targetFact: LifeFactItem = scorableFacts[currentFactIndex],
+  ) => {
+    if (!targetFact) return
     setIsEvaluating(true)
 
+    // Instant local evaluation
+    const cleanSpoken = spokenText.toLowerCase().trim()
+    const cleanTarget = targetFact.verifiedAnswer.toLowerCase().trim()
+    const aliases = (targetFact.acceptedAliases || []).map((a) =>
+      a.toLowerCase().trim(),
+    )
+    const isLocalMatch =
+      cleanSpoken.includes(cleanTarget) ||
+      cleanTarget.includes(cleanSpoken) ||
+      aliases.some((a) => cleanSpoken.includes(a) || a.includes(cleanSpoken))
+
+    let isCorrect = isLocalMatch
+    let credit = isCorrect
+      ? retrievalStage === "free"
+        ? 1.0
+        : retrievalStage === "cued"
+          ? 0.5
+          : 0.25
+      : 0.0
+
+    // Fast server evaluation attempt with 600ms timeout
     try {
+      const controller = new AbortController()
+      const timeoutId = setTimeout(() => controller.abort(), 600)
       const res = await fetch("http://localhost:8001/api/match-life-memory", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
+        signal: controller.signal,
         body: JSON.stringify({
           transcript: spokenText,
-          target_answer: currentFact.verifiedAnswer,
-          aliases: currentFact.acceptedAliases || [],
+          target_answer: targetFact.verifiedAnswer,
+          aliases: targetFact.acceptedAliases || [],
           stage: retrievalStage,
-          distractors: currentFact.distractors || [],
+          distractors: targetFact.distractors || [],
           fact_type:
-            currentFact.category === "recent_event" ? "recent" : "remote",
+            targetFact.category === "recent_event" ? "recent" : "remote",
           lang,
-          latency_ms: latencyMs || 1500,
+          latency_ms: latencyMs || 250,
         }),
       })
-
-      let result
+      clearTimeout(timeoutId)
       if (res.ok) {
-        result = await res.json()
+        const result = await res.json()
+        isCorrect = result.is_correct
+        credit = result.credit
+      }
+    } catch {}
+
+    const evaluatedItem = {
+      fact_id: targetFact.id,
+      category: targetFact.category,
+      is_recent_event: targetFact.category === "recent_event",
+      question: getFactQuestionText(targetFact, retrievalStage),
+      target_answer: targetFact.verifiedAnswer,
+      transcript: spokenText,
+      credit,
+      is_correct: isCorrect,
+      is_partial: false,
+      stage_reached: retrievalStage,
+      match_type: isCorrect ? "exact" : "none",
+      metadata: { latency_ms: latencyMs || 250 },
+    }
+
+    if (isCorrect) {
+      // Matched! Positive neutral acknowledgment and proceed to next fact
+      setEvaluationFeedback("Recorded.")
+      const updatedResults = [...sessionResults, evaluatedItem]
+      setSessionResults(updatedResults)
+
+      setTimeout(() => {
+        advanceToNextFact(updatedResults)
+      }, 500)
+    } else {
+      // Did not match
+      if (retrievalStage === "free" && targetFact.cue) {
+        // Escalation to Stage 2: Cued Recall
+        setEvaluationFeedback("Let us try with a hint.")
+        setTimeout(() => {
+          promptQuestionAtIndex(currentFactIndex, "cued")
+        }, 500)
+      } else if (
+        retrievalStage !== "recognition" &&
+        (targetFact.distractors || []).length >= 2
+      ) {
+        // Escalation to Stage 3: Recognition
+        setEvaluationFeedback("Here are three options.")
+        setTimeout(() => {
+          promptQuestionAtIndex(currentFactIndex, "recognition")
+        }, 500)
       } else {
-        // Resilient client-side fallback if server offline
-        const cleanSpoken = spokenText.toLowerCase().trim()
-        const cleanTarget = currentFact.verifiedAnswer.toLowerCase().trim()
-        const isMatch = cleanSpoken.includes(cleanTarget)
-        result = {
-          is_correct: isMatch,
-          is_partial: false,
-          credit: isMatch
-            ? retrievalStage === "free"
-              ? 1.0
-              : retrievalStage === "cued"
-                ? 0.5
-                : 0.25
-            : 0.0,
-          stage_reached: retrievalStage,
-          match_type: isMatch ? "exact" : "none",
-          confidence: 0.9,
-          matched_text: isMatch ? cleanTarget : "",
-          reason: isMatch ? "Client fallback match" : "Incorrect",
-        }
-      }
-
-      const evaluatedItem = {
-        fact_id: currentFact.id,
-        category: currentFact.category,
-        is_recent_event: currentFact.category === "recent_event",
-        question: currentFact.defaultPrompt?.[lang] || currentFact.questionText,
-        target_answer: currentFact.verifiedAnswer,
-        transcript: spokenText,
-        credit: result.credit,
-        is_correct: result.is_correct,
-        is_partial: result.is_partial,
-        stage_reached: retrievalStage,
-        match_type: result.match_type,
-        metadata: { latency_ms: latencyMs || 1500 },
-      }
-
-      if (result.is_correct) {
-        // Matched! Positive neutral acknowledgment and proceed to next fact
-        setEvaluationFeedback("Recorded.")
+        // Final attempt failed
         const updatedResults = [...sessionResults, evaluatedItem]
         setSessionResults(updatedResults)
-
         setTimeout(() => {
           advanceToNextFact(updatedResults)
-        }, 1200)
-      } else {
-        // Did not match
-        if (retrievalStage === "free" && currentFact.cue) {
-          // Escalation to Stage 2: Cued Recall
-          setEvaluationFeedback("Let us try with a hint.")
-          setTimeout(() => {
-            promptCurrentQuestion("cued")
-          }, 1200)
-        } else if (
-          retrievalStage !== "recognition" &&
-          (currentFact.distractors || []).length >= 2
-        ) {
-          // Escalation to Stage 3: Recognition
-          setEvaluationFeedback("Here are three options.")
-          setTimeout(() => {
-            promptCurrentQuestion("recognition")
-          }, 1200)
-        } else {
-          // Final attempt failed
-          const updatedResults = [...sessionResults, evaluatedItem]
-          setSessionResults(updatedResults)
-          setTimeout(() => {
-            advanceToNextFact(updatedResults)
-          }, 1200)
-        }
+        }, 500)
       }
-    } catch (e) {
-      console.warn("Evaluation failed, using fallback:", e)
-      advanceToNextFact(sessionResults)
-    } finally {
-      setIsEvaluating(false)
     }
+    setIsEvaluating(false)
   }
 
   // Advance to next fact or finish session
   const advanceToNextFact = async (currentResults: any[]) => {
-    if (currentFactIndex + 1 < scorableFacts.length) {
-      setCurrentFactIndex((prev) => prev + 1)
-      promptCurrentQuestion("free")
+    const nextIndex = currentFactIndex + 1
+    if (nextIndex < scorableFacts.length) {
+      promptQuestionAtIndex(nextIndex, "free")
     } else {
       // Completed all facts!
       setPhase("finished")
@@ -953,8 +988,7 @@ export default function LifeMemorySession({
             <div className="text-center py-6 space-y-4">
               <h2 className="text-2xl sm:text-3xl font-extrabold text-gray-900 leading-snug">
                 {retrievalStage === "free" &&
-                  (currentFact.defaultPrompt?.[lang] ||
-                    currentFact.questionText)}
+                  getFactQuestionText(currentFact, "free")}
                 {retrievalStage === "cued" && (
                   <span className="text-amber-800">
                     Hint:{" "}
@@ -977,7 +1011,7 @@ export default function LifeMemorySession({
                           <button
                             key={i}
                             type="button"
-                            onClick={() => evaluateAnswer(opt)}
+                            onClick={() => evaluateAnswer(opt, currentFact)}
                             className="p-3 bg-white border-2 border-indigo-200 hover:border-indigo-600 rounded-xl font-bold text-sm text-indigo-900 shadow-sm"
                           >
                             {opt}
