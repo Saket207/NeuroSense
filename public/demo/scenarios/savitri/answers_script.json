@@ -1,0 +1,50 @@
+{
+  "fact_1": {
+    "stage": "free",
+    "spoken": "Deepa, my daughter."
+  },
+  "fact_2": {
+    "stage": "free",
+    "spoken": "Karan."
+  },
+  "fact_3": {
+    "stage": "free",
+    "spoken": "Madhavan."
+  },
+  "fact_4": {
+    "stage": "free",
+    "spoken": "I was born in Kottayam."
+  },
+  "fact_5": {
+    "stage": "cued",
+    "spoken": "Nineteen seventy two."
+  },
+  "fact_6": {
+    "stage": "cued",
+    "spoken": "I worked as a Nurse."
+  },
+  "fact_7": {
+    "stage": "free",
+    "spoken": "Appam and stew."
+  },
+  "fact_8": {
+    "stage": "cued",
+    "spoken": "Onam."
+  },
+  "fact_9": {
+    "stage": "recognition",
+    "spoken": "Mary."
+  },
+  "fact_10": {
+    "stage": "free",
+    "spoken": "St Jude Church."
+  },
+  "fact_recent_1": {
+    "stage": "cued",
+    "spoken": "Sunil came."
+  },
+  "fact_recent_2": {
+    "stage": "recognition",
+    "spoken": "Lalbagh."
+  }
+}

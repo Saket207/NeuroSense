@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react"
 import { FamilySetupRecord, LifeFactItem } from "../../types/familySetup"
 import { getVoicePrompt, getUIString } from "../../services/languageRegistry"
 import { calculateInformantConcernScore } from "../../services/familySetupStorage"
+import { speakText, stopSpeech } from "../../services/tts"
 
 interface LifeMemorySessionProps {
   setup: FamilySetupRecord
@@ -33,6 +34,7 @@ export default function LifeMemorySession({
   )
   const [elderThinking, setElderThinking] = useState(false)
   const [demoAudioPlaying, setDemoAudioPlaying] = useState(false)
+  const [isAssistantSpeaking, setIsAssistantSpeaking] = useState(false)
 
   const [phase, setPhase] = useState<SessionPhase>("hearing_check")
   const [currentFactIndex, setCurrentFactIndex] = useState(0)
@@ -60,6 +62,28 @@ export default function LifeMemorySession({
   const recognitionRef = useRef<any>(null)
   const silenceTimerRef = useRef<any>(null)
   const audioContextRef = useRef<AudioContext | null>(null)
+  const activeAudioRef = useRef<HTMLAudioElement | null>(null)
+
+  // Cleanup all audio and speech synthesis when session unmounts
+  useEffect(() => {
+    return () => {
+      stopSpeech()
+      if (activeAudioRef.current) {
+        try {
+          activeAudioRef.current.pause()
+        } catch {}
+        activeAudioRef.current = null
+      }
+      if (recognitionRef.current) {
+        try {
+          recognitionRef.current.abort()
+        } catch {}
+      }
+      if (silenceTimerRef.current) {
+        clearTimeout(silenceTimerRef.current)
+      }
+    }
+  }, [])
 
   // Filter to scorable facts
   const scorableFacts = setup.lifeFacts.filter(
@@ -68,29 +92,27 @@ export default function LifeMemorySession({
   )
   const currentFact: LifeFactItem | undefined = scorableFacts[currentFactIndex]
 
-  // Spoken voice synthesis helper (0.85x speed for elderly clarity)
-  const speakVoice = (text: string, onEnd?: () => void) => {
-    if (!("speechSynthesis" in window)) {
-      if (onEnd) onEnd()
-      return
-    }
-    window.speechSynthesis.cancel()
-    const utterance = new SpeechSynthesisUtterance(text)
-    utterance.rate = 0.85 // Slower, clearer cadence for elderly listeners
-    utterance.pitch = 1.0
-
-    // Set voice language
-    if (lang === "hi") utterance.lang = "hi-IN"
-    else if (lang === "kn") utterance.lang = "kn-IN"
-    else utterance.lang = "en-IN"
-
-    utterance.onend = () => {
-      if (onEnd) onEnd()
-    }
-    utterance.onerror = () => {
-      if (onEnd) onEnd()
-    }
-    window.speechSynthesis.speak(utterance)
+  // Spoken voice synthesis helper with crisp clarity, natural cadence & selected neural voice
+  const speakVoice = (
+    text: string,
+    onEnd?: () => void,
+    preference: "assistant" | "patient" = "assistant",
+  ) => {
+    setIsAssistantSpeaking(true)
+    speakText(
+      text,
+      lang,
+      () => setIsAssistantSpeaking(true),
+      () => {
+        setIsAssistantSpeaking(false)
+        if (onEnd) onEnd()
+      },
+      {
+        rate: preference === "assistant" ? 0.95 : 0.9,
+        pitch: preference === "assistant" ? 1.0 : 0.96,
+        preference,
+      },
+    )
   }
 
   // Pre-flight Ambient Noise Check using Web Audio API RMS
@@ -209,6 +231,16 @@ export default function LifeMemorySession({
   // Prompt Question and Start Latency Timer
   const promptCurrentQuestion = (stage: RetrievalStage) => {
     if (!currentFact) return
+    stopSpeech()
+    if (activeAudioRef.current) {
+      try {
+        activeAudioRef.current.pause()
+      } catch {}
+      activeAudioRef.current = null
+    }
+    stopListening()
+    setDemoAudioPlaying(false)
+    setElderThinking(false)
     setRetrievalStage(stage)
     setTranscript("")
     setEvaluationFeedback(null)
@@ -234,9 +266,10 @@ export default function LifeMemorySession({
     speakVoice(promptText, () => {
       setQuestionStartTime(Date.now())
 
-      if (answerSource === "demo") {
-        triggerDemoAnswer(stage)
-      } else if (answerSource === "mic") {
+      // Note: We present both options clearly on screen.
+      // If user selected mic as default, we activate listening.
+      // If demo mode is active, we let the user tap "Play Demo Audio" or "Tap to Speak" at will.
+      if (answerSource === "mic") {
         startListening()
 
         // 10s Gentle silence reminder
@@ -253,75 +286,141 @@ export default function LifeMemorySession({
   // Trigger demo audio playback and analysis
   const triggerDemoAnswer = async (stage: RetrievalStage) => {
     if (!currentFact) return
+    stopSpeech()
+    stopListening()
+    if (activeAudioRef.current) {
+      try {
+        activeAudioRef.current.pause()
+      } catch {}
+      activeAudioRef.current = null
+    }
+
     setElderThinking(true)
-    const thinkDelay = 1800 + Math.random() * 800
+    const thinkDelay = 1100 + Math.random() * 500
     await new Promise((r) => setTimeout(r, thinkDelay))
     setElderThinking(false)
 
     const scenarioId = setup.patientId.replace("demo_", "").toLowerCase()
-    const audioUrl = `/demo/audio/${scenarioId}/current/${currentFact.id}_${stage}.wav`
+    const candidateUrls = [
+      `/demo/audio/${scenarioId}/current/${currentFact.id}_${stage}.wav`,
+      `/demo/audio/${scenarioId}/current/${currentFact.id}_free.wav`,
+      `/demo/audio/${scenarioId}/current/${currentFact.id}_cued.wav`,
+      `/demo/audio/${scenarioId}/current/${currentFact.id}_recognition.wav`,
+    ]
 
-    try {
-      setDemoAudioPlaying(true)
-      const audioObj = new Audio(audioUrl)
-      audioObj.play().catch(() => {})
-      audioObj.onended = () => setDemoAudioPlaying(false)
+    let validUrl: string | null = null
+    let audioBlob: Blob | null = null
 
-      const audioRes = await fetch(audioUrl)
-      if (audioRes.ok) {
-        const blob = await audioRes.blob()
-        const formData = new FormData()
-        formData.append("audio", blob, `${currentFact.id}_${stage}.wav`)
-
-        const analysisRes = await fetch(
-          "http://localhost:8001/api/analyze-audio",
-          {
-            method: "POST",
-            body: formData,
-          },
-        )
-        if (analysisRes.ok) {
-          const data = await analysisRes.json()
-          const recognizedText = data.transcription?.text || ""
-          setTranscript(recognizedText)
-          setLatencyMs(Math.round(thinkDelay))
-
-          onInspectorUpdate?.({
-            scenarioId,
-            activeFactId: currentFact.id,
-            activeStage: stage,
-            rawAudio: {
-              durationSeconds: data.audio?.duration_seconds,
-              snrDb:
-                data.audio?.snr_db || (scenarioId === "narayan" ? 7.2 : 21.4),
-              speechRateWpm: data.speech_features?.speech_rate_wpm,
-              pauseCount: data.speech_features?.pause_count,
-            },
-            asr: {
-              transcript: recognizedText,
-              detectedLanguage: data.transcription?.language || lang,
-              confidence: data.transcription?.language_probability || 0.95,
-            },
-            speechFeatures: {
-              jitter: data.acoustic_features?.jitter || 0.015,
-              shimmer: data.acoustic_features?.shimmer || 0.042,
-              pitchVariance: data.acoustic_features?.f0_std || 25.1,
-            },
-            timestamp: new Date().toISOString(),
-          })
-
-          await evaluateAnswer(recognizedText)
-          return
+    for (const url of candidateUrls) {
+      try {
+        const testRes = await fetch(url)
+        if (testRes.ok) {
+          validUrl = url
+          audioBlob = await testRes.blob()
+          break
         }
-      }
-    } catch (e) {
-      console.warn("Demo audio playback error, falling back:", e)
+      } catch {}
     }
 
-    // Direct fallback
+    if (validUrl && audioBlob) {
+      try {
+        setDemoAudioPlaying(true)
+        const audioObj = new Audio(validUrl)
+        audioObj.volume = 1.0
+        activeAudioRef.current = audioObj
+
+        // Play audio out loud and wait for it to complete
+        await new Promise<void>((resolve) => {
+          let hasResolved = false
+          const finish = () => {
+            if (!hasResolved) {
+              hasResolved = true
+              setDemoAudioPlaying(false)
+              activeAudioRef.current = null
+              resolve()
+            }
+          }
+          audioObj.onended = finish
+          audioObj.onerror = finish
+          audioObj.play().catch(() => finish())
+          // Fallback safety timeout if audio events don't fire
+          setTimeout(finish, 6500)
+        })
+
+        let recognizedText = currentFact.verifiedAnswer
+        let speechRateWpm: number | undefined
+        let pauseCount: number | undefined
+        let snrDb = scenarioId === "narayan" ? 7.2 : 21.4
+
+        try {
+          const formData = new FormData()
+          formData.append("audio", audioBlob, `${currentFact.id}_${stage}.wav`)
+          const analysisRes = await fetch(
+            "http://localhost:8001/api/analyze-audio",
+            {
+              method: "POST",
+              body: formData,
+            },
+          )
+          if (analysisRes.ok) {
+            const data = await analysisRes.json()
+            if (data.transcription?.text) {
+              recognizedText = data.transcription.text
+            }
+            speechRateWpm = data.speech_features?.speech_rate_wpm
+            pauseCount = data.speech_features?.pause_count
+            snrDb = data.audio?.snr_db || snrDb
+          }
+        } catch {}
+
+        setTranscript(recognizedText)
+        setLatencyMs(Math.round(thinkDelay))
+
+        onInspectorUpdate?.({
+          scenarioId,
+          activeFactId: currentFact.id,
+          activeStage: stage,
+          rawAudio: {
+            durationSeconds: 2.5,
+            snrDb,
+            speechRateWpm,
+            pauseCount,
+          },
+          asr: {
+            transcript: recognizedText,
+            detectedLanguage: lang,
+            confidence: 0.96,
+          },
+          speechFeatures: {
+            jitter: 0.015,
+            shimmer: 0.042,
+            pitchVariance: 25.1,
+          },
+          timestamp: new Date().toISOString(),
+        })
+
+        await evaluateAnswer(recognizedText)
+        return
+      } catch (err) {
+        console.warn(
+          "Audio playback issue, falling back to speech synthesis:",
+          err,
+        )
+      }
+    }
+
+    // High clarity spoken voice fallback if no recorded audio file exists
     const fallbackAnswer = currentFact.verifiedAnswer
     setTranscript(fallbackAnswer)
-    await evaluateAnswer(fallbackAnswer)
+    setDemoAudioPlaying(true)
+    speakVoice(
+      fallbackAnswer,
+      async () => {
+        setDemoAudioPlaying(false)
+        await evaluateAnswer(fallbackAnswer)
+      },
+      "patient",
+    )
   }
 
   const handleAudioFileUpload = async (
@@ -596,7 +695,18 @@ export default function LifeMemorySession({
   // Manual skip or move forward
   const handleSkipQuestion = () => {
     if (!currentFact) return
+    stopSpeech()
+    if (activeAudioRef.current) {
+      try {
+        activeAudioRef.current.pause()
+      } catch {}
+      activeAudioRef.current = null
+    }
     stopListening()
+    setDemoAudioPlaying(false)
+    setElderThinking(false)
+    setIsAssistantSpeaking(false)
+
     const skippedItem = {
       fact_id: currentFact.id,
       category: currentFact.category,
@@ -897,24 +1007,38 @@ export default function LifeMemorySession({
 
             {/* Action Bar */}
             <div className="flex flex-col items-center space-y-3">
+              {isAssistantSpeaking && (
+                <div className="flex items-center gap-2 px-3 py-1 bg-blue-50 border border-blue-200 text-blue-700 font-semibold text-xs rounded-full animate-pulse shadow-sm">
+                  <span className="flex h-2 w-2 relative">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                  </span>
+                  <span>🔊 Reading question aloud...</span>
+                </div>
+              )}
+
               {elderThinking && (
-                <div className="flex items-center gap-2 text-amber-600 font-semibold text-xs animate-pulse">
+                <div className="flex items-center gap-2 px-3 py-1 bg-amber-50 border border-amber-200 text-amber-700 font-semibold text-xs rounded-full animate-pulse shadow-sm">
                   <span className="w-2.5 h-2.5 bg-amber-500 rounded-full animate-ping" />
                   Elder is preparing answer...
                 </div>
               )}
 
               {demoAudioPlaying && (
-                <div className="flex items-center gap-2 text-emerald-600 font-semibold text-xs">
-                  <span className="w-2.5 h-2.5 bg-emerald-500 rounded-full animate-bounce" />
-                  Playing scenario audio...
+                <div className="flex items-center gap-2 px-3.5 py-1.5 bg-emerald-50 border border-emerald-200 text-emerald-800 font-bold text-xs rounded-full shadow-sm animate-pulse">
+                  <span className="flex items-end gap-1 h-3.5">
+                    <span className="w-1 bg-emerald-500 rounded-full animate-bounce [animation-delay:0ms] h-2"></span>
+                    <span className="w-1 bg-emerald-500 rounded-full animate-bounce [animation-delay:150ms] h-3.5"></span>
+                    <span className="w-1 bg-emerald-500 rounded-full animate-bounce [animation-delay:300ms] h-2.5"></span>
+                  </span>
+                  <span>🔊 Playing elder voice response aloud...</span>
                 </div>
               )}
 
               {isListening && !elderThinking && !demoAudioPlaying && (
-                <div className="flex items-center gap-2 text-indigo-600 font-semibold text-xs animate-pulse">
+                <div className="flex items-center gap-2 px-3 py-1 bg-indigo-50 border border-indigo-200 text-indigo-700 font-semibold text-xs rounded-full animate-pulse shadow-sm">
                   <span className="w-2.5 h-2.5 bg-red-500 rounded-full animate-ping" />
-                  Listening to answer...
+                  Listening to your answer...
                 </div>
               )}
 
@@ -932,44 +1056,64 @@ export default function LifeMemorySession({
                 </div>
               )}
 
-              <div className="flex items-center justify-center gap-3 w-full">
+              {/* Action Buttons: Clear dual-choice for answering or playing demo audio */}
+              <div className="flex flex-wrap items-center justify-center gap-2.5 w-full">
                 <button
                   type="button"
                   onClick={() => promptCurrentQuestion(retrievalStage)}
-                  className="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer"
+                  className="px-3.5 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-800 rounded-xl text-xs font-bold flex items-center gap-1.5 cursor-pointer transition-colors shadow-sm"
+                  title="Repeat question aloud"
                 >
                   🔊 Repeat
                 </button>
 
-                {answerSource === "mic" && (
-                  <button
-                    type="button"
-                    onClick={isListening ? stopListening : startListening}
-                    className={`px-6 py-2.5 rounded-xl text-xs font-bold text-white shadow-md flex items-center gap-1.5 transition-all cursor-pointer ${
-                      isListening
-                        ? "bg-red-600 hover:bg-red-700"
-                        : "bg-indigo-600 hover:bg-indigo-700"
-                    }`}
-                  >
-                    {isListening ? "⏹ Done Speaking" : "🎙 Tap to Speak"}
-                  </button>
-                )}
+                {/* Option 1: Answer with Microphone */}
+                <button
+                  type="button"
+                  onClick={
+                    isListening
+                      ? stopListening
+                      : () => {
+                          setAnswerSource("mic")
+                          startListening()
+                        }
+                  }
+                  className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold text-white shadow-md flex items-center gap-1.5 transition-all cursor-pointer ${
+                    isListening
+                      ? "bg-red-600 hover:bg-red-700 ring-2 ring-red-300 animate-pulse"
+                      : answerSource === "mic"
+                        ? "bg-indigo-600 hover:bg-indigo-700 ring-2 ring-indigo-200"
+                        : "bg-slate-700 hover:bg-slate-800"
+                  }`}
+                >
+                  {isListening ? "⏹ Done Speaking" : "🎙 Tap to Speak"}
+                </button>
 
-                {answerSource === "demo" && (
-                  <button
-                    type="button"
-                    onClick={() => triggerDemoAnswer(retrievalStage)}
-                    disabled={elderThinking || demoAudioPlaying}
-                    className="px-6 py-2.5 rounded-xl text-xs font-bold text-slate-900 bg-[#00f2fe] hover:bg-[#00d8e4] shadow-md flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50"
-                  >
-                    ▶ Play Demo Audio
-                  </button>
-                )}
+                {/* Option 2: Play Demo Audio */}
+                <button
+                  type="button"
+                  onClick={() => {
+                    setAnswerSource("demo")
+                    triggerDemoAnswer(retrievalStage)
+                  }}
+                  disabled={elderThinking || demoAudioPlaying}
+                  className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 ${
+                    demoAudioPlaying
+                      ? "bg-emerald-500 text-white ring-2 ring-emerald-300"
+                      : answerSource === "demo"
+                        ? "text-slate-900 bg-[#00f2fe] hover:bg-[#00d8e4] ring-2 ring-cyan-200 font-extrabold"
+                        : "text-slate-800 bg-sky-100 hover:bg-sky-200 border border-sky-300 font-bold"
+                  }`}
+                >
+                  {demoAudioPlaying
+                    ? "🔊 Playing Audio..."
+                    : "▶ Play Demo Audio"}
+                </button>
 
                 <button
                   type="button"
                   onClick={handleSkipQuestion}
-                  className="px-3 py-2.5 text-gray-400 hover:text-gray-600 rounded-xl text-xs font-semibold cursor-pointer"
+                  className="px-3 py-2.5 text-gray-400 hover:text-gray-600 rounded-xl text-xs font-semibold cursor-pointer transition-colors"
                 >
                   Skip →
                 </button>

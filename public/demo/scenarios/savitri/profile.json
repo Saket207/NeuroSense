@@ -1,0 +1,435 @@
+{
+  "id": "setup_savitri_demo",
+  "patientId": "demo_savitri",
+  "version": 1,
+  "createdAt": "2026-11-25T01:28:57.758333",
+  "updatedAt": "2026-11-25T01:28:57.758333",
+  "elderProfile": {
+    "fullName": "Savitri Nair",
+    "age": 75,
+    "gender": "Female",
+    "languagesSpoken": [
+      "English",
+      "Malayalam"
+    ],
+    "preferredTestingLanguage": "en",
+    "dialectOrRegion": "Kerala / Urban Bengaluru",
+    "schoolingYears": 15,
+    "literacyStatus": "can_read_write",
+    "informantName": "Deepa (Daughter)",
+    "informantRelationship": "Child",
+    "informantMeetingFrequency": "several_per_week",
+    "livingArrangement": "with_family"
+  },
+  "lifeFacts": [
+    {
+      "id": "fact_1",
+      "factKey": "child_name",
+      "category": "people",
+      "questionText": "What is the name of your daughter?",
+      "defaultPrompt": {
+        "en": "What is the name of your daughter?",
+        "hi": "आपकी बेटी का नाम क्या है?",
+        "kn": "ನಿಮ್ಮ ಮಗಳ ಹೆಸರು?"
+      },
+      "verifiedAnswer": "Deepa",
+      "acceptedAliases": [
+        "Deepu"
+      ],
+      "cue": "Your daughter who is here today.",
+      "distractors": [
+        "Divya",
+        "Geetha"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_2",
+      "factKey": "grandchild_name",
+      "category": "people",
+      "questionText": "What is the name of your grandson?",
+      "defaultPrompt": {
+        "en": "What is the name of your grandson?",
+        "hi": "पोते का नाम?",
+        "kn": "ಮೊಮ್ಮಗನ ಹೆಸರು?"
+      },
+      "verifiedAnswer": "Karan",
+      "acceptedAliases": [
+        "Karun"
+      ],
+      "cue": "He plays tennis.",
+      "distractors": [
+        "Rohan",
+        "Varun"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_3",
+      "factKey": "spouse_name",
+      "category": "people",
+      "questionText": "What is your late husband's name?",
+      "defaultPrompt": {
+        "en": "Spouse name?",
+        "hi": "पति का नाम?",
+        "kn": "ಪತಿಯ ಹೆಸರು?"
+      },
+      "verifiedAnswer": "Madhavan",
+      "acceptedAliases": [
+        "Madhav"
+      ],
+      "cue": "Your husband.",
+      "distractors": [
+        "Narayanan",
+        "Menon"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_4",
+      "factKey": "native_village",
+      "category": "place",
+      "questionText": "Where were you born?",
+      "defaultPrompt": {
+        "en": "Where were you born?",
+        "hi": "जन्म कहाँ हुआ?",
+        "kn": "ಹುಟ್ಟೂರು?"
+      },
+      "verifiedAnswer": "Kottayam",
+      "acceptedAliases": [
+        "Kottayam town"
+      ],
+      "cue": "In central Kerala.",
+      "distractors": [
+        "Thrissur",
+        "Kochi"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_5",
+      "factKey": "wedding_year",
+      "category": "history",
+      "isNumeric": true,
+      "questionText": "What year were you married?",
+      "defaultPrompt": {
+        "en": "Wedding year?",
+        "hi": "शादी का साल?",
+        "kn": "ಮದುವೆ ವರ್ಷ?"
+      },
+      "verifiedAnswer": "1972",
+      "acceptedAliases": [
+        "72"
+      ],
+      "cue": "In the early seventies.",
+      "distractors": [
+        "1968",
+        "1978"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_6",
+      "factKey": "former_occupation",
+      "category": "history",
+      "questionText": "What career did you have?",
+      "defaultPrompt": {
+        "en": "What career did you have?",
+        "hi": "क्या नौकरी करते थे?",
+        "kn": "ಉದ್ಯೋಗ?"
+      },
+      "verifiedAnswer": "Nurse",
+      "acceptedAliases": [
+        "Head Nurse",
+        "Nursing"
+      ],
+      "cue": "You worked in the hospital.",
+      "distractors": [
+        "Doctor",
+        "Teacher"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_7",
+      "factKey": "favourite_food",
+      "category": "preference",
+      "questionText": "What is your favourite breakfast dish?",
+      "defaultPrompt": {
+        "en": "Favourite food?",
+        "hi": "पसंदीदा खाना?",
+        "kn": "ಇಷ್ಟದ ಊಟ?"
+      },
+      "verifiedAnswer": "Appam",
+      "acceptedAliases": [
+        "Appam and stew"
+      ],
+      "cue": "Traditional Kerala dish.",
+      "distractors": [
+        "Dosa",
+        "Idli"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_8",
+      "factKey": "family_festival",
+      "category": "preference",
+      "questionText": "Which festival do you celebrate most?",
+      "defaultPrompt": {
+        "en": "Festival?",
+        "hi": "त्यौहार?",
+        "kn": "ಹಬ್ಬ?"
+      },
+      "verifiedAnswer": "Onam",
+      "acceptedAliases": [
+        "Thiruvonam"
+      ],
+      "cue": "Harvest festival.",
+      "distractors": [
+        "Vishu",
+        "Christmas"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_9",
+      "factKey": "close_friend",
+      "category": "people",
+      "questionText": "What is your nursing friend's name?",
+      "defaultPrompt": {
+        "en": "Close friend?",
+        "hi": "दोस्त का नाम?",
+        "kn": "ಸ್ನೇಹಿತೆ?"
+      },
+      "verifiedAnswer": "Mary",
+      "acceptedAliases": [
+        "Mary sister"
+      ],
+      "cue": "She lives down the lane.",
+      "distractors": [
+        "Leela",
+        "Saramma"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_10",
+      "factKey": "nearby_landmark",
+      "category": "place",
+      "questionText": "What landmark is near your house?",
+      "defaultPrompt": {
+        "en": "Nearby landmark?",
+        "hi": "पास का लैंडमार्क?",
+        "kn": "ಸ್ಥಳ?"
+      },
+      "verifiedAnswer": "St Jude Church",
+      "acceptedAliases": [
+        "The church",
+        "St Jude"
+      ],
+      "cue": "The big church at the corner.",
+      "distractors": [
+        "Railway Station",
+        "Post Office"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_recent_1",
+      "factKey": "recent_visitor",
+      "category": "recent_event",
+      "isRecentEvent": true,
+      "eventDate": "2026-11-22",
+      "questionText": "Who visited us three days ago on Sunday?",
+      "defaultPrompt": {
+        "en": "Recent visitor?",
+        "hi": "हाल ही में कौन आया था?",
+        "kn": "ಬಂದವರು?"
+      },
+      "verifiedAnswer": "Sunil",
+      "acceptedAliases": [
+        "Sunil cousin"
+      ],
+      "cue": "Your cousin from Chennai.",
+      "distractors": [
+        "Rajesh",
+        "Mohan"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_recent_2",
+      "factKey": "recent_outing",
+      "category": "recent_event",
+      "isRecentEvent": true,
+      "eventDate": "2026-11-19",
+      "questionText": "Where did we go for an outing last Friday?",
+      "defaultPrompt": {
+        "en": "Recent outing?",
+        "hi": "कहाँ गए थे?",
+        "kn": "ಹೋದ ಜಾಗ?"
+      },
+      "verifiedAnswer": "Lalbagh",
+      "acceptedAliases": [
+        "Lalbagh garden",
+        "Lalbagh Botanical Garden"
+      ],
+      "cue": "The botanical garden with flower shows.",
+      "distractors": [
+        "Cubbon Park",
+        "Phoenix Mall"
+      ],
+      "isSensitive": false
+    }
+  ],
+  "dailyLifeQuestionnaire": [
+    {
+      "id": "item_1",
+      "domain": "memory",
+      "isSafetyItem": false,
+      "questionText": "Repeats same story or question",
+      "frequency": "sometimes",
+      "onset": "6_to_12_months"
+    },
+    {
+      "id": "item_2",
+      "domain": "memory",
+      "isSafetyItem": false,
+      "questionText": "Forgets recent events",
+      "frequency": "often",
+      "onset": "6_to_12_months"
+    },
+    {
+      "id": "item_3",
+      "domain": "memory",
+      "isSafetyItem": false,
+      "questionText": "Misplaces keys and spectacles",
+      "frequency": "sometimes",
+      "onset": "6_to_12_months"
+    },
+    {
+      "id": "item_4",
+      "domain": "orientation",
+      "isSafetyItem": true,
+      "questionText": "Gets disoriented",
+      "frequency": "rarely",
+      "onset": "6_to_12_months"
+    },
+    {
+      "id": "item_5",
+      "domain": "orientation",
+      "isSafetyItem": false,
+      "questionText": "Confused about dates",
+      "frequency": "sometimes",
+      "onset": "6_to_12_months"
+    },
+    {
+      "id": "item_6",
+      "domain": "daily_tasks_money",
+      "isSafetyItem": false,
+      "questionText": "Trouble handling money",
+      "frequency": "rarely",
+      "onset": "6_to_12_months"
+    },
+    {
+      "id": "item_7",
+      "domain": "daily_tasks_money",
+      "isSafetyItem": true,
+      "questionText": "Forgets medication",
+      "frequency": "sometimes",
+      "onset": "6_to_12_months"
+    },
+    {
+      "id": "item_8",
+      "domain": "language",
+      "isSafetyItem": false,
+      "questionText": "Word finding difficulty",
+      "frequency": "sometimes",
+      "onset": "6_to_12_months"
+    },
+    {
+      "id": "item_9",
+      "domain": "language",
+      "isSafetyItem": false,
+      "questionText": "Following conversations",
+      "frequency": "rarely",
+      "onset": "6_to_12_months"
+    },
+    {
+      "id": "item_10",
+      "domain": "memory",
+      "isSafetyItem": false,
+      "questionText": "Forgets acquaintances",
+      "frequency": "rarely",
+      "onset": "6_to_12_months"
+    },
+    {
+      "id": "item_11",
+      "domain": "daily_tasks_money",
+      "isSafetyItem": false,
+      "questionText": "Struggles with appliances",
+      "frequency": "rarely",
+      "onset": "6_to_12_months"
+    },
+    {
+      "id": "item_12",
+      "domain": "safety",
+      "isSafetyItem": true,
+      "questionText": "Leaves stove unattended",
+      "frequency": "never",
+      "onset": "not_sure"
+    },
+    {
+      "id": "item_13",
+      "domain": "behaviour_mood",
+      "isSafetyItem": false,
+      "questionText": "Change in mood",
+      "frequency": "rarely",
+      "onset": "6_to_12_months"
+    },
+    {
+      "id": "item_14",
+      "domain": "behaviour_mood",
+      "isSafetyItem": false,
+      "questionText": "Lost interest in hobbies",
+      "frequency": "rarely",
+      "onset": "6_to_12_months"
+    },
+    {
+      "id": "item_15",
+      "domain": "safety",
+      "isSafetyItem": true,
+      "questionText": "Impaired judgment",
+      "frequency": "never",
+      "onset": "not_sure"
+    },
+    {
+      "id": "item_16",
+      "domain": "safety",
+      "isSafetyItem": true,
+      "questionText": "Nocturnal wandering",
+      "frequency": "never",
+      "onset": "not_sure"
+    }
+  ],
+  "confounders": {
+    "hearingDifficulty": false,
+    "hasHearingAid": false,
+    "visionDifficulty": false,
+    "poorSleepRecently": false,
+    "recentBereavement": false,
+    "recentIllnessOrHospitalStay": false,
+    "sedatingMedicines": false,
+    "alcoholUse": false,
+    "todayStateTired": false,
+    "todayStateUnwellOrAnxious": false
+  },
+  "consent": {
+    "informantConsentGiven": true,
+    "informantConsentTimestamp": "2026-11-25T01:28:57.758333",
+    "informantConsentSignatureOrName": "Deepa Nair",
+    "elderSpokenAssentGiven": true,
+    "elderAssentTimestamp": "2026-11-25T01:28:57.758333"
+  }
+}

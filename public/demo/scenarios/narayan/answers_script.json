@@ -1,0 +1,50 @@
+{
+  "fact_1": {
+    "stage": "free",
+    "spoken": "ಏನು? ಕೇಳಿಸಲಿಲ್ಲ... ಶಶಿ."
+  },
+  "fact_2": {
+    "stage": "cued",
+    "spoken": "ದೀಪಕ್."
+  },
+  "fact_3": {
+    "stage": "free",
+    "spoken": "ಗಿರಿಜಮ್ಮ."
+  },
+  "fact_4": {
+    "stage": "free",
+    "spoken": "ಧಾರವಾಡ."
+  },
+  "fact_5": {
+    "stage": "recognition",
+    "spoken": "1973."
+  },
+  "fact_6": {
+    "stage": "free",
+    "spoken": "ಕಚೇರಿಯಲ್ಲಿ ಕ್ಲರ್ಕ್ ಕೆಲಸ."
+  },
+  "fact_7": {
+    "stage": "free",
+    "spoken": "ಧಾರವಾಡ ಪೇಡ."
+  },
+  "fact_8": {
+    "stage": "cued",
+    "spoken": "ದೀಪಾವಳಿ."
+  },
+  "fact_9": {
+    "stage": "free",
+    "spoken": "ಯಾರು ಅಂತ ನೆನಪಿಲ್ಲ... ಜೋಶಿ ಇರಬಹುದು."
+  },
+  "fact_10": {
+    "stage": "free",
+    "spoken": "ರೈಲ್ವೆ ಗೇಟ್."
+  },
+  "fact_recent_1": {
+    "stage": "free",
+    "spoken": "ಯಾರೂ ಬರಲಿಲ್ಲ ಅನ್ನಿಸುತ್ತೆ."
+  },
+  "fact_recent_2": {
+    "stage": "cued",
+    "spoken": "ಮಾರ್ಕೆಟ್."
+  }
+}
