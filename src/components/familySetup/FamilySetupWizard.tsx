@@ -13,6 +13,7 @@ import {
   validateLifeFactsForScreening,
 } from "../../services/familySetupStorage"
 import { getUIString } from "../../services/languageRegistry"
+import { DEMO_SCENARIOS } from "../../demo/scenarioRegistry"
 
 interface FamilySetupWizardProps {
   patientId: string
@@ -284,16 +285,27 @@ export default function FamilySetupWizard({
               onChange={(e) => setDemoScenarioChoice(e.target.value)}
               className="bg-white border border-amber-300 text-amber-950 text-xs rounded-lg px-2.5 py-1 font-medium cursor-pointer shadow-inner"
             >
-              <option value="lakshmi">Lakshmi (Kannada • Normal)</option>
-              <option value="ramesh">Ramesh (Hindi • Rural/3y)</option>
-              <option value="savitri">
-                Savitri (English • Progressive MCI)
-              </option>
-              <option value="abdul">Abdul (Hindi • Decline+Hazard)</option>
-              <option value="kamala">
-                Kamala (Kannada • Low Ed/High Recall)
-              </option>
-              <option value="narayan">Narayan (Kannada • Noise Check)</option>
+              <optgroup label="English Profiles (3)">
+                {DEMO_SCENARIOS.filter((s) => s.language === "en").map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name} ({s.languageName} • {s.designTier.toUpperCase()})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="Hindi Profiles (3)">
+                {DEMO_SCENARIOS.filter((s) => s.language === "hi").map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name} ({s.languageName} • {s.designTier.toUpperCase()})
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="Kannada Profiles (3)">
+                {DEMO_SCENARIOS.filter((s) => s.language === "kn").map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.name} ({s.languageName} • {s.designTier.toUpperCase()})
+                  </option>
+                ))}
+              </optgroup>
             </select>
             <button
               type="button"
