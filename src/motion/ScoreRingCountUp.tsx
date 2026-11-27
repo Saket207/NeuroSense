@@ -19,17 +19,21 @@ export default function ScoreRingCountUp({
   label = "Primary Biomarker Index",
   sublabel = "Latest Screening Score",
 }: ScoreRingCountUpProps) {
-  const targetScore = score !== null ? Math.min(100, Math.max(0, score)) : 88
+  const validScore = typeof score === "number" && !isNaN(score) ? score : 88
+  const targetScore = Math.min(100, Math.max(0, Math.round(validScore)))
   const [displayValue, setDisplayValue] = useState(0)
   const [hasAnimated, setHasAnimated] = useState(false)
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false)
+
+  const currentDisplay = isNaN(displayValue) ? targetScore : displayValue
 
   // Radial Ring Geometry
   const size = 96
   const strokeWidth = 8
   const radius = (size - strokeWidth) / 2
   const circumference = 2 * Math.PI * radius
-  const strokeDashoffset = circumference - (displayValue / 100) * circumference
+  const strokeDashoffset =
+    circumference - (currentDisplay / 100) * circumference
 
   useEffect(() => {
     if (typeof window === "undefined") return
@@ -81,7 +85,7 @@ export default function ScoreRingCountUp({
           </span>
           <div className="flex items-baseline gap-2 mt-1">
             <span className="text-5xl font-light text-[#1A1A1A] tracking-tight tabular-nums relative inline-block">
-              {displayValue}%{/* Gradient Shimmer Sweep on settle */}
+              {currentDisplay}%{/* Gradient Shimmer Sweep on settle */}
               {hasAnimated && !prefersReducedMotion && (
                 <span
                   className="absolute inset-0 bg-gradient-to-r from-transparent via-white/40 to-transparent animate-[shimmer_2s_infinite] pointer-events-none"
