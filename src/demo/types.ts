@@ -7,7 +7,7 @@
 
 import { FamilySetupRecord } from "../types/familySetup"
 
-export type DemoScenarioId = "lakshmi" | "ramesh" | "savitri" | "abdul" | "kamala" | "narayan"
+export type DemoScenarioId = "savitri" | "david" | "eleanor" | "ramesh" | "abdul" | "kavita" | "lakshmi" | "kamala" | "narayan"
 
 export type AutofillSpeed = "natural" | "fast" | "instant"
 

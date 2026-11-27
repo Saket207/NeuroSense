@@ -1,0 +1,312 @@
+{
+  "id": "setup_david_demo",
+  "patientId": "demo_david",
+  "version": 1,
+  "createdAt": "2026-11-27T01:00:00.000000",
+  "updatedAt": "2026-11-27T01:00:00.000000",
+  "elderProfile": {
+    "fullName": "David Richardson",
+    "age": 73,
+    "gender": "Male",
+    "languagesSpoken": [
+      "English"
+    ],
+    "preferredTestingLanguage": "en",
+    "dialectOrRegion": "South Mumbai / Urban Coastal",
+    "schoolingYears": 16,
+    "literacyStatus": "can_read_write",
+    "informantName": "Mark Richardson (Son)",
+    "informantRelationship": "Child",
+    "informantMeetingFrequency": "several_per_week",
+    "livingArrangement": "with_spouse"
+  },
+  "lifeFacts": [
+    {
+      "id": "fact_1",
+      "factKey": "child_name",
+      "category": "people",
+      "questionText": "What is the name of your son?",
+      "defaultPrompt": {
+        "en": "What is the name of your son?",
+        "hi": "आपके बेटे का क्या नाम है?",
+        "kn": "ನಿಮ್ಮ ಮಗನ ಹೆಸರು?"
+      },
+      "verifiedAnswer": "Mark",
+      "acceptedAliases": [
+        "Mark Richardson",
+        "Marcus"
+      ],
+      "cue": "Your son who works in architecture.",
+      "distractors": [
+        "Matthew",
+        "Michael"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_2",
+      "factKey": "grandchild_name",
+      "category": "people",
+      "questionText": "What is the name of your granddaughter?",
+      "defaultPrompt": {
+        "en": "What is the name of your granddaughter?",
+        "hi": "आपकी पोती का क्या नाम है?",
+        "kn": "ನಿಮ್ಮ ಮೊಮ್ಮಗಳ ಹೆಸರು?"
+      },
+      "verifiedAnswer": "Chloe",
+      "acceptedAliases": [
+        "Chloe Richardson"
+      ],
+      "cue": "She plays the violin.",
+      "distractors": [
+        "Claire",
+        "Charlotte"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_3",
+      "factKey": "spouse_name",
+      "category": "people",
+      "questionText": "What is the name of your wife?",
+      "defaultPrompt": {
+        "en": "What is the name of your wife?",
+        "hi": "आपकी पत्नी का क्या नाम है?",
+        "kn": "ನಿಮ್ಮ ಪತ್ನಿಯ ಹೆಸರೇನು?"
+      },
+      "verifiedAnswer": "Margaret",
+      "acceptedAliases": [
+        "Maggie",
+        "Margaret Richardson"
+      ],
+      "cue": "Your lifelong partner.",
+      "distractors": [
+        "Mary",
+        "Martha"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_4",
+      "factKey": "native_village",
+      "category": "place",
+      "questionText": "In which coastal town or neighbourhood were you born?",
+      "defaultPrompt": {
+        "en": "In which coastal town or neighbourhood were you born?",
+        "hi": "आपका जन्म किस शहर में हुआ था?",
+        "kn": "ನೀವು ಹುಟ್ಟಿದ ಊರು ಯಾವುದು?"
+      },
+      "verifiedAnswer": "Colaba",
+      "acceptedAliases": [
+        "Colaba Causeway",
+        "South Mumbai"
+      ],
+      "cue": "Near the historic southern tip of Mumbai.",
+      "distractors": [
+        "Bandra",
+        "Goa"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_5",
+      "factKey": "marriage_year",
+      "category": "date",
+      "questionText": "In which year did you get married?",
+      "defaultPrompt": {
+        "en": "In which year did you get married?",
+        "hi": "आपकी शादी किस वर्ष हुई थी?",
+        "kn": "ನಿಮ್ಮ ಮದುವೆಯಾದ ವರ್ಷ ಯಾವುದು?"
+      },
+      "verifiedAnswer": "1976",
+      "acceptedAliases": [
+        "Nineteen seventy six",
+        "Seventy six"
+      ],
+      "cue": "In the mid nineteen-seventies.",
+      "distractors": [
+        "1972",
+        "1980"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_6",
+      "factKey": "career",
+      "category": "event",
+      "questionText": "What was your main profession or career?",
+      "defaultPrompt": {
+        "en": "What was your main profession or career?",
+        "hi": "आप किस पद या कार्य में कार्यरत थे?",
+        "kn": "ನಿಮ್ಮ ವೃತ್ತಿ ಯಾವುದು?"
+      },
+      "verifiedAnswer": "Marine Engineer",
+      "acceptedAliases": [
+        "Chief Marine Engineer",
+        "Merchant Navy Engineer",
+        "Engineer"
+      ],
+      "cue": "Working on commercial ships across international waters.",
+      "distractors": [
+        "Naval Officer",
+        "Civil Engineer"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_7",
+      "factKey": "favorite_food",
+      "category": "personal",
+      "questionText": "What is your favorite dish to enjoy?",
+      "defaultPrompt": {
+        "en": "What is your favorite dish to enjoy?",
+        "hi": "आपको खाने में सबसे अधिक क्या पसंद है?",
+        "kn": "ನಿಮ್ಮ ನೆಚ್ಚಿನ ಊಟ ಯಾವುದು?"
+      },
+      "verifiedAnswer": "Fish Curry and Rice",
+      "acceptedAliases": [
+        "Fish Curry",
+        "Pomfret Curry"
+      ],
+      "cue": "A traditional coastal seafood staple.",
+      "distractors": [
+        "Roast Chicken",
+        "Biryani"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_8",
+      "factKey": "favorite_festival",
+      "category": "event",
+      "questionText": "Which festival or holiday do you most look forward to?",
+      "defaultPrompt": {
+        "en": "Which festival or holiday do you most look forward to?",
+        "hi": "आपका पसंदीदा त्योहार कौन सा है?",
+        "kn": "ನಿಮ್ಮ ನೆಚ್ಚಿನ ಹಬ್ಬ ಯಾವುದು?"
+      },
+      "verifiedAnswer": "Christmas",
+      "acceptedAliases": [
+        "Christmas Eve",
+        "Xmas"
+      ],
+      "cue": "The December holiday celebrated with family carol singing.",
+      "distractors": [
+        "New Year",
+        "Easter"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_9",
+      "factKey": "close_friend",
+      "category": "people",
+      "questionText": "What is the name of your closest sailing colleague and friend?",
+      "defaultPrompt": {
+        "en": "What is the name of your closest sailing colleague and friend?",
+        "hi": "आपके मित्र का नाम क्या है?",
+        "kn": "ನಿಮ್ಮ ಸ್ನೇಹಿತನ ಹೆಸರೇನು?"
+      },
+      "verifiedAnswer": "Joseph",
+      "acceptedAliases": [
+        "Captain Joseph",
+        "Joe"
+      ],
+      "cue": "Your fellow captain from the merchant fleet.",
+      "distractors": [
+        "Thomas",
+        "Francis"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_10",
+      "factKey": "local_landmark",
+      "category": "place",
+      "questionText": "Which iconic waterfront landmark do you walk past regularly?",
+      "defaultPrompt": {
+        "en": "Which iconic waterfront landmark do you walk past regularly?",
+        "hi": "आप किस प्रसिद्ध स्थान पर टहलने जाते हैं?",
+        "kn": "ನೀವು ವಾಕ್ ಮಾಡುವ ಪ್ರಸಿದ್ಧ ಸ್ಥಳ ಯಾವುದು?"
+      },
+      "verifiedAnswer": "Gateway of India",
+      "acceptedAliases": [
+        "The Gateway",
+        "Gateway"
+      ],
+      "cue": "The grand arch overlooking Mumbai harbour.",
+      "distractors": [
+        "Marine Drive",
+        "Haji Ali"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_recent_1",
+      "factKey": "recent_visitor",
+      "category": "recent_event",
+      "questionText": "Who visited your home on Tuesday afternoon?",
+      "defaultPrompt": {
+        "en": "Who visited your home on Tuesday afternoon?",
+        "hi": "मंगलवार को आपसे मिलने कौन आया था?",
+        "kn": "ಮಂಗಳವಾರ ನಿಮ್ಮ ಮನೆಗೆ ಯಾರು ಬಂದಿದ್ದರು?"
+      },
+      "verifiedAnswer": "Dr. Peter",
+      "acceptedAliases": [
+        "Peter",
+        "Uncle Peter"
+      ],
+      "cue": "Your family cardiologist for tea.",
+      "distractors": [
+        "Dr. Sharma",
+        "Mr. D'Souza"
+      ],
+      "isSensitive": false,
+      "eventDate": "2026-11-24"
+    },
+    {
+      "id": "fact_recent_2",
+      "factKey": "recent_outing",
+      "category": "recent_event",
+      "questionText": "Where did you and Margaret go for your evening stroll yesterday?",
+      "defaultPrompt": {
+        "en": "Where did you and Margaret go for your evening stroll yesterday?",
+        "hi": "कल शाम आप टहलने कहाँ गए थे?",
+        "kn": "ನಿನ್ನೆ ಸಂಜೆ ನೀವು ಎಲ್ಲಿಗೆ ವಾಕ್ ಹೋಗಿದ್ದೀರಿ?"
+      },
+      "verifiedAnswer": "Marine Drive",
+      "acceptedAliases": [
+        "Marine Drive promenade",
+        "Queen's Necklace"
+      ],
+      "cue": "The famous curved seaside promenade.",
+      "distractors": [
+        "Worli Sea Face",
+        "Juhu Beach"
+      ],
+      "isSensitive": false,
+      "eventDate": "2026-11-26"
+    }
+  ],
+  "dailyHabits": [
+    {
+      "id": "habit_1",
+      "timeOfDay": "morning",
+      "activity": "Morning maritime radio news and black coffee",
+      "importance": "high"
+    },
+    {
+      "id": "habit_2",
+      "timeOfDay": "evening",
+      "activity": "Walking along the promenade and reading naval history",
+      "importance": "medium"
+    }
+  ],
+  "informantObservation": {
+    "memoryWorryLevel": "none",
+    "observedChanges": [
+      "Zero memory concerns. Sharp recall of dates, marine engineering mathematics, and recent family schedules."
+    ],
+    "notes": "Living independently with spouse, handles all household finances and navigation."
+  }
+}

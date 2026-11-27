@@ -1,0 +1,50 @@
+{
+  "fact_1": {
+    "stage": "free",
+    "spoken": "Mark, my son."
+  },
+  "fact_2": {
+    "stage": "free",
+    "spoken": "Chloe, my lovely granddaughter."
+  },
+  "fact_3": {
+    "stage": "free",
+    "spoken": "Margaret, my wife."
+  },
+  "fact_4": {
+    "stage": "free",
+    "spoken": "I was born right in Colaba."
+  },
+  "fact_5": {
+    "stage": "free",
+    "spoken": "We married in nineteen seventy six."
+  },
+  "fact_6": {
+    "stage": "free",
+    "spoken": "I served as a Marine Engineer in the merchant fleet."
+  },
+  "fact_7": {
+    "stage": "free",
+    "spoken": "Fish Curry and Rice, always."
+  },
+  "fact_8": {
+    "stage": "free",
+    "spoken": "Christmas with the whole family gathered."
+  },
+  "fact_9": {
+    "stage": "free",
+    "spoken": "Captain Joseph, my lifelong sailing companion."
+  },
+  "fact_10": {
+    "stage": "free",
+    "spoken": "The Gateway of India waterfront."
+  },
+  "fact_recent_1": {
+    "stage": "free",
+    "spoken": "Dr. Peter came over for tea on Tuesday."
+  },
+  "fact_recent_2": {
+    "stage": "free",
+    "spoken": "We walked down the Marine Drive promenade yesterday."
+  }
+}

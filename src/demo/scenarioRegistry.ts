@@ -10,48 +10,11 @@ import { DemoScenarioId, DemoScenarioMeta, ScenarioScriptData } from "./types"
 import { FamilySetupRecord } from "../types/familySetup"
 
 export const DEMO_SCENARIOS: DemoScenarioMeta[] = [
-  {
-    id: "lakshmi",
-    name: "Lakshmi Sundaram",
-    demographics: "72F • Kannada • Rural/Semi-urban",
-    language: "kn",
-    languageName: "Kannada (ಕನ್ನಡ)",
-    designTier: "green",
-    designTierLabel: "Normal / Low Concern (Green)",
-    summary:
-      "Normal age-appropriate recall with preserved recent memory and zero daily-life concerns reported by daughter.",
-    keyFactsPreview: [
-      "Son Ramesh",
-      "Granddaughter Ananya",
-      "Born in Mysuru",
-      "Teacher",
-      "Recent: Grandson Rohan visit",
-    ],
-    audioFileCount: 12,
-  },
-  {
-    id: "ramesh",
-    name: "Ramesh Verma",
-    demographics: "68M • Hindi • Rural",
-    language: "hi",
-    languageName: "Hindi (हिन्दी)",
-    designTier: "amber",
-    designTierLabel: "Mild Memory Complaint (Amber/Green)",
-    summary:
-      "Mild memory complaint with low formal schooling (3 years). Preserved episodic memories with education-adjusted threshold.",
-    keyFactsPreview: [
-      "Daughter Sunita",
-      "Grandson Amit",
-      "Sitapur village",
-      "Farming",
-      "Recent: Ghat walk",
-    ],
-    audioFileCount: 12,
-  },
+  // --- ENGLISH PROFILES (3) ---
   {
     id: "savitri",
     name: "Savitri Nair",
-    demographics: "75F • English • Urban",
+    demographics: "75F • English • Urban Bengaluru",
     language: "en",
     languageName: "English",
     designTier: "amber",
@@ -68,21 +31,120 @@ export const DEMO_SCENARIOS: DemoScenarioMeta[] = [
     audioFileCount: 12,
   },
   {
+    id: "david",
+    name: "David Richardson",
+    demographics: "73M • English • Urban Mumbai",
+    language: "en",
+    languageName: "English",
+    designTier: "green",
+    designTierLabel: "Healthy Preservation (Green)",
+    summary:
+      "Retired Chief Marine Engineer with robust cognitive reserve. Preserved autobiographical landmarks, flawless episodic recall, and sharp orientation.",
+    keyFactsPreview: [
+      "Son Mark",
+      "Granddaughter Chloe",
+      "Colaba",
+      "Marine Engineer",
+      "Recent: Marine Drive walk",
+    ],
+    audioFileCount: 12,
+  },
+  {
+    id: "eleanor",
+    name: "Eleanor Vance",
+    demographics: "78F • English • Urban Civil Lines",
+    language: "en",
+    languageName: "English",
+    designTier: "red",
+    designTierLabel: "Amnestic MCI with Safety Concern (Red)",
+    summary:
+      "Severe episodic memory gradient. Remote memories (1968 wedding, Darjeeling convent school) intact, but marked loss of recent events with safety hazards.",
+    keyFactsPreview: [
+      "Daughter Catherine",
+      "Grandson Oliver",
+      "Darjeeling",
+      "Headmistress",
+      "Recent: Forgotten niece visit",
+    ],
+    audioFileCount: 12,
+  },
+
+  // --- HINDI PROFILES (3) ---
+  {
+    id: "ramesh",
+    name: "Ramesh Verma",
+    demographics: "68M • Hindi • Rural Awadhi",
+    language: "hi",
+    languageName: "Hindi (हिन्दी)",
+    designTier: "amber",
+    designTierLabel: "Mild Memory Complaint (Amber/Green)",
+    summary:
+      "Mild memory complaint with low formal schooling (3 years). Preserved episodic memories with education-adjusted threshold.",
+    keyFactsPreview: [
+      "Daughter Sunita",
+      "Grandson Amit",
+      "Sitapur village",
+      "Farming",
+      "Recent: Ghat walk",
+    ],
+    audioFileCount: 12,
+  },
+  {
     id: "abdul",
     name: "Abdul Kareem",
-    demographics: "80M • Hindi • Urban",
+    demographics: "80M • Hindi/Urdu • Urban Lucknow",
     language: "hi",
     languageName: "Hindi (हिन्दी)",
     designTier: "red",
     designTierLabel: "Multi-Domain Moderate Decline (Red)",
     summary:
-      "Multi-domain moderate cognitive decline with recent stove safety hazard and episodic gap.",
+      "Multi-domain moderate cognitive decline with recent stove safety hazard, orientation lag, and episodic gap.",
     keyFactsPreview: [
       "Son Tariq",
       "Granddaughter Zoya",
       "Lucknow",
       "Shopkeeper",
       "Stove left unattended hazard",
+    ],
+    audioFileCount: 12,
+  },
+  {
+    id: "kavita",
+    name: "Kavita Sharma",
+    demographics: "71F • Hindi • Semi-urban Varanasi",
+    language: "hi",
+    languageName: "Hindi (हिन्दी)",
+    designTier: "green",
+    designTierLabel: "Healthy Normal / High Recall (Green)",
+    summary:
+      "Active retired teacher with sharp cognitive recall. Zero memory concerns reported by daughter, robust temporal orientation and rich episodic details.",
+    keyFactsPreview: [
+      "Daughter Anita",
+      "Grandson Aayush",
+      "Varanasi",
+      "Teacher",
+      "Recent: Dashashwamedh Ghat aarti",
+    ],
+    audioFileCount: 12,
+  },
+
+  // --- KANNADA PROFILES (3) ---
+  {
+    id: "lakshmi",
+    name: "Lakshmi Sundaram",
+    demographics: "72F • Kannada • Rural/Semi-urban",
+    language: "kn",
+    languageName: "Kannada (ಕನ್ನಡ)",
+    designTier: "green",
+    designTierLabel: "Normal / Low Concern (Green)",
+    summary:
+      "Normal age-appropriate recall with preserved recent memory and zero daily-life concerns reported by daughter.",
+    keyFactsPreview: [
+      "Son Ramesh",
+      "Granddaughter Ananya",
+      "Born in Mysuru",
+      "Teacher",
+      "Recent: Grandson Rohan visit",
     ],
     audioFileCount: 12,
   },

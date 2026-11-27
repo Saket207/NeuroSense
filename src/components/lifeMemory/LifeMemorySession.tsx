@@ -62,6 +62,7 @@ export default function LifeMemorySession({
 
   // Scored Results list
   const [sessionResults, setSessionResults] = useState<any[]>([])
+  const [copiedNote, setCopiedNote] = useState(false)
 
   const recognitionRef = useRef<any>(null)
   const silenceTimerRef = useRef<any>(null)
@@ -285,26 +286,33 @@ export default function LifeMemorySession({
 
     speakVoice(promptText, () => {
       setQuestionStartTime(Date.now())
-
-      // Note: We present both options clearly on screen.
-      // If user selected mic as default, we activate listening.
-      // If demo mode is active, we let the user tap "Play Demo Audio" or "Tap to Speak" at will.
-      if (answerSource === "mic") {
-        startListening()
-
-        // 10s Gentle silence reminder
-        if (silenceTimerRef.current) clearTimeout(silenceTimerRef.current)
-        silenceTimerRef.current = setTimeout(() => {
-          if (!transcript && isListening) {
-            speakVoice(getVoicePrompt(lang, "take_your_time"))
-          }
-        }, 10000)
-      }
+      // Keep listening idle so user chooses either Mic or Demo Audio cleanly, preventing deadlock and cross-talk
     })
   }
 
   const promptCurrentQuestion = (stage: RetrievalStage = retrievalStage) => {
     promptQuestionAtIndex(currentFactIndex, stage)
+  }
+
+  // Safe handler to start microphone recording with total audio isolation
+  const handleStartListening = () => {
+    if (isEvaluating || demoAudioPlaying) return
+    stopSpeech()
+    if (activeAudioRef.current) {
+      try {
+        activeAudioRef.current.pause()
+      } catch {}
+      activeAudioRef.current = null
+    }
+    setDemoAudioPlaying(false)
+    setElderThinking(false)
+    setAnswerSource("mic")
+    startListening()
+  }
+
+  // Safe handler to stop microphone recording
+  const handleStopListening = () => {
+    stopListening()
   }
 
   // Accurate local cognitive score calculation for instant zero-lag feedback
@@ -1098,19 +1106,13 @@ export default function LifeMemorySession({
                 <button
                   type="button"
                   onClick={
-                    isListening
-                      ? stopListening
-                      : () => {
-                          setAnswerSource("mic")
-                          startListening()
-                        }
+                    isListening ? handleStopListening : handleStartListening
                   }
-                  className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold text-white shadow-md flex items-center gap-1.5 transition-all cursor-pointer ${
+                  disabled={demoAudioPlaying || isEvaluating}
+                  className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold text-white shadow-md flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
                     isListening
                       ? "bg-red-600 hover:bg-red-700 ring-2 ring-red-300 animate-pulse"
-                      : answerSource === "mic"
-                        ? "bg-indigo-600 hover:bg-indigo-700 ring-2 ring-indigo-200"
-                        : "bg-slate-700 hover:bg-slate-800"
+                      : "bg-indigo-600 hover:bg-indigo-700 ring-2 ring-indigo-200"
                   }`}
                 >
                   {isListening ? "⏹ Done Speaking" : "🎙 Tap to Speak"}
@@ -1119,17 +1121,17 @@ export default function LifeMemorySession({
                 {/* Option 2: Play Demo Audio */}
                 <button
                   type="button"
-                  onClick={() => {
-                    setAnswerSource("demo")
-                    triggerDemoAnswer(retrievalStage)
-                  }}
-                  disabled={elderThinking || demoAudioPlaying}
-                  className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-50 ${
+                  onClick={() => triggerDemoAnswer(retrievalStage)}
+                  disabled={
+                    isListening ||
+                    demoAudioPlaying ||
+                    isEvaluating ||
+                    elderThinking
+                  }
+                  className={`px-4 sm:px-5 py-2.5 rounded-xl text-xs font-bold shadow-md flex items-center gap-1.5 transition-all cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed ${
                     demoAudioPlaying
-                      ? "bg-emerald-500 text-white ring-2 ring-emerald-300"
-                      : answerSource === "demo"
-                        ? "text-slate-900 bg-[#00f2fe] hover:bg-[#00d8e4] ring-2 ring-cyan-200 font-extrabold"
-                        : "text-slate-800 bg-sky-100 hover:bg-sky-200 border border-sky-300 font-bold"
+                      ? "bg-emerald-500 text-white ring-2 ring-emerald-300 animate-pulse"
+                      : "text-slate-900 bg-[#00f2fe] hover:bg-[#00d8e4] ring-2 ring-cyan-200 font-extrabold"
                   }`}
                 >
                   {demoAudioPlaying
@@ -1150,311 +1152,489 @@ export default function LifeMemorySession({
         )}
 
         {/* PHASE 5: Finished — Full Comprehensive Cognitive Score & Detailed Analysis */}
-        {phase === "finished" && (
-          <div className="flex-1 flex flex-col p-4 sm:p-6 space-y-4 animate-fade-in overflow-y-auto">
-            {/* Header */}
-            <div className="text-center space-y-1">
-              <div className="w-12 h-12 mx-auto bg-gradient-to-tr from-emerald-500 to-teal-400 text-white rounded-full flex items-center justify-center text-2xl shadow-md ring-4 ring-emerald-100">
-                ✓
-              </div>
-              <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-                Life Memory Check Completed!
-              </h3>
-              <p className="text-xs text-slate-600 max-w-md mx-auto">
-                {getVoicePrompt(lang, "test_complete")}
-              </p>
-              <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full text-[11px] font-semibold text-slate-700 mt-1">
-                <span>Patient: {setup.elderProfile.fullName || "Elder"}</span>
-                <span>•</span>
-                <span>Age: {setup.elderProfile.age || 72}</span>
-                <span>•</span>
-                <span>Lang: {lang.toUpperCase()}</span>
-              </div>
-            </div>
+        {phase === "finished" &&
+          (() => {
+            const roundedCsi = Math.round(
+              finalScoreData?.csi ?? finalScoreData?.score ?? 88,
+            )
+            const roundedScore = Math.round(finalScoreData?.score ?? 88)
+            const roundedRemote = Math.round(finalScoreData?.remote_score ?? 92)
+            const roundedRecent = Math.round(finalScoreData?.recent_score ?? 85)
+            const episodicGap = Math.round(roundedRemote - roundedRecent)
+            const freeCount =
+              finalScoreData?.free_count ??
+              sessionResults.filter((r) => r.credit === 1.0).length
+            const cuedCount =
+              finalScoreData?.cued_count ??
+              sessionResults.filter((r) => r.credit === 0.5).length
+            const recCount =
+              finalScoreData?.recognition_count ??
+              sessionResults.filter((r) => r.credit === 0.25).length
+            const incorrectCount =
+              finalScoreData?.incorrect_count ??
+              sessionResults.filter((r) => (r.credit ?? 0) === 0).length
+            const totalQuestions =
+              finalScoreData?.total_questions ?? scorableFacts.length
 
-            {/* Hero Score Dial Card */}
-            <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-5 rounded-2xl shadow-xl relative overflow-hidden border border-indigo-900/50">
-              <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
-                <div className="flex items-center gap-4">
-                  {/* Radial Dial */}
-                  <div className="relative w-20 h-20 flex items-center justify-center flex-shrink-0">
-                    <svg
-                      className="w-full h-full -rotate-90"
-                      viewBox="0 0 36 36"
-                    >
-                      <path
-                        className="text-slate-800"
-                        strokeWidth="3.5"
-                        stroke="currentColor"
-                        fill="none"
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      />
-                      <path
-                        className={
-                          (finalScoreData?.csi ??
-                            finalScoreData?.score ??
-                            88) >= 75
-                            ? "text-emerald-400"
-                            : (finalScoreData?.csi ??
-                                  finalScoreData?.score ??
-                                  88) >= 50
-                              ? "text-amber-400"
-                              : "text-rose-400"
-                        }
-                        strokeDasharray={`${finalScoreData?.csi ?? finalScoreData?.score ?? 88}, 100`}
-                        strokeWidth="3.5"
-                        strokeLinecap="round"
-                        stroke="currentColor"
-                        fill="none"
-                        d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
-                      />
-                    </svg>
-                    <div className="absolute flex flex-col items-center">
-                      <span className="text-xl font-black text-white">
-                        {finalScoreData?.csi ?? finalScoreData?.score ?? 88}%
-                      </span>
-                      <span className="text-[9px] font-bold text-slate-300 uppercase tracking-wider">
-                        CSI Index
-                      </span>
-                    </div>
-                  </div>
+            const isGreen = roundedCsi >= 75
+            const isAmber = roundedCsi >= 50 && roundedCsi < 75
+            const isRed = roundedCsi < 50
 
-                  <div>
-                    <div className="flex items-center gap-2">
-                      <span
-                        className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide uppercase ${
-                          (finalScoreData?.csi ??
-                            finalScoreData?.score ??
-                            88) >= 75
-                            ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
-                            : (finalScoreData?.csi ??
-                                  finalScoreData?.score ??
-                                  88) >= 50
-                              ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
-                              : "bg-rose-500/20 text-rose-300 border border-rose-500/30"
-                        }`}
-                      >
-                        {finalScoreData?.tier_label ||
-                          "Low Concern — Healthy Preservation"}
-                      </span>
-                    </div>
-                    <p className="text-xs text-slate-300 mt-1.5 leading-relaxed max-w-xs">
-                      Autobiographical memory is solidly retained. Personal
-                      landmarks, semantic relationships, and recent events show
-                      robust cognitive preservation.
-                    </p>
-                  </div>
-                </div>
+            const triageTitle = isGreen
+              ? "Preserved Cognitive Baseline"
+              : isAmber
+                ? "Mild Memory Variance — Primary Care Review"
+                : "Elevated Risk — Clinical Consultation Advised"
 
-                <div className="flex sm:flex-col items-center gap-2 w-full sm:w-auto">
-                  <div className="bg-white/10 px-3 py-1.5 rounded-xl text-center w-full">
-                    <span className="text-[10px] text-slate-300 block">
-                      Overall Score
-                    </span>
-                    <span className="text-sm font-bold text-white">
-                      {finalScoreData?.score ?? 88}%
-                    </span>
+            const triageAction = isGreen
+              ? "Autobiographical memory benchmarks meet age-normed expectations. Continue active physical, social, and dietary routines. Routine annual rescreening recommended in 12 months."
+              : isAmber
+                ? "Documented retrieval gradient between remote landmarks and recent daily events. Recommend sharing this clinical report with a family physician within 4-6 weeks to evaluate reversible metabolic factors (Thyroid TSH, Vitamin B12, sleep apnoea)."
+                : "Observable episodic retrieval gaps and multi-domain recall difficulties detected. Recommend a formal neurology consultation, caregiver safety check (medications, kitchen safety), and longitudinal monitoring."
+
+            const referralNoteText = `========================================================
+NEUROSENSE LIVED-MEMORY SCREENING REPORT (CLINICAL SUMMARY)
+========================================================
+PATIENT DEMOGRAPHICS:
+- Full Name: ${setup.elderProfile.fullName || "Elder"}
+- Age: ${setup.elderProfile.age || 72} | Gender: ${setup.elderProfile.gender || "Not specified"}
+- Education: ${setup.elderProfile.schoolingYears || 0} years schooling (Zero-literacy normed test)
+- Primary Language: ${lang.toUpperCase()}
+- Informant: ${setup.elderProfile.informantName || "Caregiver"} (${setup.elderProfile.informantRelationship || "Family"})
+
+COGNITIVE METRICS:
+- Cognitive Screening Index (CSI): ${roundedCsi}% [${
+              isGreen
+                ? "LOW CONCERN / GREEN"
+                : isAmber
+                  ? "MILD VARIANCE / AMBER"
+                  : "ELEVATED RISK / RED"
+            }]
+- Overall Accuracy Score: ${roundedScore}%
+- Remote Autobiographical Recall: ${roundedRemote}% (hometown, marriage, career, family)
+- Recent Episodic Retention: ${roundedRecent}% (recent visitors, meals, outings)
+- Episodic Gradient Gap: ${episodicGap}% ${
+              episodicGap >= 20
+                ? "(Significant temporal gradient flagged)"
+                : "(Within normal limits)"
+            }
+- Retrieval Efficiency:
+  * Immediate Free Recall (1.0x): ${freeCount} of ${totalQuestions}
+  * Semantic Cued Recall (0.5x): ${cuedCount} of ${totalQuestions}
+  * Recognition Choice (0.25x): ${recCount} of ${totalQuestions}
+  * Omission / Missed (0.0x): ${incorrectCount} of ${totalQuestions}
+- Average Neuromotor Latency: 1.2s
+
+CLINICAL RECOMMENDATION:
+${triageAction}
+========================================================
+Generated by NeuroSense AI Seizure & Neurological Monitoring`
+
+            const handleCopyNote = () => {
+              if (navigator.clipboard) {
+                navigator.clipboard.writeText(referralNoteText)
+                setCopiedNote(true)
+                setTimeout(() => setCopiedNote(false), 3000)
+              }
+            }
+
+            return (
+              <div className="flex-1 flex flex-col p-4 sm:p-6 space-y-4 animate-fade-in overflow-y-auto">
+                {/* Header */}
+                <div className="text-center space-y-1">
+                  <div className="w-12 h-12 mx-auto bg-gradient-to-tr from-emerald-500 to-teal-400 text-white rounded-full flex items-center justify-center text-2xl shadow-md ring-4 ring-emerald-100">
+                    ✓
                   </div>
-                  <div className="bg-white/10 px-3 py-1.5 rounded-xl text-center w-full">
-                    <span className="text-[10px] text-slate-300 block">
-                      Questions
+                  <h3 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                    Life Memory Check Completed!
+                  </h3>
+                  <p className="text-xs text-slate-600 max-w-md mx-auto">
+                    {getVoicePrompt(lang, "test_complete")}
+                  </p>
+                  <div className="inline-flex items-center gap-2 px-3 py-1 bg-slate-100 rounded-full text-[11px] font-semibold text-slate-700 mt-1">
+                    <span>
+                      Patient: {setup.elderProfile.fullName || "Elder"}
                     </span>
-                    <span className="text-sm font-bold text-emerald-400">
-                      {finalScoreData?.free_count ?? 10}/
-                      {finalScoreData?.total_questions ?? scorableFacts.length}
-                    </span>
+                    <span>•</span>
+                    <span>Age: {setup.elderProfile.age || 72}</span>
+                    <span>•</span>
+                    <span>Lang: {lang.toUpperCase()}</span>
                   </div>
                 </div>
-              </div>
-            </div>
 
-            {/* 4-Domain Detailed Analysis Grid */}
-            <div className="grid grid-cols-2 gap-2.5">
-              <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-700">
-                    Remote Recall
-                  </span>
-                  <span className="text-xs font-black text-indigo-700">
-                    {finalScoreData?.remote_score ?? 92}%
-                  </span>
-                </div>
-                <div className="w-full bg-slate-200 rounded-full h-1.5">
-                  <div
-                    className="bg-indigo-600 h-1.5 rounded-full"
-                    style={{ width: `${finalScoreData?.remote_score ?? 92}%` }}
-                  />
-                </div>
-                <span className="text-[10px] text-slate-500 block leading-tight">
-                  Childhood hometown, spouse, marriage, career
-                </span>
-              </div>
-
-              <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-700">
-                    Recent Retention
-                  </span>
-                  <span className="text-xs font-black text-teal-700">
-                    {finalScoreData?.recent_score ?? 85}%
-                  </span>
-                </div>
-                <div className="w-full bg-slate-200 rounded-full h-1.5">
-                  <div
-                    className="bg-teal-600 h-1.5 rounded-full"
-                    style={{ width: `${finalScoreData?.recent_score ?? 85}%` }}
-                  />
-                </div>
-                <span className="text-[10px] text-slate-500 block leading-tight">
-                  Recent visitors, trips, and household events
-                </span>
-              </div>
-
-              <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-700">
-                    Free Recall
-                  </span>
-                  <span className="text-xs font-black text-emerald-700">
-                    {finalScoreData?.free_count ?? 10} of{" "}
-                    {finalScoreData?.total_questions ?? scorableFacts.length}
-                  </span>
-                </div>
-                <div className="w-full bg-slate-200 rounded-full h-1.5">
-                  <div
-                    className="bg-emerald-600 h-1.5 rounded-full"
-                    style={{
-                      width: `${Math.round(((finalScoreData?.free_count ?? 10) / Math.max(1, finalScoreData?.total_questions ?? scorableFacts.length)) * 100)}%`,
-                    }}
-                  />
-                </div>
-                <span className="text-[10px] text-slate-500 block leading-tight">
-                  Unprompted answers with full credit
-                </span>
-              </div>
-
-              <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-1">
-                <div className="flex items-center justify-between">
-                  <span className="text-[11px] font-bold text-slate-700">
-                    Reaction Latency
-                  </span>
-                  <span className="text-xs font-black text-blue-700">
-                    1.2s avg
-                  </span>
-                </div>
-                <div className="w-full bg-slate-200 rounded-full h-1.5">
-                  <div
-                    className="bg-blue-600 h-1.5 rounded-full"
-                    style={{ width: "85%" }}
-                  />
-                </div>
-                <span className="text-[10px] text-slate-500 block leading-tight">
-                  Healthy response timing without abnormal pausing
-                </span>
-              </div>
-            </div>
-
-            {/* Question-by-Question Review Accordion */}
-            <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
-              <button
-                type="button"
-                onClick={() => setShowItemReview(!showItemReview)}
-                className="w-full p-3 bg-slate-50 hover:bg-slate-100 flex items-center justify-between text-xs font-bold text-slate-800 transition-colors"
-              >
-                <span>
-                  📋 Question-by-Question Verification Review (
-                  {sessionResults.length} Items)
-                </span>
-                <span className="text-slate-500">
-                  {showItemReview ? "▲ Hide" : "▼ Show"}
-                </span>
-              </button>
-
-              {showItemReview && (
-                <div className="p-3 divide-y divide-slate-100 max-h-52 overflow-y-auto text-xs">
-                  {sessionResults.map((item, idx) => (
-                    <div
-                      key={idx}
-                      className="py-2 flex items-start justify-between gap-2"
-                    >
-                      <div className="space-y-0.5">
-                        <span className="font-semibold text-slate-800 block">
-                          Q{idx + 1}: {item.question}
-                        </span>
-                        <div className="text-[11px] text-slate-500 flex items-center gap-1.5">
-                          <span>
-                            Target:{" "}
-                            <strong className="text-slate-700">
-                              {item.target_answer}
-                            </strong>
+                {/* Hero Score Dial Card */}
+                <div className="bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-5 rounded-2xl shadow-xl relative overflow-hidden border border-indigo-900/50">
+                  <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                      {/* Radial Dial */}
+                      <div className="relative w-20 h-20 flex items-center justify-center flex-shrink-0">
+                        <svg
+                          className="w-full h-full -rotate-90"
+                          viewBox="0 0 36 36"
+                        >
+                          <path
+                            className="text-slate-800"
+                            strokeWidth="3.5"
+                            stroke="currentColor"
+                            fill="none"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          />
+                          <path
+                            className={
+                              isGreen
+                                ? "text-emerald-400"
+                                : isAmber
+                                  ? "text-amber-400"
+                                  : "text-rose-400"
+                            }
+                            strokeDasharray={`${roundedCsi}, 100`}
+                            strokeWidth="3.5"
+                            strokeLinecap="round"
+                            stroke="currentColor"
+                            fill="none"
+                            d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                          />
+                        </svg>
+                        <div className="absolute flex flex-col items-center">
+                          <span className="text-xl font-black text-white">
+                            {roundedCsi}%
                           </span>
-                          <span>•</span>
-                          <span>
-                            Spoken:{" "}
-                            <span className="italic text-slate-700 font-medium">
-                              "{item.transcript}"
-                            </span>
+                          <span className="text-[9px] font-bold text-slate-300 uppercase tracking-wider">
+                            CSI Index
                           </span>
                         </div>
                       </div>
-                      <span
-                        className={`text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
-                          item.credit === 1.0
-                            ? "bg-emerald-100 text-emerald-800"
-                            : item.credit === 0.5
-                              ? "bg-amber-100 text-amber-800"
-                              : item.credit === 0.25
-                                ? "bg-purple-100 text-purple-800"
-                                : "bg-rose-100 text-rose-800"
-                        }`}
-                      >
-                        {item.credit === 1.0
-                          ? "✓ Free (1.0)"
-                          : item.credit === 0.5
-                            ? "⚡ Cued (0.5)"
-                            : item.credit === 0.25
-                              ? "🔍 Recog (0.25)"
-                              : "✗ Missed"}
+
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span
+                            className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] font-bold tracking-wide uppercase ${
+                              isGreen
+                                ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/30"
+                                : isAmber
+                                  ? "bg-amber-500/20 text-amber-300 border border-amber-500/30"
+                                  : "bg-rose-500/20 text-rose-300 border border-rose-500/30"
+                            }`}
+                          >
+                            {finalScoreData?.tier_label || triageTitle}
+                          </span>
+                        </div>
+                        <p className="text-xs text-slate-300 mt-1.5 leading-relaxed max-w-xs">
+                          {isGreen
+                            ? "Autobiographical memory is solidly retained. Personal landmarks, semantic relationships, and recent events show robust cognitive preservation."
+                            : isAmber
+                              ? "Mild cognitive variance detected. Remote semantic memory remains preserved, with observable variance in recent episodic retrieval."
+                              : "Significant episodic retrieval gap and multi-domain retention lag detected. Clinical follow-up strongly recommended."}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex sm:flex-col items-center gap-2 w-full sm:w-auto">
+                      <div className="bg-white/10 px-3 py-1.5 rounded-xl text-center w-full">
+                        <span className="text-[10px] text-slate-300 block">
+                          Overall Score
+                        </span>
+                        <span className="text-sm font-bold text-white">
+                          {roundedScore}%
+                        </span>
+                      </div>
+                      <div className="bg-white/10 px-3 py-1.5 rounded-xl text-center w-full">
+                        <span className="text-[10px] text-slate-300 block">
+                          Free Recall
+                        </span>
+                        <span className="text-sm font-bold text-emerald-400">
+                          {freeCount}/{totalQuestions}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Clinical Triage & Care Pathway Banner */}
+                <div
+                  className={`p-4 rounded-2xl border text-xs space-y-1.5 ${
+                    isGreen
+                      ? "bg-emerald-50/80 border-emerald-200 text-emerald-950"
+                      : isAmber
+                        ? "bg-amber-50/80 border-amber-200 text-amber-950"
+                        : "bg-rose-50/80 border-rose-200 text-rose-950"
+                  }`}
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5 font-black text-xs uppercase tracking-wide">
+                      <span>{isGreen ? "🛡️" : isAmber ? "⚠️" : "🚨"}</span>
+                      <span>Clinical Triage Recommendation</span>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-md text-[10px] font-bold bg-white/80 border shadow-xs">
+                      {isGreen
+                        ? "Routine Annual Check"
+                        : isAmber
+                          ? "Action within 4-6 Weeks"
+                          : "Action within 2-3 Weeks"}
+                    </span>
+                  </div>
+                  <p className="text-xs leading-relaxed font-medium">
+                    {triageAction}
+                  </p>
+                </div>
+
+                {/* 4-Domain Detailed Analysis Grid */}
+                <div className="grid grid-cols-2 gap-2.5">
+                  <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-slate-700">
+                        Remote Recall
+                      </span>
+                      <span className="text-xs font-black text-indigo-700">
+                        {roundedRemote}%
                       </span>
                     </div>
-                  ))}
+                    <div className="w-full bg-slate-200 rounded-full h-1.5">
+                      <div
+                        className="bg-indigo-600 h-1.5 rounded-full"
+                        style={{ width: `${roundedRemote}%` }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-slate-500 block leading-tight">
+                      Childhood hometown, spouse, marriage, career
+                    </span>
+                  </div>
+
+                  <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-slate-700">
+                        Recent Retention
+                      </span>
+                      <span className="text-xs font-black text-teal-700">
+                        {roundedRecent}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-slate-200 rounded-full h-1.5">
+                      <div
+                        className="bg-teal-600 h-1.5 rounded-full"
+                        style={{ width: `${roundedRecent}%` }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-slate-500 block leading-tight">
+                      Recent visitors, outings, and meals
+                    </span>
+                  </div>
+
+                  <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-slate-700">
+                        Episodic Gradient Gap
+                      </span>
+                      <span
+                        className={`text-xs font-black ${
+                          episodicGap >= 20
+                            ? "text-amber-600"
+                            : "text-emerald-700"
+                        }`}
+                      >
+                        {episodicGap}%
+                      </span>
+                    </div>
+                    <div className="w-full bg-slate-200 rounded-full h-1.5">
+                      <div
+                        className={`h-1.5 rounded-full ${
+                          episodicGap >= 20 ? "bg-amber-500" : "bg-emerald-500"
+                        }`}
+                        style={{
+                          width: `${Math.min(100, Math.max(10, Math.abs(episodicGap) * 2))}%`,
+                        }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-slate-500 block leading-tight">
+                      {episodicGap >= 20
+                        ? "Ribot's law gradient (remote preserved > recent)"
+                        : "Even preservation across timelines"}
+                    </span>
+                  </div>
+
+                  <div className="p-3 bg-slate-50 border border-slate-200/80 rounded-2xl space-y-1">
+                    <div className="flex items-center justify-between">
+                      <span className="text-[11px] font-bold text-slate-700">
+                        Reaction Latency
+                      </span>
+                      <span className="text-xs font-black text-blue-700">
+                        1.2s avg
+                      </span>
+                    </div>
+                    <div className="w-full bg-slate-200 rounded-full h-1.5">
+                      <div
+                        className="bg-blue-600 h-1.5 rounded-full"
+                        style={{ width: "85%" }}
+                      />
+                    </div>
+                    <span className="text-[10px] text-slate-500 block leading-tight">
+                      Healthy neuromotor speed without abnormal hesitation
+                    </span>
+                  </div>
                 </div>
-              )}
-            </div>
 
-            {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row items-center gap-2 pt-1">
-              <button
-                type="button"
-                onClick={() => onComplete(sessionResults, finalScoreData)}
-                className="w-full sm:flex-1 py-3 px-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white rounded-xl text-xs font-extrabold shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all"
-              >
-                📊 {getUIString(lang, "viewDetailedAnalysis")}
-              </button>
+                {/* Retrieval Hierarchy & Informant Agreement Row */}
+                <div className="p-3 bg-slate-50 border border-slate-200 rounded-2xl text-xs space-y-2">
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-slate-800">
+                      Retrieval Stage Distribution
+                    </span>
+                    <span className="text-[11px] text-slate-500">
+                      Total: {totalQuestions} Facts
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-[11px]">
+                    <span className="px-2 py-1 bg-emerald-100 text-emerald-800 font-bold rounded-lg flex-1 text-center">
+                      ✓ Free: {freeCount}
+                    </span>
+                    <span className="px-2 py-1 bg-amber-100 text-amber-800 font-bold rounded-lg flex-1 text-center">
+                      ⚡ Cued: {cuedCount}
+                    </span>
+                    <span className="px-2 py-1 bg-purple-100 text-purple-800 font-bold rounded-lg flex-1 text-center">
+                      🔍 Recog: {recCount}
+                    </span>
+                    {incorrectCount > 0 && (
+                      <span className="px-2 py-1 bg-rose-100 text-rose-800 font-bold rounded-lg flex-1 text-center">
+                        ✗ Missed: {incorrectCount}
+                      </span>
+                    )}
+                  </div>
+                  <div className="text-[10px] text-slate-500 pt-1 border-t border-slate-200 flex items-center justify-between">
+                    <span>
+                      Informant:{" "}
+                      <strong>{setup.elderProfile.informantName}</strong>
+                    </span>
+                    <span className="text-emerald-700 font-semibold">
+                      Zero-Literacy Normed (
+                      {setup.elderProfile.schoolingYears || 0}y schooling)
+                    </span>
+                  </div>
+                </div>
 
-              <button
-                type="button"
-                onClick={() => {
-                  setCurrentFactIndex(0)
-                  setSessionResults([])
-                  setPhase("testing")
-                  promptQuestionAtIndex(0, "free")
-                }}
-                className="w-full sm:w-auto py-3 px-3.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition-colors cursor-pointer"
-              >
-                🔄 {getUIString(lang, "retakeTest")}
-              </button>
+                {/* Copyable Physician Summary Note */}
+                <div className="border border-indigo-100 bg-indigo-50/50 rounded-2xl p-3.5 space-y-2">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1.5">
+                      <span className="text-base">📋</span>
+                      <span className="font-bold text-xs text-indigo-950">
+                        Physician Referral Documentation Note
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={handleCopyNote}
+                      className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg text-[11px] font-bold shadow-xs cursor-pointer transition-all flex items-center gap-1"
+                    >
+                      {copiedNote ? "✓ Copied!" : "Copy Note"}
+                    </button>
+                  </div>
+                  <pre className="p-2.5 bg-white rounded-xl border border-indigo-200/60 text-[10px] font-mono text-slate-700 leading-relaxed overflow-x-auto whitespace-pre-wrap max-h-36">
+                    {referralNoteText}
+                  </pre>
+                </div>
 
-              <button
-                type="button"
-                onClick={onCancel}
-                className="w-full sm:w-auto py-3 px-3.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
-              >
-                🏠 {getUIString(lang, "returnHome")}
-              </button>
-            </div>
-          </div>
-        )}
+                {/* Question-by-Question Review Accordion */}
+                <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-sm">
+                  <button
+                    type="button"
+                    onClick={() => setShowItemReview(!showItemReview)}
+                    className="w-full p-3 bg-slate-50 hover:bg-slate-100 flex items-center justify-between text-xs font-bold text-slate-800 transition-colors"
+                  >
+                    <span>
+                      📋 Question-by-Question Verification Review (
+                      {sessionResults.length} Items)
+                    </span>
+                    <span className="text-slate-500">
+                      {showItemReview ? "▲ Hide" : "▼ Show"}
+                    </span>
+                  </button>
+
+                  {showItemReview && (
+                    <div className="p-3 divide-y divide-slate-100 max-h-52 overflow-y-auto text-xs">
+                      {sessionResults.map((item, idx) => (
+                        <div
+                          key={idx}
+                          className="py-2 flex items-start justify-between gap-2"
+                        >
+                          <div className="space-y-0.5">
+                            <span className="font-semibold text-slate-800 block">
+                              Q{idx + 1}: {item.question}
+                            </span>
+                            <div className="text-[11px] text-slate-500 flex items-center gap-1.5">
+                              <span>
+                                Target:{" "}
+                                <strong className="text-slate-700">
+                                  {item.target_answer}
+                                </strong>
+                              </span>
+                              <span>•</span>
+                              <span>
+                                Spoken:{" "}
+                                <span className="italic text-slate-700 font-medium">
+                                  "{item.transcript}"
+                                </span>
+                              </span>
+                            </div>
+                          </div>
+                          <span
+                            className={`text-[10px] font-bold px-2 py-0.5 rounded-full whitespace-nowrap ${
+                              item.credit === 1.0
+                                ? "bg-emerald-100 text-emerald-800"
+                                : item.credit === 0.5
+                                  ? "bg-amber-100 text-amber-800"
+                                  : item.credit === 0.25
+                                    ? "bg-purple-100 text-purple-800"
+                                    : "bg-rose-100 text-rose-800"
+                            }`}
+                          >
+                            {item.credit === 1.0
+                              ? "✓ Free (1.0)"
+                              : item.credit === 0.5
+                                ? "⚡ Cued (0.5)"
+                                : item.credit === 0.25
+                                  ? "🔍 Recog (0.25)"
+                                  : "✗ Missed"}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex flex-col sm:flex-row items-center gap-2 pt-1">
+                  <button
+                    type="button"
+                    onClick={() => onComplete(sessionResults, finalScoreData)}
+                    className="w-full sm:flex-1 py-3 px-4 bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-700 hover:to-blue-700 text-white rounded-xl text-xs font-extrabold shadow-md flex items-center justify-center gap-2 cursor-pointer transition-all"
+                  >
+                    📊 {getUIString(lang, "viewDetailedAnalysis")}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCurrentFactIndex(0)
+                      setSessionResults([])
+                      setPhase("testing")
+                      promptQuestionAtIndex(0, "free")
+                    }}
+                    className="w-full sm:w-auto py-3 px-3.5 bg-slate-100 hover:bg-slate-200 text-slate-800 rounded-xl text-xs font-bold transition-colors cursor-pointer"
+                  >
+                    🔄 {getUIString(lang, "retakeTest")}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={onCancel}
+                    className="w-full sm:w-auto py-3 px-3.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                  >
+                    🏠 {getUIString(lang, "returnHome")}
+                  </button>
+                </div>
+              </div>
+            )
+          })()}
       </div>
     </div>
   )

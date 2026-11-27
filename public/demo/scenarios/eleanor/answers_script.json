@@ -1,0 +1,50 @@
+{
+  "fact_1": {
+    "stage": "free",
+    "spoken": "Catherine, my dear daughter."
+  },
+  "fact_2": {
+    "stage": "free",
+    "spoken": "Oliver, my grandson."
+  },
+  "fact_3": {
+    "stage": "free",
+    "spoken": "Arthur... Arthur Vance was my husband."
+  },
+  "fact_4": {
+    "stage": "free",
+    "spoken": "I was born in Darjeeling up in the hills."
+  },
+  "fact_5": {
+    "stage": "free",
+    "spoken": "We married in nineteen sixty eight."
+  },
+  "fact_6": {
+    "stage": "free",
+    "spoken": "I was the Headmistress at the convent school."
+  },
+  "fact_7": {
+    "stage": "cued",
+    "spoken": "Shepherd's Pie."
+  },
+  "fact_8": {
+    "stage": "free",
+    "spoken": "Easter Sunday."
+  },
+  "fact_9": {
+    "stage": "cued",
+    "spoken": "Beatrice from parish."
+  },
+  "fact_10": {
+    "stage": "free",
+    "spoken": "Victoria Memorial gardens."
+  },
+  "fact_recent_1": {
+    "stage": "recognition",
+    "spoken": "Was it Sarah?"
+  },
+  "fact_recent_2": {
+    "stage": "recognition",
+    "spoken": "Park Street bakery."
+  }
+}

@@ -1,0 +1,311 @@
+{
+  "id": "setup_kavita_demo",
+  "patientId": "demo_kavita",
+  "version": 1,
+  "createdAt": "2026-11-27T01:00:00.000000",
+  "updatedAt": "2026-11-27T01:00:00.000000",
+  "elderProfile": {
+    "fullName": "Kavita Sharma",
+    "age": 71,
+    "gender": "Female",
+    "languagesSpoken": [
+      "Hindi"
+    ],
+    "preferredTestingLanguage": "hi",
+    "dialectOrRegion": "Varanasi / Eastern Uttar Pradesh",
+    "schoolingYears": 10,
+    "literacyStatus": "can_read_write",
+    "informantName": "Anita (Daughter)",
+    "informantRelationship": "Child",
+    "informantMeetingFrequency": "daily",
+    "livingArrangement": "with_family"
+  },
+  "lifeFacts": [
+    {
+      "id": "fact_1",
+      "factKey": "child_name",
+      "category": "people",
+      "questionText": "आपकी बेटी का नाम क्या है?",
+      "defaultPrompt": {
+        "en": "What is the name of your daughter?",
+        "hi": "आपकी बेटी का नाम क्या है?",
+        "kn": "ನಿಮ್ಮ ಮಗಳ ಹೆಸರು?"
+      },
+      "verifiedAnswer": "अनीता",
+      "acceptedAliases": [
+        "अनु",
+        "अनीता शर्मा"
+      ],
+      "cue": "आपकी बेटी जो आपके साथ रहती है.",
+      "distractors": [
+        "सुनीता",
+        "पूनम"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_2",
+      "factKey": "grandchild_name",
+      "category": "people",
+      "questionText": "आपके पोते या नाती का क्या नाम है?",
+      "defaultPrompt": {
+        "en": "What is the name of your grandson?",
+        "hi": "आपके पोते या नाती का क्या नाम है?",
+        "kn": "ಮೊಮ್ಮಗನ ಹೆಸರು?"
+      },
+      "verifiedAnswer": "आयुष",
+      "acceptedAliases": [
+        "आयू"
+      ],
+      "cue": "जो कॉलेज में पढ़ता है.",
+      "distractors": [
+        "रोहन",
+        "अमन"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_3",
+      "factKey": "spouse_name",
+      "category": "people",
+      "questionText": "आपके स्वर्गीय पति का क्या नाम है?",
+      "defaultPrompt": {
+        "en": "What is the name of your late husband?",
+        "hi": "आपके स्वर्गीय पति का क्या नाम है?",
+        "kn": "ನಿಮ್ಮ ಗಂಡನ ಹೆಸರು?"
+      },
+      "verifiedAnswer": "राजेश",
+      "acceptedAliases": [
+        "राजेश शर्मा",
+        "राजेश जी"
+      ],
+      "cue": "आपके जीवनसाथी.",
+      "distractors": [
+        "सुरेश",
+        "महेश"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_4",
+      "factKey": "native_village",
+      "category": "place",
+      "questionText": "आपका जन्म किस शहर में हुआ था?",
+      "defaultPrompt": {
+        "en": "In which city were you born?",
+        "hi": "आपका जन्म किस शहर में हुआ था?",
+        "kn": "ನೀವು ಹುಟ್ಟಿದ ಊರು ಯಾವುದು?"
+      },
+      "verifiedAnswer": "वाराणसी",
+      "acceptedAliases": [
+        "बनारस",
+        "काशी"
+      ],
+      "cue": "गंगा किनारे का पवित्र शहर.",
+      "distractors": [
+        "प्रयागराज",
+        "मिर्ज़ापुर"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_5",
+      "factKey": "marriage_year",
+      "category": "date",
+      "questionText": "आपकी शादी किस वर्ष हुई थी?",
+      "defaultPrompt": {
+        "en": "In which year did you get married?",
+        "hi": "आपकी शादी किस वर्ष हुई थी?",
+        "kn": "ನಿಮ್ಮ ಮದುವೆಯಾದ ವರ್ಷ ಯಾವುದು?"
+      },
+      "verifiedAnswer": "1974",
+      "acceptedAliases": [
+        "उन्नीस सौ चौहत्तर",
+        "चौहत्तर"
+      ],
+      "cue": "सत्तर के दशक में हुई थी.",
+      "distractors": [
+        "1970",
+        "1978"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_6",
+      "factKey": "career",
+      "category": "event",
+      "questionText": "आप किस पद या कार्य में कार्यरत थीं?",
+      "defaultPrompt": {
+        "en": "What was your profession or career?",
+        "hi": "आप किस पद या कार्य में कार्यरत थीं?",
+        "kn": "ನಿಮ್ಮ ವೃತ್ತಿ ಯಾವುದು?"
+      },
+      "verifiedAnswer": "शिक्षिका",
+      "acceptedAliases": [
+        "टीचर",
+        "अध्यापिका",
+        "स्कूल में पढ़ाती थी"
+      ],
+      "cue": "बच्चों को स्कूल में पढ़ाना.",
+      "distractors": [
+        "नर्स",
+        "क्लर्क"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_7",
+      "factKey": "favorite_food",
+      "category": "personal",
+      "questionText": "आपको खाने में सबसे अधिक क्या पसंद है?",
+      "defaultPrompt": {
+        "en": "What is your favorite food?",
+        "hi": "आपको खाने में सबसे अधिक क्या पसंद है?",
+        "kn": "ನಿಮ್ಮ ನೆಚ್ಚಿನ ಊಟ ಯಾವುದು?"
+      },
+      "verifiedAnswer": "कचौड़ी और जलेबी",
+      "acceptedAliases": [
+        "कचौड़ी",
+        "जलेबी"
+      ],
+      "cue": "बनारस का प्रसिद्ध नाश्ता.",
+      "distractors": [
+        "समोसा",
+        "पूड़ी भाजी"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_8",
+      "factKey": "favorite_festival",
+      "category": "event",
+      "questionText": "आपका सबसे पसंदीदा त्योहार कौन सा है?",
+      "defaultPrompt": {
+        "en": "What is your favorite festival?",
+        "hi": "आपका सबसे पसंदीदा त्योहार कौन सा है?",
+        "kn": "ನಿಮ್ಮ ನೆಚ್ಚಿನ ಹಬ್ಬ ಯಾವುದು?"
+      },
+      "verifiedAnswer": "दीपावली",
+      "acceptedAliases": [
+        "दिवाली",
+        "देव दीपावली"
+      ],
+      "cue": "दीपों और रोशनी का पर्व.",
+      "distractors": [
+        "होली",
+        "दशहरा"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_9",
+      "factKey": "close_friend",
+      "category": "people",
+      "questionText": "आपकी बचपन की सहेली का क्या नाम है?",
+      "defaultPrompt": {
+        "en": "What is the name of your childhood friend?",
+        "hi": "आपकी बचपन की सहेली का क्या नाम है?",
+        "kn": "ನಿಮ್ಮ ಬಾಲ್ಯದ ಸ್ನೇಹಿತೆಯ ಹೆಸರೇನು?"
+      },
+      "verifiedAnswer": "सुमन",
+      "acceptedAliases": [
+        "सुमन दीदी"
+      ],
+      "cue": "जो पड़ोस में रहती थी.",
+      "distractors": [
+        "कमलेश",
+        "सरोज"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_10",
+      "factKey": "local_landmark",
+      "category": "place",
+      "questionText": "आप किस प्रसिद्ध मंदिर में अक्सर दर्शन करने जाती हैं?",
+      "defaultPrompt": {
+        "en": "Which famous temple do you frequently visit?",
+        "hi": "आप किस प्रसिद्ध मंदिर में अक्सर दर्शन करने जाती हैं?",
+        "kn": "ನೀವು ಭೇಟಿ ನೀಡುವ ಪ್ರಸಿದ್ಧ ದೇವಸ್ಥಾನ ಯಾವುದು?"
+      },
+      "verifiedAnswer": "संकट मोचन मंदिर",
+      "acceptedAliases": [
+        "संकट मोचन",
+        "हनुमान मंदिर"
+      ],
+      "cue": "हनुमान जी का मंदिर.",
+      "distractors": [
+        "काशी विश्वनाथ",
+        "दुर्गा कुंड"
+      ],
+      "isSensitive": false
+    },
+    {
+      "id": "fact_recent_1",
+      "factKey": "recent_visitor",
+      "category": "recent_event",
+      "questionText": "पिछले सप्ताह आपके घर कौन से मेहमान मिलने आए थे?",
+      "defaultPrompt": {
+        "en": "Who came to visit your house last week?",
+        "hi": "पिछले सप्ताह आपके घर कौन से मेहमान मिलने आए थे?",
+        "kn": "ಕಳೆದ ವಾರ ನಿಮ್ಮ ಮನೆಗೆ ಯಾರು ಬಂದಿದ್ದರು?"
+      },
+      "verifiedAnswer": "डॉक्टर शर्मा",
+      "acceptedAliases": [
+        "शैलेश",
+        "डॉक्टर साहब"
+      ],
+      "cue": "पारिवारिक चिकित्सक जो स्वास्थ्य जांच के लिए आए थे.",
+      "distractors": [
+        "पंडित जी",
+        "सुरेश भाई"
+      ],
+      "isSensitive": false,
+      "eventDate": "2026-11-24"
+    },
+    {
+      "id": "fact_recent_2",
+      "factKey": "recent_outing",
+      "category": "recent_event",
+      "questionText": "हाल ही में आप शाम को किस घाट पर आरती देखने गई थीं?",
+      "defaultPrompt": {
+        "en": "Which ghat did you recently visit for evening aarti?",
+        "hi": "हाल ही में आप शाम को किस घाट पर आरती देखने गई थीं?",
+        "kn": "ಇತ್ತೀಚೆಗೆ ನೀವು ಯಾವ ಘಾಟ್‌ಗೆ ಹೋಗಿದ್ದೀರಿ?"
+      },
+      "verifiedAnswer": "दशाश्वमेध घाट",
+      "acceptedAliases": [
+        "दशाश्वमेध",
+        "दशाश्वमेध घाट की आरती"
+      ],
+      "cue": "मुख्य गंगा आरती का प्रसिद्ध घाट.",
+      "distractors": [
+        "अस्सी घाट",
+        "मणिकर्णिका घाट"
+      ],
+      "isSensitive": false,
+      "eventDate": "2026-11-21"
+    }
+  ],
+  "dailyHabits": [
+    {
+      "id": "habit_1",
+      "timeOfDay": "morning",
+      "activity": "तुलसी पूजन और सुबह का टहलना",
+      "importance": "high"
+    },
+    {
+      "id": "habit_2",
+      "timeOfDay": "afternoon",
+      "activity": "गीता पाठ और सिलाई",
+      "importance": "medium"
+    }
+  ],
+  "informantObservation": {
+    "memoryWorryLevel": "none",
+    "observedChanges": [
+      "स्मृति पूर्णतः स्वस्थ और सजग है, हाल की सभी घटनाओं का सटीक स्मरण रखती हैं."
+    ],
+    "notes": "अपनी दैनिक दिनचर्या और दवाइयाँ स्वयं संभालती हैं."
+  }
+}
